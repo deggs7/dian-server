@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'corsheaders',
     'rest_framework',
     'account',
+    'table',
+    'regstration',
     'rest_framework.authtoken',
     # 'south',
 )

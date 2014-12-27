@@ -15,4 +15,7 @@ urlpatterns = patterns('',
         'rest_framework.authtoken.views.obtain_auth_token'),
 
     url(r'^account/', include('account.urls')),
+
+    url(r'^table/', include('table.urls')),
+    url(r'^regstration/', include('regstration.urls')),
 )
