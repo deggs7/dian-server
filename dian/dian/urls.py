@@ -16,6 +16,6 @@ urlpatterns = patterns('',
 
     url(r'^account/', include('account.urls')),
 
-    url(r'^table/', include('table.urls')),
+    url(r'^restaurant/', include('restaurant.urls')),
     url(r'^regstration/', include('regstration.urls')),
 )

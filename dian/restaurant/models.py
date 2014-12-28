@@ -13,7 +13,7 @@ class Table(models.Model):
         ('dining', 'Dining'),
         ('waiting', 'Waiting'),
         ('booked', 'Booked'),
-        ('initial', 'Initial')
+        ('idle', 'Idle')
     )
     id = models.AutoField(primary_key=True)
     table_number = models.CharField(max_length=255, blank=False, null=False)

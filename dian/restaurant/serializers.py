@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer
-from table.models import TableType, Table
+from .models import TableType, Table
+from regstration.serializers import RegstrationSerializer
 
 
 class TableTypeSerializer(ModelSerializer):
@@ -9,6 +10,8 @@ class TableTypeSerializer(ModelSerializer):
 
 
 class TableSerializer(ModelSerializer):
+    regstration = RegstrationSerializer(required=False)
+
     class Meta:
         model = Table
-        fields = ("id", "table_number", "table_type", "status")
+        fields = ("id", "table_number", "table_type", "status", "regstration")

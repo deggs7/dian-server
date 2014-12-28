@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'rest_framework',
     'account',
-    'table',
+    'restaurant',
     'regstration',
     'rest_framework.authtoken',
     # 'south',

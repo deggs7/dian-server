@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+#! -*- encoding:utf-8 -*-
+
 from rest_framework import generics
-from table.serializers import TableSerializer, TableTypeSerializer
-from table.models import Table, TableType
+from .serializers import TableSerializer, TableTypeSerializer
+from .models import Table, TableType
 
 
 class TableTypeList(generics.ListCreateAPIView):
