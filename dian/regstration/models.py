@@ -11,3 +11,5 @@ class Regstration(models.Model):
     queue_number = models.IntegerField("queue number", default=0)
     table = models.OneToOneField("restaurant.Table", null=True, blank=True, related_name='regstration')
 
+    expire = models.BooleanField(default=False)
+
