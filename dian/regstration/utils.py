@@ -21,6 +21,7 @@ def get_next_regstration(table_type):
 
     return Regstration.objects.get(
         queue_number=remain_regstration.aggregate(Min('queue_number'))['queue_number__min'],
+        table_type=table_type,
     )
 
 

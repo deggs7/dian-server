@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, IntegerField, SlugField, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer, IntegerField, SlugRelatedField
 from .models import Regstration
 
 
