@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import TableSerializer, TableTypeSerializer
 from .models import Table, TableType
-from regstration.utils import get_next_regstration
-from regstration.serializers import RegstrationSerializer
+from registration.utils import get_next_registration
+from registration.serializers import RegstrationSerializer
 
 
 class TableTypeList(generics.ListCreateAPIView):
@@ -52,46 +52,46 @@ class TableDetail(generics.RetrieveUpdateDestroyAPIView):
         self.object = serializer.save(force_update=True)
         # 通过状态更改来判断是否叫号
         if request.DATA['status'] == 'waiting':
-            # 对老的regstration的处理
+            # 对老的registration的处理
             try:
-                old_regstration = self.object.regstration
-                old_regstration.table = None
-                old_regstration.expire = True
-                old_regstration.save()
+                old_registration = self.object.registration
+                old_registration.table = None
+                old_registration.expire = True
+                old_registration.save()
             except:
                 pass
 
-            regstration = get_next_regstration(self.object.table_type)
-            if not regstration:
-                serializer.data['regstration'] = None
+            registration = get_next_registration(self.object.table_type)
+            if not registration:
+                serializer.data['registration'] = None
                 self.object.status = 'idle'
                 self.object.save()
             else:
-                serializer.data['regstration'] = regstration.id
-                regstration.table = self.object
-                regstration.save()
+                serializer.data['registration'] = registration.id
+                registration.table = self.object
+                registration.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
-def table_type_regstration(request):
+def table_type_registration(request):
     table_types = TableType.objects.all()
     ret = []
     for ttype in table_types:
-        reg = ttype.regstrations.exclude(table=None).filter(expire=False)
+        reg = ttype.registrations.exclude(table=None).filter(expire=False)
         if reg:
             reg = reg[0]
             serialzer = RegstrationSerializer(reg)
             ret.append({'id': ttype.id,
                         'name': ttype.name,
                         'table_number': reg.table.table_number,
-                        'regstration': serialzer.data,
+                        'registration': serialzer.data,
                        })
         else:
             ret.append({'id': ttype.id,
                         'name': ttype.name,
                         'table_number': None,
-                        'regstration': None})
+                        'registration': None})
 
     return Response(ret)

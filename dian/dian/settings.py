@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'account',
     'restaurant',
-    'regstration',
+    'registration',
     'rest_framework.authtoken',
     # 'south',
 )
