@@ -5,10 +5,32 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TableSerializer, TableTypeSerializer
+from .serializers import RestaurantSerializer, TableSerializer, TableTypeSerializer
 from .models import Table, TableType
 from registration.utils import get_next_registration
 from registration.serializers import RegistrationSerializer
+
+
+@api_view(["GET"])
+def get_default_restaurant(request):
+    restaurants = request.user.own_restaurants.all()
+    if restaurants:
+        default = restaurants[0]
+        serializer = RestaurantSerializer(default)
+        return Response(serializer.data)
+    else:
+        return Response('0 restaurants found', status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+def create_restaurant(request):
+    data = request.DATA.copy()
+    data["owner"] = request.user.pk
+    serializer = RestaurantSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TableTypeList(generics.ListCreateAPIView):

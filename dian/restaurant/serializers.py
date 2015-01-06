@@ -1,6 +1,13 @@
 from rest_framework.serializers import ModelSerializer
-from .models import TableType, Table
+from .models import TableType
+from .models import Table
+from .models import Restaurant
 from registration.serializers import RegistrationSerializer
+
+class RestaurantSerializer(ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = ("name", "file_key", "create_time", "owner")
 
 
 class TableTypeSerializer(ModelSerializer):
