@@ -7,7 +7,7 @@ from registration.serializers import RegistrationSerializer
 class RestaurantSerializer(ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ("name", "file_key", "create_time", "owner")
+        fields = ("id", "name", "file_key", "create_time", "owner")
 
 
 class TableTypeSerializer(ModelSerializer):
