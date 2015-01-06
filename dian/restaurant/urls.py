@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^table/$', views.TableList.as_view()),
     url(r'^table/(?P<pk>[0-9]+)/$', views.TableDetail.as_view()),
 
-    url(r'^table-type-regstration/$', views.table_type_regstration),
+    url(r'^table-type-registration/$', views.table_type_registration),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

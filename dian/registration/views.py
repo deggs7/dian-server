@@ -19,7 +19,7 @@ class RegstrationList(generics.ListCreateAPIView):
         if serializer.is_valid():
             obj = serializer.save(force_insert=True)
             # 获取可用的queue_number号
-            queue_number = obj.table_type.regstrations.aggregate(Max('queue_number'))['queue_number__max'] + 1
+            queue_number = obj.table_type.registrations.aggregate(Max('queue_number'))['queue_number__max'] + 1
             obj.queue_number = queue_number
             obj.save()
 
