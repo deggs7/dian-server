@@ -5,13 +5,13 @@ from django.db.models import Max
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegstrationSerializer
-from .models import Regstration
+from .serializers import RegistrationSerializer
+from .models import Registration
 
 
-class RegstrationList(generics.ListCreateAPIView):
-    queryset = Regstration.objects.all()
-    serializer_class = RegstrationSerializer
+class RegistrationList(generics.ListCreateAPIView):
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.DATA, files=request.FILES)
@@ -31,8 +31,8 @@ class RegstrationList(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegstrationDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Regstration.objects.all()
-    serializer_class = RegstrationSerializer
+class RegistrationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Registration.objects.all()
+    serializer_class = RegistrationSerializer
 
 

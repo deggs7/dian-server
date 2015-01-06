@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from .models import TableType, Table
-from registration.serializers import RegstrationSerializer
+from registration.serializers import RegistrationSerializer
 
 
 class TableTypeSerializer(ModelSerializer):
@@ -10,7 +10,7 @@ class TableTypeSerializer(ModelSerializer):
 
 
 class TableSerializer(ModelSerializer):
-    registration = RegstrationSerializer(required=False)
+    registration = RegistrationSerializer(required=False)
 
     class Meta:
         model = Table

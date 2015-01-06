@@ -4,7 +4,7 @@
 from django.db import models
 
 
-class Regstration(models.Model):
+class Registration(models.Model):
     id = models.AutoField(primary_key=True)
     phone = models.CharField(max_length=64, null=False, blank=False)
     table_type = models.ForeignKey("restaurant.TableType", null=False, blank=False, related_name='registrations')

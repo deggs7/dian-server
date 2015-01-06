@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .serializers import TableSerializer, TableTypeSerializer
 from .models import Table, TableType
 from registration.utils import get_next_registration
-from registration.serializers import RegstrationSerializer
+from registration.serializers import RegistrationSerializer
 
 
 class TableTypeList(generics.ListCreateAPIView):
@@ -82,7 +82,7 @@ def table_type_registration(request):
         reg = ttype.registrations.exclude(table=None).filter(expire=False)
         if reg:
             reg = reg[0]
-            serialzer = RegstrationSerializer(reg)
+            serialzer = RegistrationSerializer(reg)
             ret.append({'id': ttype.id,
                         'name': ttype.name,
                         'table_number': reg.table.table_number,

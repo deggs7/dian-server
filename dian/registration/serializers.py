@@ -1,10 +1,10 @@
 from rest_framework.serializers import ModelSerializer, IntegerField, SlugRelatedField
-from .models import Regstration
+from .models import Registration
 
 
-class RegstrationSerializer(ModelSerializer):
+class RegistrationSerializer(ModelSerializer):
     queue_number = IntegerField(read_only=True)
 
     class Meta:
-        model = Regstration
+        model = Registration
         fields = ("id", "phone", "table_type", "queue_number", "table", "expire")

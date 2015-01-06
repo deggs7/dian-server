@@ -3,14 +3,14 @@
 
 from django.db.models import Min
 
-from .models import Regstration
+from .models import Registration
 
 
 def get_next_registration(table_type):
     """
     获取某一类型table type的一个号
     如果无号，则返回None
-    return Regstration
+    return Registration
     """
     if table_type.registrations.count() == 0:
         return None
@@ -19,7 +19,7 @@ def get_next_registration(table_type):
     if not remain_registration:
         return None
 
-    return Regstration.objects.get(
+    return Registration.objects.get(
         queue_number=remain_registration.aggregate(Min('queue_number'))['queue_number__min'],
         table_type=table_type,
     )
