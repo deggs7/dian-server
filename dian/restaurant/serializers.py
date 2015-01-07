@@ -4,6 +4,7 @@ from .models import Table
 from .models import Restaurant
 from registration.serializers import RegistrationSerializer
 
+
 class RestaurantSerializer(ModelSerializer):
     class Meta:
         model = Restaurant
