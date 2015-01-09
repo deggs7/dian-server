@@ -19,6 +19,7 @@ class TableTypeSerializer(ModelSerializer):
 
 class TableSerializer(ModelSerializer):
     registration = RegistrationSerializer(required=False)
+    table_type = TableTypeSerializer()
 
     class Meta:
         model = Table
