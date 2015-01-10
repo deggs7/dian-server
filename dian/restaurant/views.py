@@ -143,7 +143,7 @@ def get_or_update_table(request, pk):
 @api_view(['GET'])
 @restaurant_required
 def table_type_registration(request):
-    table_types = request.current_restaurant.table_types
+    table_types = request.current_restaurant.table_types.all()
     ret = []
     for ttype in table_types:
         reg = ttype.registrations.exclude(table=None).filter(expire=False)

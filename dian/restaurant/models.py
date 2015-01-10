@@ -39,3 +39,4 @@ class Table(models.Model):
     table_type = models.ForeignKey(TableType, null=False, related_name='tables')
     status = models.CharField(max_length=12, choices=TABLE_STATUS, default=TABLE_STATUS[-1][0])
     restaurant = models.ForeignKey(Restaurant, related_name="tables", null=True)
+
