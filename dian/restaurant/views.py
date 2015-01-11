@@ -116,7 +116,7 @@ def get_or_update_table(request, pk):
         if serializer.is_valid():
             table = serializer.save()
             # 通过状态更改来判断是否叫号
-            if request.DATA['status'] == 'waiting':
+            if request.DATA.get('status', None) == 'waiting':
                 # 对老的registration的处理
                 try:
                     old_registration = table.registration

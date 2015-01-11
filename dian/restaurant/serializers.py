@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- encoding:utf-8 -*-
+
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import TableType
 from .models import Table
@@ -12,9 +15,14 @@ class RestaurantSerializer(ModelSerializer):
 
 
 class TableTypeSerializer(ModelSerializer):
+    slug = SerializerMethodField(method_name='get_slug')
+
     class Meta:
         model = TableType
-        fields = ("id", "name", "min_seats", "max_seats")
+        fields = ("id", "name", "min_seats", "max_seats", "slug")
+
+    def get_slug(self, obj):
+        return obj.name + u"（" + "%d" % obj.min_seats + u"-" + "%d" % obj.max_seats + u"人）"
 
 
 class TableSerializer(ModelSerializer):
