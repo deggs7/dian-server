@@ -42,6 +42,6 @@ CORS_ORIGIN_WHITELIST = (
 QINIU_ACCESS_KEY = "WbBF2OGhoW23qBTcNkdgmpuvDgl3S-m-lzlz0xTp"
 QINIU_SECRET_KEY = "zykcP-49eXiX53kQR3nsLQHDXbg9FW5avL4OSOvD"
 QINIU_NAMESPACE = "dian"
-QINIU_DOMAIN = "http://7u2ghq.com1.z0.glb.clouddn.com/"
+QINIU_DOMAIN = "7u2ghq.com1.z0.glb.clouddn.com"
 
 # QINIU_UPLOAD_PRIVATE = "bang-security"
