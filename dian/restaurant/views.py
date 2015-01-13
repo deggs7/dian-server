@@ -3,6 +3,7 @@
 
 from functools import wraps
 
+import qiniu
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from .serializers import RestaurantSerializer, TableSerializer, TableTypeSeriali
 from .models import Table, TableType
 from registration.utils import get_next_registration
 from registration.serializers import RegistrationSerializer
+from dian.settings import QINIU_ACCESS_KEY, QINIU_NAMESPACE, QINIU_SECRET_KEY, QINIU_DOMAIN
 
 
 def restaurant_required(func):
@@ -34,6 +36,27 @@ def get_default_restaurant(request):
         return Response(serializer.data)
     else:
         return Response('0 restaurants found', status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+def uptoken_default_restaurant(request):
+    restaurants = request.user.own_restaurants.all()
+    if restaurants:
+        default = restaurants[0]
+        auth = qiniu.Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
+        uptoken = auth.upload_token(bucket=QINIU_DOMAIN, key="%d" % default.id)
+        return Response({
+            "uptoken": uptoken
+        })
+
+    return Response('no default restaurant', status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def get_qiniu_domain(request):
+    return Response({
+        "domain": QINIU_DOMAIN
+    })
 
 
 @api_view(["POST"])

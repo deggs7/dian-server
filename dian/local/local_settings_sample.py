@@ -39,10 +39,9 @@ CORS_ORIGIN_WHITELIST = (
 
 
 # qiniu settings
+QINIU_ACCESS_KEY = "WbBF2OGhoW23qBTcNkdgmpuvDgl3S-m-lzlz0xTp"
+QINIU_SECRET_KEY = "zykcP-49eXiX53kQR3nsLQHDXbg9FW5avL4OSOvD"
+QINIU_NAMESPACE = "dian"
+QINIU_DOMAIN = "http://7u2ghq.com1.z0.glb.clouddn.com/"
 
-# import qiniu.conf
-# qiniu.conf.ACCESS_KEY = "<YOUR_APP_ACCESS_KEY>"
-# qiniu.conf.SECRET_KEY = "<YOUR_APP_SECRET_KEY>"
-# 
-# QINIU_UPLOAD_PUBLIC = "bang"
 # QINIU_UPLOAD_PRIVATE = "bang-security"
