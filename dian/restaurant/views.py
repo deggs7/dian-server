@@ -9,9 +9,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import RestaurantSerializer, TableSerializer, TableTypeSerializer
 from .models import Table, TableType
+from .models import Restaurant
 from registration.utils import get_next_registration
 from registration.serializers import RegistrationSerializer
-from dian.settings import QINIU_ACCESS_KEY, QINIU_NAMESPACE, QINIU_SECRET_KEY, QINIU_DOMAIN
+from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
+from dian.settings import QINIU_BUCKET_PUBLIC, QINIU_DOMAIN
 
 
 def restaurant_required(func):
@@ -44,7 +46,7 @@ def uptoken_default_restaurant(request):
     if restaurants:
         default = restaurants[0]
         auth = qiniu.Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
-        uptoken = auth.upload_token(bucket=QINIU_DOMAIN, key="%d" % default.id)
+        uptoken = auth.upload_token(bucket=QINIU_BUCKET_PUBLIC, key="restaurant-%d" % default.id)
         return Response({
             "uptoken": uptoken
         })
@@ -64,6 +66,20 @@ def create_restaurant(request):
     data = request.DATA.copy()
     data["owner"] = request.user.pk
     serializer = RestaurantSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PUT"])
+def update_restaurant(request):
+    data = request.DATA.copy()
+    try:
+        restaurant = Restaurant.objects.get(pk=data.get("restaurant_id"))
+    except Restaurant.DoesNotExist:
+        return Response('restaurant not found', status=status.HTTP_404_NOT_FOUND)
+    serializer = RestaurantSerializer(restaurant, data=data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

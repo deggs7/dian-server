@@ -130,7 +130,7 @@ CORS_ALLOW_HEADERS = (
 # Overwrite configuration
 
 try:
-    from local.local_settings_sample import *
+    from local.local_settings import *
 except Exception, e:
     print e
 
