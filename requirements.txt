@@ -3,4 +3,6 @@ MySQL-python==1.2.5
 South==1.0
 django-cors-headers==0.13
 djangorestframework==2.3.14
+qiniu==7.0.2
+requests==2.5.1
 wsgiref==0.1.2
