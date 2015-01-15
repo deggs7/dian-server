@@ -7,13 +7,13 @@ import qiniu
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import RestaurantSerializer, TableSerializer, TableTypeSerializer
-from .models import Table, TableType
+from .serializers import RestaurantSerializer, TableTypeSerializer, TableTypeDetailSerializer
+from .models import TableType
 from .models import Restaurant
 from registration.utils import get_next_registration
 from registration.serializers import RegistrationSerializer
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
-from dian.settings import QINIU_BUCKET_PUBLIC, QINIU_DOMAIN
+from dian.settings import QINIU_BUCKET_PUBLIC
 
 
 def restaurant_required(func):
@@ -52,13 +52,6 @@ def uptoken_default_restaurant(request):
         })
 
     return Response('no default restaurant', status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(["GET"])
-def get_qiniu_domain(request):
-    return Response({
-        "domain": QINIU_DOMAIN
-    })
 
 
 @api_view(["POST"])
@@ -120,6 +113,13 @@ def get_or_update_table_type(request, pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@restaurant_required
+def list_table_type_details(request):
+    serializer = TableTypeDetailSerializer(request.current_restaurant.table_types.order_by('id'), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])

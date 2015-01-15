@@ -5,7 +5,7 @@ import views
 
 urlpatterns = [
     url(r'^registration/$', views.RegistrationList.as_view()),
-    url(r'^registration/(?P<pk>[0-9]+)/$', views.RegistrationDetail.as_view()),
+    url(r'^registration/(?P<pk>[0-9]+)/$', views.update_registration),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 #! -*- encoding:utf-8 -*-
 
+import datetime
+
 from django.db.models import Max
 from rest_framework import generics
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RegistrationSerializer
@@ -21,6 +24,9 @@ class RegistrationList(generics.ListCreateAPIView):
             # 获取可用的queue_number号
             queue_number = obj.table_type.registrations.aggregate(Max('queue_number'))['queue_number__max'] + 1
             obj.queue_number = queue_number
+            obj.create_time = datetime.datetime.now()
+            obj.table_min_seats = obj.table_type.min_seats
+            obj.table_max_seats = obj.table_type.max_seats
             obj.save()
 
             serializer.data['queue_number'] = queue_number
@@ -31,8 +37,22 @@ class RegistrationList(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegistrationDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Registration.objects.all()
-    serializer_class = RegistrationSerializer
+@api_view(['PUT'])
+def update_registration(request, pk):
+    try:
+        reg = Registration.objects.get(pk=pk)
+    except Registration.DoesNotExist:
+        return Response('registration not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = RegistrationSerializer(reg, data=request.DATA, partial=True)
+    if serializer.is_valid():
+        reg = serializer.save()
+        status_action = request.DATA.get('status', None)
+        if status_action == 'turn':
+            reg.end_time = datetime.datetime.now()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 

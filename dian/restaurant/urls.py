@@ -12,13 +12,10 @@ urlpatterns = patterns(
     url(r'^create-restaurant/$', 'create_restaurant'),
     url(r'^update-restaurant/$', 'update_restaurant'),
     url(r'^uptoken-restaurant/$', 'uptoken_default_restaurant'),
-    url(r'^qiniu-domain/$', 'get_qiniu_domain'),
 
     url(r'^table-type/$', 'list_or_create_table_type'),
     url(r'^table-type/(?P<pk>[0-9]+)/$', 'get_or_update_table_type'),
-
-    url(r'^table/$', 'list_or_create_table'),
-    url(r'^table/(?P<pk>[0-9]+)/$', 'get_or_update_table'),
+    url(r'^table-type-details/$', 'list_table_type_details'),
 
     url(r'^table-type-registration/$', 'table_type_registration'),
 )
