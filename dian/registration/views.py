@@ -8,7 +8,7 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegistrationSerializer
+from .serializers import RegistrationSerializer, MsgTaskSerializer
 from .models import Registration
 
 
@@ -54,5 +54,14 @@ def update_registration(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@api_view(['POST'])
+def create_msg_task(request):
+    data = request.DATA.copy()
+    serializer = MsgTaskSerializer(data=data)
+    if serializer.is_valid():
+        msg_task = serializer.save()
+        from restaurant.tasks import send_msg
+        send_msg.delay(msg_task)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

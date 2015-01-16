@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
     'corsheaders',
     'rest_framework',
     'account',
@@ -125,6 +126,12 @@ CORS_ALLOW_HEADERS = (
     'Authorization',
     'X-Restaurant-Id',
 )
+
+
+# celery
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'amqp://dian:dian@localhost:5672/dianvhost'
 
 
 # Overwrite configuration

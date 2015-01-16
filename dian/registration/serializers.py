@@ -3,7 +3,7 @@
 import datetime
 
 from rest_framework.serializers import ModelSerializer, IntegerField, SerializerMethodField
-from .models import Registration
+from .models import Registration, MsgTask
 
 
 class RegistrationSerializer(ModelSerializer):
@@ -28,7 +28,7 @@ class RegistrationSerializer(ModelSerializer):
             minutes = time_delta.seconds % 3600 / 60
             ret += u"%d小时%d分钟" % (hours, minutes)
         elif 60 < time_delta.seconds < 3600:
-            minutes = time_delta.seconds % 60
+            minutes = time_delta.seconds / 60
             ret += u"%d分钟" % minutes
         else:
             ret += u"%d秒" % time_delta.seconds
@@ -40,3 +40,11 @@ class RegistrationSerializer(ModelSerializer):
             return obj.phone[-4:]
         except:
             return "0000"
+
+
+class MsgTaskSerializer(ModelSerializer):
+
+    class Meta:
+        model = MsgTask
+        fields = ("registration", )
+

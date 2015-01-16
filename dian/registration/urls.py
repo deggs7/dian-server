@@ -6,6 +6,8 @@ import views
 urlpatterns = [
     url(r'^registration/$', views.RegistrationList.as_view()),
     url(r'^registration/(?P<pk>[0-9]+)/$', views.update_registration),
+
+    url(r'^msg-task/$', views.create_msg_task),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

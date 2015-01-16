@@ -25,3 +25,15 @@ class Registration(models.Model):
     table_min_seats = models.IntegerField("min seats", default=1)
     table_max_seats = models.IntegerField("max seats", default=1)
 
+
+class MsgTask(models.Model):
+    STATUS = (
+        ('waiting', 'Waiting'),
+        ('processing', 'Processing'),
+        ('done', 'Done'),
+        ('error', 'Error')
+    )
+
+    registration = models.ForeignKey(Registration, related_name='msg_tasks')
+    status = models.CharField(max_length=16, choices=STATUS, default=STATUS[0][0])
+    done_time = models.DateTimeField(null=True)
