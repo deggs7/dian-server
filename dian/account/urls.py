@@ -9,6 +9,6 @@ urlpatterns = patterns(
     'account.views',
 
     url(r'^my-account/$', 'get_my_account'),
-
+    url(r'^password/$', 'change_passwd'),
 )
 

@@ -3,6 +3,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+import views
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'dian.views.home', name='home'),
@@ -18,4 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^restaurant/', include('restaurant.urls')),
     url(r'^registration/', include('registration.urls')),
+
+    url(r'^captcha/$', views.captcha),
+    url(r'^reset-passwd/$', views.reset_passwd)
 )

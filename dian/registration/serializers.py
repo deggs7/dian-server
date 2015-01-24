@@ -3,7 +3,7 @@
 import datetime
 
 from rest_framework.serializers import ModelSerializer, IntegerField, SerializerMethodField
-from .models import Registration, MsgTask
+from .models import Registration
 
 
 class RegistrationSerializer(ModelSerializer):
@@ -40,11 +40,3 @@ class RegistrationSerializer(ModelSerializer):
             return obj.phone[-4:]
         except:
             return "0000"
-
-
-class MsgTaskSerializer(ModelSerializer):
-
-    class Meta:
-        model = MsgTask
-        fields = ("registration", )
-

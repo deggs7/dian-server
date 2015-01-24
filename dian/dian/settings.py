@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'djcelery',
     'corsheaders',
     'rest_framework',
+    'dian',
     'account',
     'restaurant',
     'registration',
@@ -133,6 +134,9 @@ import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'amqp://dian:dian@localhost:5672/dianvhost'
 
+# msg
+MSG_ACCOUNT = "13021045329"
+MSG_PASSWORD = "28788DE1EDAF72E75A1BFAF2F98E"
 
 # Overwrite configuration
 

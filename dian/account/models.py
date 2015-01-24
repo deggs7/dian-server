@@ -13,10 +13,10 @@ class UserManager(BaseUserManager):
             raise ValueError('Users must have an username')
 
         if not email:
-            email = username
+            raise ValueError('Users must have an email')
 
         user = self.model(
-            username=self.normalize_email(username),
+            username=username,
             email=self.normalize_email(email),
         )
 
@@ -40,9 +40,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.EmailField(
+    username = models.IntegerField(
         verbose_name='Username',
-        max_length=255,
+        max_length=64,
         unique=True,
     )
     email = models.EmailField(
@@ -85,4 +85,18 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class MsgStatistics(models.Model):
+    MSG_TYPE = (
+        ('registration_remind', 'Registration Remind'),
+        ('reset_password', 'Reset Password'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(User, related_name="own_msg_statistics")
+    success = models.IntegerField(default=0)
+    fail = models.IntegerField(default=0)
+
+    type = models.CharField(max_length=16, choices=MSG_TYPE, default=MSG_TYPE[0][0])
 
