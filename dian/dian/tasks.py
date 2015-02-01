@@ -10,7 +10,10 @@ from account.models import MsgStatistics
 
 MSG_SEND_API = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
 CAPTCHA_TEMPLATE = "尊敬的用户，您在点快系统上获取了验证码:%(captcha)s"
-REGISTRATION_TEMPLATE = "尊敬的用户，您前面还有1人排队，请提前做好准备"
+REGISTRATION_TEMPLATE = {
+    "one_left": "尊敬的用户，您前面还有1人排队，请提前做好准备",
+    "next": "尊敬的用户，下一位到您就餐，请提前做好准备"
+}
 
 
 @task
@@ -50,8 +53,8 @@ def create_and_send_captcha(user):
     send_msg.delay(user, msg, user.username, MsgStatistics.MSG_TYPE[1][0])
 
 
-def send_registration_remind(registration):
-    msg = REGISTRATION_TEMPLATE
+def send_registration_remind(registration, msg_type):
+    msg = REGISTRATION_TEMPLATE[msg_type]
     send_msg.delay(registration.table_type.restaurant.owner,
                    msg,
                    registration.phone,

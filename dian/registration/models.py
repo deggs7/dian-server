@@ -25,3 +25,5 @@ class Registration(models.Model):
     table_min_seats = models.IntegerField("min seats", default=1)
     table_max_seats = models.IntegerField("max seats", default=1)
 
+    restaurant = models.ForeignKey('restaurant.Restaurant', related_name="registrations", null=True)
+

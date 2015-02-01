@@ -22,5 +22,6 @@ urlpatterns = patterns('',
     url(r'^registration/', include('registration.urls')),
 
     url(r'^captcha/$', views.captcha),
-    url(r'^reset-passwd/$', views.reset_passwd)
+    url(r'^reset-passwd/$', views.reset_passwd),
+
 )

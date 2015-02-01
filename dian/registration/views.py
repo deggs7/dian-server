@@ -28,6 +28,7 @@ class RegistrationList(generics.ListCreateAPIView):
             obj.create_time = datetime.datetime.now()
             obj.table_min_seats = obj.table_type.min_seats
             obj.table_max_seats = obj.table_type.max_seats
+            obj.restaurant = obj.table_type.restaurant
             obj.save()
 
             serializer.data['queue_number'] = queue_number
@@ -51,6 +52,7 @@ def update_registration(request, pk):
         status_action = request.DATA.get('status', None)
         if status_action == 'turn':
             reg.end_time = datetime.datetime.now()
+            reg.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,11 +61,14 @@ def update_registration(request, pk):
 def create_msg_task(request):
     data = request.DATA.copy()
     registration_id = data.get('registration', None)
+    msg_type = data.get('msg_type', None)
     if not registration_id:
         return Response({"error": "请指定序号"}, status=status.HTTP_400_BAD_REQUEST)
+    if not msg_type:
+        return Response({"error": "请指定短信类型"}, status=status.HTTP_400_BAD_REQUEST)
 
     registation = Registration.objects.get(pk=registration_id)
-    send_registration_remind(registation)
+    send_registration_remind(registation, msg_type)
     return Response(None, status=status.HTTP_202_ACCEPTED)
 
 
