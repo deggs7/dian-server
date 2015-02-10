@@ -200,3 +200,19 @@ def get_daily_type_registration(request):
         day += 1
 
     return Response(ret, status=status.HTTP_200_OK)
+
+
+# for history report
+@api_view(['GET'])
+@restaurant_required
+def get_today_registration(request):
+    ret = request.current_restaurant.registrations\
+        .filter(create_time__gte=datetime.date.today())\
+        .order_by('-queue_number')
+    from registration.serializers import RegistrationHistorySerializer
+    serializer = RegistrationHistorySerializer(ret, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+

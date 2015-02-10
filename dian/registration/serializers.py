@@ -2,7 +2,7 @@
 
 import datetime
 
-from rest_framework.serializers import ModelSerializer, IntegerField, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, IntegerField, SerializerMethodField, TimeField
 from .models import Registration
 
 
@@ -40,3 +40,23 @@ class RegistrationSerializer(ModelSerializer):
             return obj.phone[-4:]
         except:
             return "0000"
+
+
+class RegistrationHistorySerializer(ModelSerializer):
+    create_time = TimeField(format="%H:%M:%S")
+    end_time = TimeField(format="%H:%M:%S")
+    status = SerializerMethodField(method_name="get_status_desc")
+
+    class Meta:
+        model = Registration
+        fields = ("id", "phone", "queue_number", "create_time", "end_time", "status")
+
+    def get_status_desc(self, obj):
+        desc = {
+            "waiting": u"等待中",
+            "turn": u"下一个",
+            "expired": u"已就餐",
+            "passed": u"已过号"
+        }
+        return desc[obj.status]
+

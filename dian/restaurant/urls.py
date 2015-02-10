@@ -20,5 +20,8 @@ urlpatterns = patterns(
     # for statistics report
     url(r'^statistics/daily-registration/$', 'get_daily_registration'),
     url(r'^statistics/avg-waiting-time/$', 'get_avg_waiting_time'),
-    url(r'^statistics/daily-type-registration/$', 'get_daily_type_registration')
+    url(r'^statistics/daily-type-registration/$', 'get_daily_type_registration'),
+
+    # for history report
+    url(r'^history/today-registration/$', 'get_today_registration')
 )
