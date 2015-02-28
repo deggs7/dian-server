@@ -1,0 +1,14 @@
+[Unit]
+Description=diankuai.cn
+Documentation=http:/www.diankuai.cn/
+ 
+[Service]
+Type=forking
+PIDFile=/var/run/dian/supervisord.pid
+ExecStart=/usr/bin/supervisord -c /home/dian/dian-server/run/supervisord.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+ 
+[Install]
+WantedBy=multi-user.target
