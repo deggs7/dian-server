@@ -20,14 +20,14 @@ local settings, will overwrite dian/settings
 
 # Mongo settings
 
-MONGO_HOST = '127.0.0.1'
-MONGO_PORT = 27017
-MONGO_DB = 'dian'
+# MONGO_HOST = '127.0.0.1'
+# MONGO_PORT = 27017
+# MONGO_DB = 'dian'
 
 
 # md5 seed
 
-MD5_SEED = 'dk26.com'
+MD5_SEED = 'diankuai.cn'
 
 
 # django-cors-headers settings, 
@@ -35,6 +35,8 @@ MD5_SEED = 'dk26.com'
 CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:9000',
     'localhost:9000',
+    'diankuai.cc',
+    'diankuai.cn',
 )
 
 
