@@ -5,8 +5,6 @@ DEBUG = False
 
 # ref: https://docs.djangoproject.com/en/1.7/ref/settings/
 ALLOWED_HOSTS = (
-    '127.0.0.1',
-    'localhost',
     'diankuai.cc',
     'diankuai.cn',
 )
