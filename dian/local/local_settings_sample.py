@@ -3,6 +3,15 @@ local settings, will overwrite dian/settings
 """
 DEBUG = False
 
+# ref: https://docs.djangoproject.com/en/1.7/ref/settings/
+ALLOWED_HOSTS = (
+    '127.0.0.1',
+    'localhost',
+    'diankuai.cc',
+    'diankuai.cn',
+)
+
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
