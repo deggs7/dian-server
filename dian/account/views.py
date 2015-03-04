@@ -14,8 +14,12 @@ def get_my_account(request):
 @api_view(["PUT"])
 def change_passwd(request):
     data = request.DATA.copy()
+    old_password = data.get('old_password', None)
     new_password1 = data.get('new_password1', None)
     new_password2 = data.get('new_password2', None)
+
+    if not old_password or not request.user.check_password(old_password):
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
 
     if not new_password1 or new_password1 != new_password2:
         return Response({"error": "password input error"},

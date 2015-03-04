@@ -9,10 +9,54 @@ from django.core.cache import cache
 from account.models import MsgStatistics
 
 MSG_SEND_API = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
-CAPTCHA_TEMPLATE = "尊敬的用户，您在点快系统上获取了验证码:%(captcha)s"
+CAPTCHA_TEMPLATE = "【点快-自助取号】%(captcha)s（点快验证码，5分钟内有效），您正在执行重置密码操作。"
+
+
+class RegistrationMsg(object):
+
+    def __init__(self, reg):
+        self.reg = reg
+
+    def render(self):
+        raise Exception("Child class must be implemented")
+
+
+class OneLeftMsg(RegistrationMsg):
+    MSG_TEMPLATE = \
+        u"%(restaurant)s提醒您：当前%(table_name)s已叫号至%(current_number)d号，您前面还有1桌。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快-自助取号】"
+
+    def render(self):
+        return self.MSG_TEMPLATE % {
+            "restaurant": self.reg.restaurant.name,
+            "table_name": self.reg.table_type.name,
+            "current_number": self.reg.get_current_number()
+        }
+
+
+class NextMsg(RegistrationMsg):
+    MSG_TEMPLATE = u"%(restaurant)s提醒您：下一位到您就餐，请提前做好准备，祝您就餐愉快。本信息仅供参考，以迎宾叫号为准。【点快-自助取号】"
+
+    def render(self):
+        return self.MSG_TEMPLATE % {
+            "restaurant": self.reg.restaurant.name
+        }
+
+
+class GettingMsg(RegistrationMsg):
+    MSG_TEMPLATE = \
+        u"%(restaurant)s提醒您：您已取得%(queue_number)d号，您前面还有%(registration_left)d桌在等候。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快-自助取号】"
+
+    def render(self):
+        return self.MSG_TEMPLATE % {
+            "restaurant": self.reg.restaurant.name,
+            "queue_number": self.reg.queue_number,
+            "registration_left": self.reg.get_registration_left() - 1
+        }
+
 REGISTRATION_TEMPLATE = {
-    "one_left": "尊敬的用户，您前面还有1人排队，请提前做好准备",
-    "next": "尊敬的用户，下一位到您就餐，请提前做好准备"
+    "one_left": OneLeftMsg,
+    "next": NextMsg,
+    "getting": GettingMsg
 }
 
 
@@ -50,12 +94,21 @@ def create_and_send_captcha(user):
     print cache.get(user.username)
 
     msg = CAPTCHA_TEMPLATE % {"captcha": captcha}
-    send_msg.delay(user, msg, user.username, MsgStatistics.MSG_TYPE[1][0])
+    print msg
+    if not settings.DEBUG:
+        send_msg.delay(user, msg, user.username, MsgStatistics.MSG_TYPE[1][0])
 
 
 def send_registration_remind(registration, msg_type):
-    msg = REGISTRATION_TEMPLATE[msg_type]
-    send_msg.delay(registration.table_type.restaurant.owner,
-                   msg,
-                   registration.phone,
-                   MsgStatistics.MSG_TYPE[0][0])
+    """
+    发送用户取号的提示短信，以及提示用户到号的短信
+    msg_type 可选"one_left", "next", "getting"
+    """
+    msg_obj = REGISTRATION_TEMPLATE[msg_type](registration)
+    msg = msg_obj.render()
+    print msg
+    if not settings.DEBUG:
+        send_msg.delay(registration.table_type.restaurant.owner,
+                       msg,
+                       registration.phone,
+                       MsgStatistics.MSG_TYPE[0][0])

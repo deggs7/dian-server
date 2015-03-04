@@ -40,7 +40,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.IntegerField(
+    username = models.CharField(
         verbose_name='Username',
         max_length=64,
         unique=True,

@@ -1,7 +1,7 @@
 """
 local settings, will overwrite dian/settings
 """
-
+DEBUG = False
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

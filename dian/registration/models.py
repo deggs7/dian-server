@@ -27,3 +27,14 @@ class Registration(models.Model):
 
     restaurant = models.ForeignKey('restaurant.Restaurant', related_name="registrations", null=True)
 
+    def get_current_number(self):
+        try:
+            current_reg = self.table_type.registrations.filter(status='turn').first()
+            return current_reg.queue_number
+        except:
+            return 0
+
+    def get_registration_left(self):
+        return self.table_type.registrations.filter(status='waiting').count()
+
+

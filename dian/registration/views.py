@@ -31,6 +31,9 @@ class RegistrationList(generics.ListCreateAPIView):
             obj.restaurant = obj.table_type.restaurant
             obj.save()
 
+            # 发送短信给用户
+            send_registration_remind(obj, 'getting')
+
             serializer.data['queue_number'] = queue_number
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED,
