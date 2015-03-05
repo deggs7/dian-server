@@ -6,7 +6,9 @@ DEBUG = False
 # ref: https://docs.djangoproject.com/en/1.7/ref/settings/
 ALLOWED_HOSTS = (
     'diankuai.cc',
+    'diankuai.cc:8000',
     'diankuai.cn',
+    'diankuai.cn:8000',
 )
 
 
