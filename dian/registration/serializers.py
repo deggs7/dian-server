@@ -45,11 +45,24 @@ class RegistrationSerializer(ModelSerializer):
 class RegistrationHistorySerializer(ModelSerializer):
     create_time = TimeField(format="%H:%M:%S")
     end_time = TimeField(format="%H:%M:%S")
+    phone = SerializerMethodField(method_name="get_phone")
     status = SerializerMethodField(method_name="get_status_desc")
+    table_name = SerializerMethodField(method_name="get_table_name")
 
     class Meta:
         model = Registration
-        fields = ("id", "phone", "queue_number", "create_time", "end_time", "status")
+        fields = ("id", "phone", "queue_number", "create_time", "end_time", "status", "table_name")
+
+    def get_phone(self, obj):
+        try:
+            return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
+        except:
+            import traceback
+            traceback.print_exc()
+            return obj.phone
+
+    def get_table_name(self, obj):
+        return obj.table_type.name
 
     def get_status_desc(self, obj):
         desc = {

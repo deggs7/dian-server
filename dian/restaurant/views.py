@@ -207,7 +207,8 @@ def get_daily_type_registration(request):
 @restaurant_required
 def get_today_registration(request):
     ret = request.current_restaurant.registrations\
-        .filter(create_time__gte=datetime.date.today())\
+        .filter(create_time__gte=datetime.date.today(),
+                status__in=['expired', 'passed'])\
         .order_by('-queue_number')
     from registration.serializers import RegistrationHistorySerializer
     serializer = RegistrationHistorySerializer(ret, many=True)

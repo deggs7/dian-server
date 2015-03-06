@@ -9,7 +9,7 @@ from django.core.cache import cache
 from account.models import MsgStatistics
 
 MSG_SEND_API = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
-CAPTCHA_TEMPLATE = "【点快-自助取号】%(captcha)s（点快验证码，5分钟内有效），您正在执行重置密码操作。"
+CAPTCHA_TEMPLATE = u"【点快-自助取号】%(captcha)s（点快验证码，5分钟内有效），您正在执行重置密码操作。"
 
 
 class RegistrationMsg(object):
@@ -94,7 +94,7 @@ def create_and_send_captcha(user):
     print cache.get(user.username)
 
     msg = CAPTCHA_TEMPLATE % {"captcha": captcha}
-    print msg
+    print msg.encode('utf-8')
     if not settings.DEBUG:
         send_msg.delay(user, msg, user.username, MsgStatistics.MSG_TYPE[1][0])
 
@@ -106,7 +106,7 @@ def send_registration_remind(registration, msg_type):
     """
     msg_obj = REGISTRATION_TEMPLATE[msg_type](registration)
     msg = msg_obj.render()
-    print msg
+    print msg.encode('utf-8')
     if not settings.DEBUG:
         send_msg.delay(registration.table_type.restaurant.owner,
                        msg,
