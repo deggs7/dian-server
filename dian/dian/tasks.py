@@ -44,11 +44,12 @@ class NextMsg(RegistrationMsg):
 
 class GettingMsg(RegistrationMsg):
     MSG_TEMPLATE = \
-        u"%(restaurant)s提醒您：您已取得%(queue_number)d号，您前面还有%(registration_left)d桌在等候。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快-自助取号】"
+        u"%(restaurant)s提醒您：您已取得%(table_name)s%(queue_number)d号，您前面还有%(registration_left)d桌在等候。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快-自助取号】"
 
     def render(self):
         return self.MSG_TEMPLATE % {
             "restaurant": self.reg.restaurant.name,
+            "table_name": self.reg.table_type.name,
             "queue_number": self.reg.queue_number,
             "registration_left": self.reg.get_registration_left() - 1
         }
