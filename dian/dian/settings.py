@@ -138,6 +138,12 @@ BROKER_URL = 'amqp://dian:dian@localhost:5672/dianvhost'
 MSG_ACCOUNT = "13021045329"
 MSG_PASSWORD = "28788DE1EDAF72E75A1BFAF2F98E"
 
+
+# md5 seed
+
+MD5_SEED = 'diankuai.cn'
+
+
 # Overwrite configuration
 
 try:

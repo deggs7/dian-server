@@ -13,6 +13,7 @@ from .models import TableType
 from .models import Restaurant
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
+from dian.utils import get_md5
 
 
 def restaurant_required(func):
@@ -45,9 +46,12 @@ def uptoken_default_restaurant(request):
     if restaurants:
         default = restaurants[0]
         auth = qiniu.Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
-        uptoken = auth.upload_token(bucket=QINIU_BUCKET_PUBLIC, key="restaurant-%d" % default.id)
+        file_key = get_md5("%s%s" % ("restaurant-%d" % default.id,\
+            datetime.datetime.now()))
+        uptoken = auth.upload_token(bucket=QINIU_BUCKET_PUBLIC, key=file_key)
         return Response({
-            "uptoken": uptoken
+            "uptoken": uptoken,
+            "file_key": file_key
         })
 
     return Response('no default restaurant', status=status.HTTP_400_BAD_REQUEST)

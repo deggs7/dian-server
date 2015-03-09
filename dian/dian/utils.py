@@ -1,4 +1,6 @@
 from django.core.cache import cache
+import hashlib
+from dian.settings import MD5_SEED
 
 
 def is_verified(captcha, phone):
@@ -7,3 +9,12 @@ def is_verified(captcha, phone):
         return False
     return True
 
+
+
+def get_md5(s):
+    if s:
+        m = hashlib.md5(s)
+        m.update(MD5_SEED)
+        return m.hexdigest()
+    else:
+        return None
