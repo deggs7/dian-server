@@ -133,6 +133,7 @@ CORS_ALLOW_HEADERS = (
 import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'amqp://dian:dian@localhost:5672/dianvhost'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # msg
 MSG_ACCOUNT = "13021045329"
