@@ -211,9 +211,10 @@ def get_daily_type_registration(request):
 @restaurant_required
 def get_today_registration(request):
     ret = request.current_restaurant.registrations\
-        .filter(create_time__gte=datetime.date.today(),
-                status__in=['expired', 'passed'])\
-        .order_by('-queue_number')
+        .filter(status__in=['expired', 'passed'])\
+        .order_by('-queue_number')[:50]
+        # .filter(create_time__gte=datetime.date.today(),
+        #        status__in=['expired', 'passed'])\
     from registration.serializers import RegistrationHistorySerializer
     serializer = RegistrationHistorySerializer(ret, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)

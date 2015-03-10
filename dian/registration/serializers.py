@@ -9,11 +9,12 @@ from .models import Registration
 class RegistrationSerializer(ModelSerializer):
     queue_number = IntegerField(read_only=True)
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
-    last4_phone = SerializerMethodField(method_name="get_last4_phone")
+    phone_display = SerializerMethodField(method_name="get_phone")
 
     class Meta:
         model = Registration
-        fields = ("id", "phone", "table_type", "queue_number", "waiting_time", "last4_phone", "status")
+        fields = ("id", "phone", "table_type", "queue_number", "waiting_time",\
+                "phone_display", "status")
 
     def get_waiting_time(self, obj):
         time_delta = datetime.datetime.now() - obj.create_time.replace(tzinfo=None)
@@ -35,11 +36,11 @@ class RegistrationSerializer(ModelSerializer):
 
         return ret
 
-    def get_last4_phone(self, obj):
+    def get_phone(self, obj):
         try:
-            return obj.phone[-4:]
+            return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
         except:
-            return "0000"
+            return obj.phone
 
 
 class RegistrationHistorySerializer(ModelSerializer):
@@ -57,8 +58,6 @@ class RegistrationHistorySerializer(ModelSerializer):
         try:
             return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
         except:
-            import traceback
-            traceback.print_exc()
             return obj.phone
 
     def get_table_name(self, obj):
