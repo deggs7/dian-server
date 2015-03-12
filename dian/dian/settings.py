@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'restaurant',
     'registration',
     'rest_framework.authtoken',
-    # 'south',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
