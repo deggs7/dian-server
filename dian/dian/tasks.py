@@ -1,12 +1,17 @@
 # -*- encoding:utf-8 -*-
 import random
 import requests
+import datetime
 
 from celery import task
+from celery.schedules import crontab
+from celery.task import periodic_task
 from django.conf import settings
 from django.core.cache import cache
 
 from account.models import MsgStatistics
+from registration.models import Registration, StrategyDup
+from restaurant.models import Restaurant
 
 MSG_SEND_API = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
 CAPTCHA_TEMPLATE = u"【点快-自助取号】%(captcha)s（点快验证码，5分钟内有效），您正在执行重置密码操作。"
@@ -14,8 +19,9 @@ CAPTCHA_TEMPLATE = u"【点快-自助取号】%(captcha)s（点快验证码，5�
 
 class RegistrationMsg(object):
 
-    def __init__(self, reg):
+    def __init__(self, reg, **kwargs):
         self.reg = reg
+        self.kwargs = kwargs
 
     def render(self):
         raise Exception("Child class must be implemented")
@@ -54,10 +60,24 @@ class GettingMsg(RegistrationMsg):
             "registration_left": self.reg.get_registration_left() - 1
         }
 
+
+class RewardMsg(RegistrationMsg):
+    MSG_TEMPLATE = \
+        u"%(restaurant)s提醒您：您已等位超过了%(time_wait)d分钟，为表示本店的歉意，您本次就餐将获得%(reward_info)s，祝您用餐愉快！【点快-自助取号】"
+
+    def render(self):
+        return self.MSG_TEMPLATE % {
+            "restaurant": self.reg.restaurant.name,
+            "time_wait": self.kwargs['strategy'].time_wait,
+            "reward_info": self.kwargs['strategy'].reward_info,
+        }
+
+
 REGISTRATION_TEMPLATE = {
     "one_left": OneLeftMsg,
     "next": NextMsg,
-    "getting": GettingMsg
+    "getting": GettingMsg,
+    "reward": RewardMsg,
 }
 
 
@@ -100,16 +120,46 @@ def create_and_send_captcha(user):
         send_msg.delay(user, msg, user.username, MsgStatistics.MSG_TYPE[1][0])
 
 
-def send_registration_remind(registration, msg_type):
+def send_registration_remind(registration, msg_type, msg_statistics_type=MsgStatistics.MSG_TYPE[0][0], **kwargs):
     """
     发送用户取号的提示短信，以及提示用户到号的短信
     msg_type 可选"one_left", "next", "getting"
     """
-    msg_obj = REGISTRATION_TEMPLATE[msg_type](registration)
+    msg_obj = REGISTRATION_TEMPLATE[msg_type](registration, **kwargs)
     msg = msg_obj.render()
     print msg.encode('utf-8')
     if not settings.DEBUG:
         send_msg.delay(registration.table_type.restaurant.owner,
                        msg,
                        registration.phone,
-                       MsgStatistics.MSG_TYPE[0][0])
+                       msg_statistics_type)
+
+
+# for period tasks
+@periodic_task(run_every=crontab(minute="*/1"))
+def registration_time_out_strategy():
+    # 对于每一个restaurant，取其设置的strategy
+    for restaurant in Restaurant.objects.all():
+        # 对于其中的每一个strategy，搜索满足其策略的registration
+        for strategy in restaurant.strategies.all():
+            anchor_time = datetime.datetime.now() - datetime.timedelta(minutes=strategy.time_wait)
+            regs = Registration.objects.filter(status__exact=Registration.STATUS[0][0],
+                                               create_time__lt=anchor_time)
+            # 获取还没有完成该策略的registration
+            regs_post = []
+            for reg in regs:
+                strategy_ids = [strategy_dup.strategy_id for strategy_dup in reg.strategies.all()]
+                if strategy.id not in strategy_ids:
+                    regs_post.append(reg)
+
+            # 对于满足策略条件的registration，应用该策略
+            for reg in regs_post:
+                if not settings.DEBUG:
+                    send_registration_remind(reg, 'reward', MsgStatistics.MSG_TYPE[2][0], strategy=strategy)
+                strategy_dup = StrategyDup(strategy_id=strategy.id,
+                                           time_wait=strategy.time_wait,
+                                           reward_type=strategy.reward_type,
+                                           reward_info=strategy.reward_info,
+                                           registration=reg)
+                strategy_dup.save()
+

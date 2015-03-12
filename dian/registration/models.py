@@ -38,3 +38,22 @@ class Registration(models.Model):
         return self.table_type.registrations.filter(status='waiting').count()
 
 
+class StrategyDup(models.Model):
+    """
+    超时策略副本，目前支持礼物和折扣两种模式
+    用于关联registration，registration被应用Strategy后，使用该表复制信息和关联
+    规避用户删除Strategy后的信息丢失
+    """
+    REWARD_TYPE = (
+        ('gift', 'Gift'),
+        ('discount', 'Discount'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    strategy_id = models.BigIntegerField(null=False, blank=False)
+    time_wait = models.IntegerField("waiting time in minutes", null=False, blank=False)
+    reward_type = models.CharField(max_length=16, choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
+    reward_info = models.CharField(max_length=512, blank=False, null=False)
+    registration = models.ForeignKey(Registration, null=False, related_name="strategies")
+
+

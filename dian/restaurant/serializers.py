@@ -4,6 +4,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import TableType
 from .models import Restaurant
+from .models import Strategy
 from registration.serializers import RegistrationSerializer
 
 
@@ -44,5 +45,16 @@ class TableTypeDetailSerializer(ModelSerializer):
         return obj.name + u"（" + "%d" % obj.min_seats + u"-" + "%d" % obj.max_seats + u"人）"
 
 
+class StrategySerializer(ModelSerializer):
+    reward_type_desc = SerializerMethodField(method_name='get_reward_type_desc')
 
+    class Meta:
+        model = Strategy
+        fields = ("id", "time_wait", "reward_type", "reward_info", "reward_type_desc")
 
+    def get_reward_type_desc(self, obj):
+        desc = {
+            "gift": "赠送礼物",
+            "discount": "消费折扣"
+        }
+        return desc[obj.reward_type]

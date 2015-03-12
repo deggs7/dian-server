@@ -25,3 +25,20 @@ class TableType(models.Model):
     min_seats = models.IntegerField("min seats", default=1)
     max_seats = models.IntegerField("max seats", default=1)
     restaurant = models.ForeignKey(Restaurant, related_name="table_types", null=True)
+
+
+class Strategy(models.Model):
+    """
+    超时策略，目前支持礼物和折扣两种模式
+    """
+    REWARD_TYPE = (
+        ('gift', 'Gift'),
+        ('discount', 'Discount'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    restaurant = models.ForeignKey(Restaurant, related_name="strategies", null=True)
+
+    time_wait = models.IntegerField("waiting time in minutes", null=False, blank=False)
+    reward_type = models.CharField(max_length=16, choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
+    reward_info = models.CharField(max_length=512, blank=False, null=False)

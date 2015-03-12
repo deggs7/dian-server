@@ -17,6 +17,10 @@ urlpatterns = patterns(
     url(r'^table-type/(?P<pk>[0-9]+)/$', 'get_or_update_table_type'),
     url(r'^table-type-details/$', 'list_table_type_details'),
 
+    # for strategy
+    url(r'^strategy/$', 'list_or_create_strategy'),
+    url(r'^strategy/(?P<pk>[0-9]+)/$', 'update_or_delete_strategy'),
+
     # for statistics report
     url(r'^statistics/daily-registration/$', 'get_daily_registration'),
     url(r'^statistics/avg-waiting-time/$', 'get_avg_waiting_time'),

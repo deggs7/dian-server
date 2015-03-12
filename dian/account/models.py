@@ -91,6 +91,7 @@ class MsgStatistics(models.Model):
     MSG_TYPE = (
         ('registration_remind', 'Registration Remind'),
         ('reset_password', 'Reset Password'),
+        ('strategy', 'Strategy Reward')
     )
 
     id = models.AutoField(primary_key=True)
