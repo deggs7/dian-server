@@ -155,7 +155,15 @@ def registration_time_out_strategy():
             # 对于满足策略条件的registration，应用该策略
             for reg in regs_post:
                 if not settings.DEBUG:
-                    send_registration_remind(reg, 'reward', MsgStatistics.MSG_TYPE[2][0], strategy=strategy)
+                    strategy_for_msg = strategy
+                    # 如果strategy是折扣奖励，需优化文案
+                    if (strategy_for_msg.reward_type.equals('gift')):
+                        try:
+                            strategy_for_msg.reward_info = "%s折优惠" %\
+                            (strategy_for_msg.reward_info / 10)
+                        except TypeError, e
+                            pass
+                    send_registration_remind(reg, 'reward', MsgStatistics.MSG_TYPE[2][0], strategy=strategy_for_msg)
                 strategy_dup = StrategyDup(strategy_id=strategy.id,
                                            time_wait=strategy.time_wait,
                                            reward_type=strategy.reward_type,
