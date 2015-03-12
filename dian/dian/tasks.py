@@ -63,7 +63,7 @@ class GettingMsg(RegistrationMsg):
 
 class RewardMsg(RegistrationMsg):
     MSG_TEMPLATE = \
-        u"%(restaurant)s提醒您：您已等位超过了%(time_wait)d分钟，为表示本店的歉意，您本次就餐将获得%(reward_info)s，祝您用餐愉快！【点快-自助取号】"
+        u"%(restaurant)s提醒您，您已等位超过了%(time_wait)d分钟，为表示本店的歉意，您本次就餐将获得%(reward_info)s，祝您用餐愉快！【点快-自助取号】"
 
     def render(self):
         return self.MSG_TEMPLATE % {
