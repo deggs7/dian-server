@@ -17,6 +17,9 @@ urlpatterns = patterns(
     url(r'^table-type/(?P<pk>[0-9]+)/$', 'get_or_update_table_type'),
     url(r'^table-type-details/$', 'list_table_type_details'),
 
+    # for reset table number
+    # url(r'^reset-table/$', 'rest_table_nub')
+
     # for strategy
     url(r'^strategy/$', 'list_or_create_strategy'),
     url(r'^strategy/(?P<pk>[0-9]+)/$', 'update_or_delete_strategy'),

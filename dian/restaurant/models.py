@@ -25,6 +25,10 @@ class TableType(models.Model):
     min_seats = models.IntegerField("min seats", default=1)
     max_seats = models.IntegerField("max seats", default=1)
     restaurant = models.ForeignKey(Restaurant, related_name="table_types", null=True)
+    next_queue_number = models.IntegerField(default=1, blank=False, null=False)
+
+    def get_registration_left(self):
+        return self.registrations.filter(status='waiting').count()
 
 
 class Strategy(models.Model):

@@ -34,9 +34,6 @@ class Registration(models.Model):
         except:
             return 0
 
-    def get_registration_left(self):
-        return self.table_type.registrations.filter(status='waiting').count()
-
 
 class StrategyDup(models.Model):
     """

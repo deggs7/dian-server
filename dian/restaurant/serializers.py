@@ -15,10 +15,14 @@ class RestaurantSerializer(ModelSerializer):
 
 
 class TableTypeSerializer(ModelSerializer):
+    front_left = SerializerMethodField(method_name="get_front_left")
 
     class Meta:
         model = TableType
-        fields = ("id", "name", "min_seats", "max_seats")
+        fields = ("id", "name", "min_seats", "max_seats", "front_left", "next_queue_number")
+
+    def get_front_left(self, obj):
+        return obj.get_registration_left() - 1
 
 
 class TableTypeDetailSerializer(ModelSerializer):
@@ -38,7 +42,7 @@ class TableTypeDetailSerializer(ModelSerializer):
             return None
 
     def get_queue_registrations(self, obj):
-        queue_registrations = obj.registrations.filter(status='waiting').order_by('queue_number')
+        queue_registrations = obj.registrations.filter(status='waiting').order_by('id')
         return [RegistrationSerializer(reg).data for reg in queue_registrations]
 
     def get_slug(self, obj):

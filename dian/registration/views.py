@@ -23,13 +23,16 @@ class RegistrationList(generics.ListCreateAPIView):
         if serializer.is_valid():
             obj = serializer.save(force_insert=True)
             # 获取可用的queue_number号
-            queue_number = obj.table_type.registrations.aggregate(Max('queue_number'))['queue_number__max'] + 1
+            # queue_number = obj.table_type.registrations.aggregate(Max('queue_number'))['queue_number__max'] + 1
+            queue_number = obj.table_type.next_queue_number
             obj.queue_number = queue_number
             obj.create_time = datetime.datetime.now()
             obj.table_min_seats = obj.table_type.min_seats
             obj.table_max_seats = obj.table_type.max_seats
             obj.restaurant = obj.table_type.restaurant
             obj.save()
+            obj.table_type.next_queue_number += 1
+            obj.table_type.save()
 
             # 发送短信给用户
             send_registration_remind(obj, 'getting')

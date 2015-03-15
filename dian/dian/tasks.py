@@ -57,7 +57,7 @@ class GettingMsg(RegistrationMsg):
             "restaurant": self.reg.restaurant.name,
             "table_name": self.reg.table_type.name,
             "queue_number": self.reg.queue_number,
-            "registration_left": self.reg.get_registration_left() - 1
+            "registration_left": self.reg.table_type.get_registration_left() - 1
         }
 
 
