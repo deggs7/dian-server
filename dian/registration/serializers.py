@@ -10,11 +10,12 @@ class RegistrationSerializer(ModelSerializer):
     queue_number = IntegerField(read_only=True)
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
     phone_display = SerializerMethodField(method_name="get_phone")
+    front_left = SerializerMethodField(method_name="get_front_left")
 
     class Meta:
         model = Registration
         fields = ("id", "phone", "table_type", "queue_number", "waiting_time",\
-                "phone_display", "status")
+                "phone_display", "status", "front_left")
 
     def get_waiting_time(self, obj):
         time_delta = datetime.datetime.now() - obj.create_time.replace(tzinfo=None)
@@ -41,6 +42,9 @@ class RegistrationSerializer(ModelSerializer):
             return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
         except:
             return obj.phone
+
+    def get_front_left(self, obj):
+        return obj.get_registration_left() - 1
 
 
 class RegistrationHistorySerializer(ModelSerializer):
@@ -71,4 +75,3 @@ class RegistrationHistorySerializer(ModelSerializer):
             "passed": u"已过号"
         }
         return desc[obj.status]
-
