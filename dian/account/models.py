@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#! -*- encoding:utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
@@ -40,6 +43,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    """
+    点快中的管理员
+    - 目前为餐厅的拥有者
+    """
     username = models.CharField(
         verbose_name='Username',
         max_length=64,
@@ -100,4 +107,15 @@ class MsgStatistics(models.Model):
     fail = models.IntegerField(default=0)
 
     type = models.CharField(max_length=16, choices=MSG_TYPE, default=MSG_TYPE[0][0])
+
+
+class Member(models.Model):
+    """
+    会员实体
+    - 通过短信或者微信取号的会员
+    """
+
+    id = models.AutoField(primary_key=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    weixin_id = models.CharField(max_length=64, null=True, blank=True)
 

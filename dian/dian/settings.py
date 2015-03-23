@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'restaurant',
     'registration',
     'rest_framework.authtoken',
+    'wp',
     'south',
 )
 
@@ -95,6 +96,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
+# Template
+TEMPLATE_LOADERS = (
+    # 'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+
 # Custom User
 
 AUTH_USER_MODEL = 'account.User'
@@ -143,6 +151,37 @@ MSG_PASSWORD = "28788DE1EDAF72E75A1BFAF2F98E"
 # md5 seed
 
 MD5_SEED = 'diankuai.cn'
+
+
+# qiniu settings
+
+QINIU_ACCESS_KEY = "WbBF2OGhoW23qBTcNkdgmpuvDgI3S-m-IzIz0xTp"
+QINIU_SECRET_KEY = "zykcP-49eXiX53kQR3nsLQHDXbg9FW5avL4OSOvD"
+QINIU_BUCKET_PUBLIC = "dian"
+QINIU_DOMAIN = "http://7u2ghq.com1.z0.glb.clouddn.com/"
+
+
+# Weixin configration
+
+APP_ID = 'wx8f2xfe405cfec552c'
+APP_SECRET = '8c114x06f05e2e242ca5638b883482a31'
+
+
+# Temporary directory
+
+TEMP_DIR = "/tmp/temp_diankuai/"
+if not os.path.exists(TEMP_DIR):
+    os.makedirs(TEMP_DIR)
+
+
+# API domain
+
+API_DOMAIN = "http://api.diankuai.cn/"
+
+
+# Weixin platform
+
+WP_DOMAIN = "http://wp.diankuai.cn/"
 
 
 # Overwrite configuration

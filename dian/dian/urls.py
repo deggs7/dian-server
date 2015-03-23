@@ -24,4 +24,6 @@ urlpatterns = patterns('',
     url(r'^captcha/$', views.captcha),
     url(r'^reset-passwd/$', views.reset_passwd),
 
+    url(r'^wp/', include('wp.urls')),
+
 )

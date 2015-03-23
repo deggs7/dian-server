@@ -27,6 +27,10 @@ class Registration(models.Model):
 
     restaurant = models.ForeignKey('restaurant.Restaurant', related_name="registrations", null=True)
 
+    # 顾客成员(通过短信或微信取号的)
+    member = models.ForeignKey('account.Member', related_name="members",\
+            null=True, on_delete=models.SET_NULL)
+
     def get_current_number(self):
         try:
             current_reg = self.table_type.registrations.filter(status='turn').first()
