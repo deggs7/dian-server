@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import random
+
 from django.db import models
 from account.models import User
+
+from dian.settings import MD5_SEED
+from dian.utils import get_md5
 
 
 class Restaurant(models.Model):
@@ -17,6 +23,13 @@ class Restaurant(models.Model):
     file_key = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, related_name="own_restaurants")
+    openid = models.CharField(max_length=255, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.openid = get_md5("%s-%s-%s" % (MD5_SEED,\
+                datetime.datetime.now(), random.random()))
+        super(Restaurant, self).save(*args, **kwargs)
 
 
 class TableType(models.Model):
