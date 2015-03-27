@@ -86,6 +86,7 @@ def register(request, restaurant_openid):
 def get_register_qrcode(request):
     """
     获取微信取号的二维码
+    curl -X GET http://diankuai.cn:8000/wp/register-qrcode/ -H 'Authorization: Token f1b8ca936511301204fe627e63d502fc955fab8b' -H 'X-Restaurant-Id: 1'
     """
     redirect_uri = "http://diankuai.cn:8000/wp/%s/register" %\
     request.current_restaurant.openid
