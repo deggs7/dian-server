@@ -1,3 +1,17 @@
-取号啦
-{{ openid }}
-<img src="{{qrcode_path}}" alt="">
+<p>
+欢迎{{member}}
+</p>
+<p>
+餐厅{{restaurant_openid}}
+</p>
+
+<p>
+请选择餐桌：
+</p>
+{% for table in table_types %}
+<p>
+  {{ table.name }}
+  ( {{table.min_seats}} - {{table.max_seats}} )
+</p>
+{% endfor %}
+

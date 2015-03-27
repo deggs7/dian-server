@@ -10,6 +10,9 @@ import qiniu
 import os
 import datetime
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from dian.settings import APP_ID, APP_SECRET
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
@@ -17,41 +20,81 @@ from dian.settings import QINIU_DOMAIN
 from dian.settings import TEMP_DIR
 
 from dian.utils import get_md5
+from dian.utils import restaurant_required
+
+from account.models import Member
+from restaurant.models import Restaurant
 
 
-def register(request):
-    code = request.GET.get('code')
-    state = request.GET.get('state')
+def register(request, restaurant_openid):
+    """
+    微信取号页面
+    :param code: 微信提供的用来获取access_token的code
+    :param state: 用户授权未通过时，只有state
+    :param restaurant_openid: 餐厅的openid
+    """
+    code = request.GET.get('code', None)
+    state = request.GET.get('state', None)
+
+    if not code:
+        return render_to_response('error.html')
 
     # 获取access token
-    url = "https://api.weixin.qq.com/sns/oauth2/access_token"
+    access_url = "https://api.weixin.qq.com/sns/oauth2/access_token"
     access_params = {
             "appid": APP_ID,
             "secret": APP_SECRET,
             "code": code,
             "grant_type": "authorization_code"
             }
-    r = requests.get(url, params=access_params)
-    openid = r.json().get('openid', 'null')
+    access_r = requests.get(access_url, params=access_params)
 
+    openid = access_r.json().get('openid', None)
+    access_token = access_r.json().get('access_token', None)
 
-    key = get_register_qrcode()
+    # 创建会员记录
+    if openid:
+        member = Member.objects.get_or_create(wp_openid=openid)[0]
+    else:
+        return render_to_response('error.html')
 
+    # 获取微信会员信息
+    if False:
+        userinfo_url = "https://api.weixin.qq.com/sns/userinfo"
+        userinfo_params = {
+                "access_token": access_token,
+                "openid": openid,
+                "lang": "zh_CN"
+                }
+        userinfo_r = requests.get(userinfo_url, params=userinfo_params)
+
+    restaurant = Restaurant.objects.get(openid=restaurant_openid)
+    table_types = restaurant.table_types.order_by('id')
 
     # 渲染模板
     params = {
-            "openid": openid,
-            "qrcode_path": "%s%s" % (QINIU_DOMAIN, key)
+            "member": member.id,
+            "table_types": table_types,
+            "restaurant_openid": restaurant_openid,
+            # "qrcode_path": "%s%s" % (QINIU_DOMAIN, key)
             }
     return render_to_response('register.html', params)
 
 
-def get_register_qrcode():
-    redirect_uri = "http://diankuai.cn/"
+@api_view(['GET'])
+@restaurant_required
+def get_register_qrcode(request):
+    """
+    获取微信取号的二维码
+    """
+    redirect_uri = "http://diankuai.cn:8000/wp/%s/register" %\
+    request.current_restaurant.openid
     url = make_web_auth_url(redirect_uri)
     localfile = generate_qr_code(url)
     file_key = upload_to_qiniu(localfile)
-    return file_key
+    return Response({
+        "file_key": file_key
+    })
 
 
 def make_web_auth_url(redirect_uri):

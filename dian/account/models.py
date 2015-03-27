@@ -117,5 +117,21 @@ class Member(models.Model):
 
     id = models.AutoField(primary_key=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    weixin_id = models.CharField(max_length=64, null=True, blank=True)
+    # 微信的openid
 
+    # openid	用户的唯一标识
+    wp_openid = models.CharField(max_length=255, null=True, blank=True)
+    # nickname	用户昵称
+    wp_nickname = models.CharField(max_length=255, null=True, blank=True)
+    # sex	用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+    wp_sex = models.IntegerField(default=0)
+    # province	用户个人资料填写的省份
+    wp_province = models.CharField(max_length=255, null=True, blank=True)
+    # city	普通用户个人资料填写的城市
+    wp_city = models.CharField(max_length=255, null=True, blank=True)
+    # country	国家，如中国为CN
+    wp_country = models.CharField(max_length=255, null=True, blank=True)
+    # headimgurl	用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。
+    wp_headimgurl = models.CharField(max_length=255, null=True, blank=True)
+    # privilege	用户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
+    wp_privilege = models.CharField(max_length=255, null=True, blank=True)

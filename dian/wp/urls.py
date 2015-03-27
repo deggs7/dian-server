@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^register/$', views.register),
+    url(r'^(?P<restaurant_openid>\w+)/register/$', views.register),
 ]
