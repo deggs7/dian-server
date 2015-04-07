@@ -14,6 +14,10 @@ from .models import Registration
 
 
 class RegistrationList(generics.ListCreateAPIView):
+    """
+    不建议使用Django RESTful的这种方式
+    直接封装为针对业务的一个方法，替换此方法
+    """
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
 
@@ -29,6 +33,7 @@ class RegistrationList(generics.ListCreateAPIView):
             obj.create_time = datetime.datetime.now()
             obj.table_min_seats = obj.table_type.min_seats
             obj.table_max_seats = obj.table_type.max_seats
+            obj.queue_name = obj.table_type.name
             obj.restaurant = obj.table_type.restaurant
             obj.save()
             obj.table_type.next_queue_number += 1
@@ -45,8 +50,20 @@ class RegistrationList(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+def register_by_wp(request):
+    """
+    TODO 替换上面的方法
+    """
+    pass
+
+
 @api_view(['PUT'])
 def update_registration(request, pk):
+    """
+    不建议提供update方法
+    后期应直接封装为针对业务的一个方法，替换此方法
+    """
     try:
         reg = Registration.objects.get(pk=pk)
     except Registration.DoesNotExist:

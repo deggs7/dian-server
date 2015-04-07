@@ -3,6 +3,9 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
+from django.views.decorators.csrf import csrf_protect
+from django.template import RequestContext
+
 import requests
 import urllib
 import qrcode
@@ -18,14 +21,17 @@ from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
 from dian.settings import QINIU_DOMAIN
 from dian.settings import TEMP_DIR
+from dian.settings import DEBUG
 
 from dian.utils import get_md5
 from dian.utils import restaurant_required
 
 from account.models import Member
 from restaurant.models import Restaurant
+from registration.serializers import RegistrationSerializer
 
 
+@csrf_protect
 def register(request, restaurant_openid):
     """
     微信取号页面
@@ -36,49 +42,96 @@ def register(request, restaurant_openid):
     code = request.GET.get('code', None)
     state = request.GET.get('state', None)
 
-    if not code:
-        return render_to_response('error.html')
-
-    # 获取access token
-    access_url = "https://api.weixin.qq.com/sns/oauth2/access_token"
-    access_params = {
-            "appid": APP_ID,
-            "secret": APP_SECRET,
-            "code": code,
-            "grant_type": "authorization_code"
-            }
-    access_r = requests.get(access_url, params=access_params)
-
-    openid = access_r.json().get('openid', None)
-    access_token = access_r.json().get('access_token', None)
-
-    # 创建会员记录
-    if openid:
-        member = Member.objects.get_or_create(wp_openid=openid)[0]
+    if DEBUG:
+        member = Member.objects.all()[0]
+        restaurant = Restaurant.objects.get(openid=restaurant_openid)
+        table_types = restaurant.table_types.order_by('id')
+        
     else:
-        return render_to_response('error.html')
+        if not code:
+            return render_to_response('error.html')
 
-    # 获取微信会员信息
-    if False:
-        userinfo_url = "https://api.weixin.qq.com/sns/userinfo"
-        userinfo_params = {
-                "access_token": access_token,
-                "openid": openid,
-                "lang": "zh_CN"
+        # 获取access token
+        access_url = "https://api.weixin.qq.com/sns/oauth2/access_token"
+        access_params = {
+                "appid": APP_ID,
+                "secret": APP_SECRET,
+                "code": code,
+                "grant_type": "authorization_code"
                 }
-        userinfo_r = requests.get(userinfo_url, params=userinfo_params)
+        access_r = requests.get(access_url, params=access_params)
 
-    restaurant = Restaurant.objects.get(openid=restaurant_openid)
-    table_types = restaurant.table_types.order_by('id')
+        openid = access_r.json().get('openid', None)
+        access_token = access_r.json().get('access_token', None)
+
+        # 创建会员记录
+        if openid:
+            member = Member.objects.get_or_create(wp_openid=openid)[0]
+        else:
+            return render_to_response('error.html')
+
+        # 获取微信会员信息
+        if False:
+            userinfo_url = "https://api.weixin.qq.com/sns/userinfo"
+            userinfo_params = {
+                    "access_token": access_token,
+                    "openid": openid,
+                    "lang": "zh_CN"
+                    }
+            userinfo_r = requests.get(userinfo_url, params=userinfo_params)
+
+        restaurant = Restaurant.objects.get(openid=restaurant_openid)
+        table_types = restaurant.table_types.order_by('id')
 
     # 渲染模板
     params = {
-            "member": member.id,
+            "member_id": member.id,
             "table_types": table_types,
             "restaurant_openid": restaurant_openid,
+            "restaurant_name": restaurant.name,
             # "qrcode_path": "%s%s" % (QINIU_DOMAIN, key)
             }
-    return render_to_response('register.html', params)
+    return render_to_response('register.html', RequestContext(request, params))
+
+
+def confirm_table_type(request):
+    """
+    选择餐桌，及确认取号
+    """
+    restaurant_openid = request.POST.get('restaurant_openid', None)
+    member_id = request.POST.get('member_id', None)
+    table_type = request.POST.get('table_type', None)
+
+    member = Member.objects.get(id=member_id)
+
+    data = request.POST.copy()
+    serializer = RegistrationSerializer(data=data)
+
+    if serializer.is_valid():
+        obj = serializer.save(force_insert=True)
+        queue_number = obj.table_type.next_queue_number
+        obj.queue_number = queue_number
+        obj.create_time = datetime.datetime.now()
+        obj.table_min_seats = obj.table_type.min_seats
+        obj.table_max_seats = obj.table_type.max_seats
+        obj.queue_name = obj.table_type.name
+        obj.restaurant = obj.table_type.restaurant
+        obj.member = member
+        obj.save()
+
+        # 让餐桌的拍号+1
+        obj.table_type.next_queue_number += 1
+        obj.table_type.save()
+
+        params = {
+            "queue_name": obj.queue_name,
+            "queue_number": obj.queue_number,
+            "waiting_count": obj.table_type.get_registration_left
+                }
+        return render_to_response('register_success.html',\
+                RequestContext(request, params))
+    else:
+        return render_to_response('error.html')
 
 
 @api_view(['GET'])

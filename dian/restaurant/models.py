@@ -41,6 +41,9 @@ class TableType(models.Model):
     next_queue_number = models.IntegerField(default=1, blank=False, null=False)
 
     def get_registration_left(self):
+        """
+        TODO: 此方法缺陷较大，需进一步完善
+        """
         return self.registrations.filter(status='waiting').count()
 
 
