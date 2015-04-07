@@ -36,7 +36,7 @@
   content: "\ea10";
   font-size: 20px;
 }
-button {
+.tables-area button {
   display: block;
   width: 95%;
   height: 30px;
@@ -45,6 +45,10 @@ button {
   margin: 0 auto;
 }
 
-h2 {
+.tables-area h2 {
+  text-align: center;
+}
+
+.registration-success {
   text-align: center;
 }
