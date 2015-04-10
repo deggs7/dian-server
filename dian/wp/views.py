@@ -67,11 +67,8 @@ def register(request, restaurant_openid):
         # 创建会员记录
         if openid:
             member = Member.objects.get_or_create(wp_openid=openid)[0]
-        else:
-            return render_to_response('error.html')
 
-        # 获取微信会员信息
-        if False:
+            # 获取微信会员信息
             userinfo_url = "https://api.weixin.qq.com/sns/userinfo"
             userinfo_params = {
                     "access_token": access_token,
@@ -79,6 +76,16 @@ def register(request, restaurant_openid):
                     "lang": "zh_CN"
                     }
             userinfo_r = requests.get(userinfo_url, params=userinfo_params)
+            member.wp_nickname = userinfo_r.json().get('nickname', None)
+            member.wp_sex = userinfo_r.json().get('sex', None)
+            member.wp_province = userinfo_r.json().get('province', None)
+            member.wp_city = userinfo_r.json().get('city', None)
+            member.wp_country = userinfo_r.json().get('country', None)
+            member.wp_headimgurl = userinfo_r.json().get('headimgurl', None)
+            member.wp_privilege = userinfo_r.json().get('privilege', None)
+            member.save()
+        else:
+            return render_to_response('error.html')
 
         restaurant = Restaurant.objects.get(openid=restaurant_openid)
         table_types = restaurant.table_types.order_by('id')
@@ -166,7 +173,7 @@ appid=%(appid)s\
     params = {
             "appid": APP_ID,
             "redirect_uri": redirect_uri,
-            "scope": "snsapi_base",     # snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
+            "scope": "snsapi_userinfo",     # snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
             "state": "",
             }
     return url % params
