@@ -22,6 +22,7 @@ from dian.settings import QINIU_BUCKET_PUBLIC
 from dian.settings import QINIU_DOMAIN
 from dian.settings import TEMP_DIR
 from dian.settings import DEBUG
+from dian.settings import API_DOMAIN
 
 from dian.utils import get_md5
 from dian.utils import restaurant_required
@@ -148,8 +149,8 @@ def get_register_qrcode(request):
     获取微信取号的二维码
     curl -X GET http://diankuai.cn:8000/wp/register-qrcode/ -H 'Authorization: Token f1b8ca936511301204fe627e63d502fc955fab8b' -H 'X-Restaurant-Id: 1'
     """
-    redirect_uri = "http://diankuai.cn:8000/wp/%s/register" %\
-    request.current_restaurant.openid
+    redirect_uri = "%swp/%s/register" %\
+    (API_DOMAIN, request.current_restaurant.openid)
     url = make_web_auth_url(redirect_uri)
     localfile = generate_qr_code(url)
     file_key = upload_to_qiniu(localfile)
