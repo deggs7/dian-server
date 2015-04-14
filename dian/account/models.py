@@ -135,3 +135,15 @@ class Member(models.Model):
     wp_headimgurl = models.CharField(max_length=255, null=True, blank=True)
     # privilege	用户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
     wp_privilege = models.CharField(max_length=255, null=True, blank=True)
+
+
+class SeedUser(models.Model):
+    """
+    申请开通服务的种子用户
+    """
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=1000, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=255, null=True, blank=True)
+
