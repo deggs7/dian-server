@@ -142,8 +142,8 @@ class SeedUser(models.Model):
     申请开通服务的种子用户
     """
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255, null=True, blank=True)
-    address = models.CharField(max_length=1000, null=True, blank=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
-    phone = models.CharField(max_length=255, null=True, blank=True)
+    title = models.CharField(max_length=255, null=False, blank=False)
+    address = models.CharField(max_length=1000, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
+    phone = models.CharField(max_length=255, null=False, blank=False)
 
