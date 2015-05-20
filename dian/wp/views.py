@@ -125,6 +125,10 @@ def confirm_table_type(request):
         obj.queue_name = obj.table_type.name
         obj.restaurant = obj.table_type.restaurant
         obj.member = member
+
+        # 取号方式：微信
+        obj.reg_method = 1 
+
         obj.save()
 
         # 让餐桌的拍号+1

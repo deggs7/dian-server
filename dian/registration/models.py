@@ -34,6 +34,9 @@ class Registration(models.Model):
     member = models.ForeignKey('account.Member', related_name="members",\
             null=True, on_delete=models.SET_NULL)
 
+    # 取号方式 0: 手机取号  1: 微信取号
+    reg_method = models.IntegerField("register method", default=0)
+
     def get_current_number(self):
         try:
             current_reg = self.table_type.registrations.filter(status='turn').first()

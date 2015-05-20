@@ -10,11 +10,12 @@ class RegistrationSerializer(ModelSerializer):
     queue_number = IntegerField(read_only=True)
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
     phone_display = SerializerMethodField(method_name="get_phone")
+    member_display = SerializerMethodField(method_name="get_member")
 
     class Meta:
         model = Registration
         fields = ("id", "phone", "table_type", "queue_number", "waiting_time",\
-                "phone_display", "status")
+                "phone_display", "status", "member_display", "reg_method")
 
     def get_waiting_time(self, obj):
         time_delta = datetime.datetime.now() - obj.create_time.replace(tzinfo=None)
@@ -42,6 +43,16 @@ class RegistrationSerializer(ModelSerializer):
         except:
             return obj.phone
 
+    def get_member(self, obj):
+        try:
+            rt = {
+                'nickname': obj.member.wp_nickname,
+                'headimgurl': obj.member.wp_headimgurl,
+            }
+            return rt
+        except:
+            return {}
+
 
 class RegistrationHistorySerializer(ModelSerializer):
     create_time = TimeField(format="%H:%M:%S")
@@ -49,10 +60,12 @@ class RegistrationHistorySerializer(ModelSerializer):
     phone = SerializerMethodField(method_name="get_phone")
     status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
+    member_display = SerializerMethodField(method_name="get_member")
 
     class Meta:
         model = Registration
-        fields = ("id", "phone", "queue_number", "create_time", "end_time", "status", "table_name")
+        fields = ("id", "phone", "queue_number", "create_time", "end_time",\
+                "status", "table_name", "reg_method", "member_display")
 
     def get_phone(self, obj):
         try:
@@ -71,3 +84,14 @@ class RegistrationHistorySerializer(ModelSerializer):
             "passed": u"已过号"
         }
         return desc[obj.status]
+
+    def get_member(self, obj):
+        try:
+            rt = {
+                'nickname': obj.member.wp_nickname,
+                'headimgurl': obj.member.wp_headimgurl,
+            }
+            return rt
+        except:
+            return {}
+

@@ -4,6 +4,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
+import datetime
 
 
 class UserManager(BaseUserManager):
@@ -56,6 +57,8 @@ class User(AbstractBaseUser):
         verbose_name='Email',
         max_length=255,
         unique=True,
+        blank=True,
+        null=True
     )
     alias = models.CharField(max_length=400, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -146,4 +149,5 @@ class SeedUser(models.Model):
     address = models.CharField(max_length=1000, null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=False)
     phone = models.CharField(max_length=255, null=False, blank=False)
+    create_time = models.DateTimeField(default=datetime.datetime.now)
 
