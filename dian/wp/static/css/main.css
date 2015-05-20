@@ -52,3 +52,7 @@
 .registration-success {
   text-align: center;
 }
+span.queue-number {
+  font-size: 20px;
+  color: #FF7700;
+}

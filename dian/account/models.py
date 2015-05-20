@@ -53,11 +53,13 @@ class User(AbstractBaseUser):
         max_length=64,
         unique=True,
     )
-    # email = models.EmailField(
-    #     verbose_name='Email',
-    #     max_length=255,
-    #     unique=True,
-    # )
+    email = models.EmailField(
+        verbose_name='Email',
+        max_length=255,
+        unique=True,
+        blank=True,
+        null=True
+    )
     alias = models.CharField(max_length=400, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
