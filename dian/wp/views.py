@@ -77,11 +77,11 @@ def register(request, restaurant_openid):
                     "lang": "zh_CN"
                     }
             userinfo_r = requests.get(userinfo_url, params=userinfo_params)
-            member.wp_nickname = userinfo_r.json().get('nickname', None)
+            member.wp_nickname = userinfo_r.json().get('nickname', '').encode('iso-8859-1').decode('utf-8')
             member.wp_sex = userinfo_r.json().get('sex', None)
-            member.wp_province = userinfo_r.json().get('province', None)
-            member.wp_city = userinfo_r.json().get('city', None)
-            member.wp_country = userinfo_r.json().get('country', None)
+            member.wp_province = userinfo_r.json().get('province', '').encode('iso-8859-1').decode('utf-8')
+            member.wp_city = userinfo_r.json().get('city', '').encode('iso-8859-1').decode('utf-8')
+            member.wp_country = userinfo_r.json().get('country', '').encode('iso-8859-1').decode('utf-8')
             member.wp_headimgurl = userinfo_r.json().get('headimgurl', None)
             member.wp_privilege = userinfo_r.json().get('privilege', None)
             member.save()
