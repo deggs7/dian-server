@@ -66,11 +66,3 @@ def reset_passwd(request):
 
     return Response({"info": "change password done"}, status=status.HTTP_200_OK)
 
-
-
-
-
-
-
-
-

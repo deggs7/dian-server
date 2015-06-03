@@ -43,6 +43,8 @@ INSTALLED_APPS = (
     'account',
     'restaurant',
     'registration',
+    'table',
+    'menu',
     'rest_framework.authtoken',
     'wp',
     'south',

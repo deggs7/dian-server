@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     url(r'^restaurant/', include('restaurant.urls')),
     url(r'^registration/', include('registration.urls')),
 
+    url(r'^table/', include('table.urls')),
+
     url(r'^captcha/$', views.captcha),
     url(r'^reset-passwd/$', views.reset_passwd),
 
