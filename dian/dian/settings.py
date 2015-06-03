@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'registration',
     'table',
     'menu',
+    'trade',
     'rest_framework.authtoken',
     'wp',
     'south',
