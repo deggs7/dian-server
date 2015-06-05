@@ -3,6 +3,7 @@
 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from table.models import TableType
+from table.models import Table
 from registration.serializers import RegistrationSerializer
 
 
@@ -39,3 +40,9 @@ class TableTypeDetailSerializer(ModelSerializer):
 
     def get_slug(self, obj):
         return obj.name + u"（" + "%d" % obj.min_seats + u"-" + "%d" % obj.max_seats + u"人）"
+
+
+class TableSerializer(ModelSerializer):
+
+    class Meta:
+        model = Table

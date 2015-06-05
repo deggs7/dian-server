@@ -65,3 +65,111 @@ def list_table_type_details(request):
     serializer = TableTypeDetailSerializer(request.current_restaurant.table_types.order_by('id'), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+@restaurant_required
+def create_table(request):
+    """
+    创建餐桌
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200 
+              message: OK
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@restaurant_required
+def list_table(request):
+    """
+    餐桌列表
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200 
+              message: OK
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@restaurant_required
+def get_table(request, pk):
+    """
+    获取指定餐桌
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200 
+              message: OK
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@restaurant_required
+def update_table(request, pk):
+    """
+    修改指定餐桌
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200 
+              message: OK
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@restaurant_required
+def delete_table(request):
+    """
+    删除指定餐桌
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200 
+              message: OK
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@restaurant_required
+def list_table_detail(request):
+    """
+    获取全部餐桌详情
+
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 401
+              message: Not authenticated
+    """
+    return Response(None, status=status.HTTP_200_OK)
+
+

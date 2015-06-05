@@ -15,4 +15,12 @@ urlpatterns = patterns(
     # for reset table number
     # url(r'^reset-table/$', 'rest_table_nub')
 
+    # 管理餐桌相关
+    url(r'^table/$', 'create_table'),
+    url(r'^table/$', 'list_table'),
+    url(r'^table/(?P<pk>[0-9]+)/$', 'get_table'),
+    url(r'^table/(?P<pk>[0-9]+)/$', 'update_table'),
+    url(r'^table/(?P<pk>[0-9]+)/$', 'delete_table'),
+    url(r'^table-detail/$', 'list_table_detail'),
+
 )
