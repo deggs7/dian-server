@@ -28,4 +28,7 @@ urlpatterns = patterns('',
 
     url(r'^wp/', include('wp.urls')),
 
+    # Swagger Documentation Generator for Django REST Framework
+    # https://github.com/marcgibbons/django-rest-swagger
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 )

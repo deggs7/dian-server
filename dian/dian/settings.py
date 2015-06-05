@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'wp',
     'south',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (
