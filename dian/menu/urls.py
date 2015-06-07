@@ -9,11 +9,11 @@ urlpatterns = patterns(
     'menu.views',
 
     # 菜单管理相关
-    url(r'^menu/$', 'create_menu'),
-    url(r'^menu/$', 'list_menu'),
-    url(r'^menu/(?P<pk>[0-9]+)/$', 'get_menu'),
-    url(r'^menu/(?P<pk>[0-9]+)/$', 'update_menu'),
-    url(r'^menu/(?P<pk>[0-9]+)/$', 'delete_menu'),
+    url(r'^create-menu/$', 'create_menu'),
+    url(r'^list-menu/$', 'list_menu'),
+    url(r'^get-menu/(?P<pk>[0-9]+)/$', 'get_menu'),
+    url(r'^update-menu/(?P<pk>[0-9]+)/$', 'update_menu'),
+    url(r'^delete-menu/(?P<pk>[0-9]+)/$', 'delete_menu'),
 
     # 分类管理相关
     url(r'^category/$', 'create_category'),

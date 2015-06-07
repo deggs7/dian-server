@@ -26,12 +26,21 @@ def create_menu(request):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
+            - code: 201
+              message: Created
+            - code: 400
+              message: Bad Request
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    data = request.DATA.copy()
+    serializer = MenuSerializer(data=data)
+    if serializer.is_valid():
+        menu = serializer.save()
+        menu.restaurant = request.current_restaurant
+        menu.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -49,7 +58,8 @@ def list_menu(request):
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    serializer = MenuSerializer(request.current_restaurant.menus.all(), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -64,10 +74,18 @@ def get_menu(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        menu = Menu.objects.get(pk=pk)
+    except Menu.DoesNotExist:
+        return Response('menu type not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MenuSerializer(menu)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['PUT'])
@@ -82,10 +100,23 @@ def update_menu(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 400
+              message: Bad Request
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        menu = Menu.objects.get(pk=pk)
+    except Menu.DoesNotExist:
+        return Response('menu type not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MenuSerializer(menu, data=request.DATA, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['DELETE'])
@@ -100,9 +131,17 @@ def delete_menu(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
+    try:
+        menu = Menu.objects.get(pk=pk)
+    except Menu.DoesNotExist:
+        return Response('menu type not found', status=status.HTTP_404_NOT_FOUND)
+
+    menu.delete()
     return Response(None, status=status.HTTP_200_OK)
 
 
