@@ -18,8 +18,8 @@ urlpatterns = patterns(
     # 管理餐桌相关
     url(r'^list-table/$', 'list_table'),
     url(r'^create-table/$', 'create_table'),
-    url(r'^get-table/$', 'get_table'),
-    url(r'^update-table/$', 'update_table'),
-    url(r'^delete-table/$', 'delete_table'),
+    url(r'^get-table/(?P<pk>[0-9]+)/$', 'get_table'),
+    url(r'^update-table/(?P<pk>[0-9]+)/$', 'update_table'),
+    url(r'^delete-table/(?P<pk>[0-9]+)/$', 'delete_table'),
     url(r'^list-detail-table/$', 'list_detail_table'),
 )
