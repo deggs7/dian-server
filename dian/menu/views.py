@@ -88,7 +88,7 @@ def get_menu(request, pk):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @restaurant_required
 def update_menu(request, pk):
     """
@@ -98,8 +98,6 @@ def update_menu(request, pk):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
             - code: 400
               message: Bad Request
             - code: 404
@@ -119,7 +117,7 @@ def update_menu(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
+@api_view(['GET'])
 @restaurant_required
 def delete_menu(request, pk):
     """
@@ -155,12 +153,20 @@ def create_category(request):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
+            - code: 201
+              message: Created
+            - code: 400
+              message: Bad Request
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    data = request.DATA.copy()
+    serializer = CategorySerializer(data=data)
+    if serializer.is_valid():
+        category = serializer.save()
+        category.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -175,13 +181,21 @@ def get_category(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        return Response('category not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CategorySerializer(category)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @restaurant_required
 def update_category(request, pk):
     """
@@ -191,15 +205,26 @@ def update_category(request, pk):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
+            - code: 202
+              message: Accepted
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        return Response('category not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CategorySerializer(category, data=request.DATA, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
+@api_view(['GET'])
 @restaurant_required
 def delete_category(request, pk):
     """
@@ -214,12 +239,18 @@ def delete_category(request, pk):
             - code: 401
               message: Not authenticated
     """
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        return Response('category not found', status=status.HTTP_404_NOT_FOUND)
+
+    category.delete()
     return Response(None, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @restaurant_required
-def list_category_by_menu(request, pk):
+def list_category_by_menu(request, menu_pk):
     """
     分类列表
     ---
@@ -229,10 +260,22 @@ def list_category_by_menu(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    categories = []
+    try:
+        menu = Menu.objects.get(pk=menu_pk)
+    except Menu.DoesNotExist:
+        return Response('menu not found', status=status.HTTP_404_NOT_FOUND)
+
+    for category in menu.categories.order_by('id'):
+        categories.append(category)
+
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -245,12 +288,20 @@ def create_product(request):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
+            - code: 201
+              message: Created
+            - code: 400
+              message: Bad Request
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    data = request.DATA.copy()
+    serializer = ProductSerializer(data=data)
+    if serializer.is_valid():
+        product = serializer.save()
+        product.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -265,13 +316,21 @@ def get_product(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        product = Product.objects.get(pk=pk)
+    except Product.DoesNotExist:
+        return Response('product not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ProductSerializer(product)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @restaurant_required
 def update_product(request, pk):
     """
@@ -281,15 +340,28 @@ def update_product(request, pk):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
+            - code: 202
+              message: Accepted
+            - code: 400
+              message: Bad Request
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        product = Product.objects.get(pk=pk)
+    except Product.DoesNotExist:
+        return Response('product not found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ProductSerializer(product, data=request.DATA, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
+@api_view(['GET'])
 @restaurant_required
 def delete_product(request, pk):
     """
@@ -301,15 +373,23 @@ def delete_product(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
+    try:
+        product = Product.objects.get(pk=pk)
+    except Product.DoesNotExist:
+        return Response('product not found', status=status.HTTP_404_NOT_FOUND)
+
+    product.delete()
     return Response(None, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @restaurant_required
-def list_product_by_category(request, pk):
+def list_product_by_category(request, category_pk):
     """
     商品列表
     ---
@@ -319,9 +399,20 @@ def list_product_by_category(request, pk):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    products = []
+    try:
+        category = Category.objects.get(pk=category_pk)
+    except Category.DoesNotExist:
+        return Response('category not found', status=status.HTTP_404_NOT_FOUND)
 
+    for product in category.products.order_by('id'):
+        products.append(product)
+
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
