@@ -94,8 +94,6 @@ def create_table(request):
         omit_serializer: false
 
         responseMessages:
-            - code: 200
-              message: OK
             - code: 201
               message: Created
             - code: 400
@@ -110,6 +108,7 @@ def create_table(request):
         table.restaurant = request.current_restaurant
         table.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -124,8 +123,6 @@ def get_table(request, pk):
         responseMessages:
             - code: 200 
               message: OK
-            - code: 202
-              message: Accepted
             - code: 404
               message: Not Found
             - code: 401
@@ -149,12 +146,12 @@ def update_table(request, pk):
         omit_serializer: false
 
         responseMessages:
-            - code: 200 
-              message: OK
             - code: 202
               message: Accepted
             - code: 404
               message: Not Found
+            - code: 400
+              message: Bad Request
             - code: 401
               message: Not authenticated
     """
@@ -181,8 +178,6 @@ def delete_table(request, pk):
         responseMessages:
             - code: 200 
               message: OK
-            - code: 202
-              message: Accepted
             - code: 404
               message: Not Found
             - code: 401
