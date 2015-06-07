@@ -28,5 +28,4 @@ urlpatterns = patterns(
     url(r'^update-product/(?P<pk>[0-9]+)/$', 'update_product'),
     url(r'^delete-product/(?P<pk>[0-9]+)/$', 'delete_product'),
     url(r'^list-product-by-category/(?P<category_pk>[0-9]+)/$', 'list_product_by_category'),
-
 )
