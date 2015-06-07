@@ -16,7 +16,10 @@ urlpatterns = patterns(
     # url(r'^reset-table/$', 'rest_table_nub')
 
     # 管理餐桌相关
-    url(r'^table/$', 'list_or_create_table'),
-    url(r'^table/(?P<pk>[0-9]+)/$', 'get_or_update_or_delete_table'),
-    url(r'^table-details/$', 'list_table_detail'),
+    url(r'^list-table/$', 'list_table'),
+    url(r'^create-table/$', 'create_table'),
+    url(r'^get-table/$', 'get_table'),
+    url(r'^update-table/$', 'update_table'),
+    url(r'^delete-table/$', 'delete_table'),
+    url(r'^list-detail-table/$', 'list_detail_table'),
 )
