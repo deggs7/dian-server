@@ -1,25 +1,16 @@
 #!/usr/bin/env python
 #! -*- encoding:utf-8 -*-
 
-import datetime
-
-import qiniu
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from table.models import TableType
-from restaurant.models import Restaurant
-from registration.models import Strategy
-
-from restaurant.serializers import RestaurantSerializer
+from table.models import TableType, Table
 from table.serializers import TableTypeSerializer
 from table.serializers import TableTypeDetailSerializer
-from registration.serializers import StrategySerializer
+from table.serializers import TableSerializer
+from table.serializers import TableDetailSerializer
 
-from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
-from dian.settings import QINIU_BUCKET_PUBLIC
-from dian.utils import get_md5
 from dian.utils import restaurant_required
 
 
@@ -66,11 +57,47 @@ def list_table_type_details(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 @restaurant_required
-def create_table(request):
+def list_or_create_table(request):
     """
-    创建餐桌
+    创建餐桌 & 获取餐桌列表
+    ---
+        serializer: table.serializers.TableSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 201
+              message: Created
+            - code: 400
+              message: Bad Request
+            - code: 401
+              message: Not authenticated
+    """
+    if request.method == 'GET':
+        tables = []
+        for table_type in request.current_restaurant.table_types.order_by('id'):
+            tables.extend(table_type.tables.all())
+
+        serializer = TableSerializer(tables, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        data = request.DATA.copy()
+        serializer = TableSerializer(data=data)
+        if serializer.is_valid():
+            table = serializer.save()
+            table.restaurant = request.current_restaurant
+            table.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@restaurant_required
+def get_or_update_or_delete_table(request, pk):
+    """
+    获取指定餐桌 & 修改指定餐桌 & 删除指定餐桌
     ---
         serializer: table.serializers.TableSerializer
         omit_serializer: false
@@ -78,82 +105,30 @@ def create_table(request):
         responseMessages:
             - code: 200 
               message: OK
+            - code: 202
+              message: Accepted
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        table = Table.objects.get(pk=pk)
+    except Table.DoesNotExist:
+        return Response('table not found', status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(['GET'])
-@restaurant_required
-def list_table(request):
-    """
-    餐桌列表
-    ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 401
-              message: Not authenticated
-    """
-    return Response(None, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@restaurant_required
-def get_table(request, pk):
-    """
-    获取指定餐桌
-    ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 401
-              message: Not authenticated
-    """
-    return Response(None, status=status.HTTP_200_OK)
-
-
-@api_view(['PUT'])
-@restaurant_required
-def update_table(request, pk):
-    """
-    修改指定餐桌
-    ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 401
-              message: Not authenticated
-    """
-    return Response(None, status=status.HTTP_200_OK)
-
-
-@api_view(['DELETE'])
-@restaurant_required
-def delete_table(request):
-    """
-    删除指定餐桌
-    ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 401
-              message: Not authenticated
-    """
-    return Response(None, status=status.HTTP_200_OK)
+    if request.method == 'GET':
+        serializer = TableSerializer(table)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        serializer = TableSerializer(table, data=request.DATA, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        table.delete()
+        return Response(None, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -163,13 +138,18 @@ def list_table_detail(request):
     获取全部餐桌详情
 
     ---
-        serializer: table.serializers.TableSerializer
+        serializer: table.serializers.TableDetailSerializer
         omit_serializer: false
 
         responseMessages:
+            - code: 200
+              message: OK
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    tables = []
+    for table_type in request.current_restaurant.table_types.order_by('id'):
+        tables.extend(table_type.tables.all())
 
-
+    serializer = TableDetailSerializer(tables, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

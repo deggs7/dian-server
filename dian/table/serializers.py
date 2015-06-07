@@ -45,4 +45,17 @@ class TableTypeDetailSerializer(ModelSerializer):
 class TableSerializer(ModelSerializer):
 
     class Meta:
+        fields = ("name", "table_type")
         model = Table
+
+
+class TableDetailSerializer(ModelSerializer):
+    table_type_desc = SerializerMethodField(method_name="get_table_type_slug")
+
+    class Meta:
+        model = Table
+        fields = ("id", "name", "restaurant", "table_type", "table_type_desc")
+
+    def get_table_type_slug(self, obj):
+        table_type = obj.table_type
+        return table_type.name + u"（" + "%d" % table_type.min_seats + u"-" + "%d" % table_type.max_seats + u"人）"
