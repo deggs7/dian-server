@@ -9,6 +9,7 @@ from django.db import models
 class Cart(models.Model):
     """
     购物车
+    每个顾客访问每家餐厅，都会有一个对应的购物车实体
     """
     restaurant = models.ForeignKey("restaurant.Restaurant",\
             related_name="carts", null=True)
