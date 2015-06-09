@@ -5,24 +5,45 @@ from django.conf.urls import patterns
 from django.conf.urls import url
 
 
+# 微信端接口
 urlpatterns = patterns(
     'trade.views',
 
-    url(r'^get-cart-by-restaurant/(?P<restaurant_pk>[0-9]+)/$',\
-        'get_cart_by_restaurant'),
+    # # 获取指定餐厅的购物车
+    # url(r'^get-cart-by-restaurant/(?P<restaurant_pk>[0-9]+)/$',\
+    #     'get_cart_by_restaurant'),
 
-    # url(r'^table-type/$', 'list_or_create_table_type'),
-    # url(r'^table-type/(?P<pk>[0-9]+)/$', 'get_or_update_table_type'),
-    # url(r'^table-type-details/$', 'list_table_type_details'),
+    # # 添加一个商品至购物车
+    # url(r'^add-cart-item/$', 'add_cart_item'),
 
-    # # for reset table number
-    # # url(r'^reset-table/$', 'rest_table_nub')
+    # # 从购物车移除一个商品
+    # url(r'^remove-cart-item/$', 'remove-cart-item'),
 
-    # # 管理餐桌相关
-    # url(r'^list-table/$', 'list_table'),
-    # url(r'^create-table/$', 'create_table'),
-    # url(r'^get-table/(?P<pk>[0-9]+)/$', 'get_table'),
-    # url(r'^update-table/(?P<pk>[0-9]+)/$', 'update_table'),
-    # url(r'^delete-table/(?P<pk>[0-9]+)/$', 'delete_table'),
-    # url(r'^list-detail-table/$', 'list_detail_table'),
+    # # 修改商品数量
+    # url(r'^recount-cart-item/$', 'recount-cart-item'),
+
+    # # 创建订单
+    # url(r'^create-order-from-cart/(?P<cart_pk>[0-9]+)/$',\
+    #     'create_order_from_cart'),
+
+    # # 取消订单(餐厅未确实前)
+    # url(r'^cancel-order/(?P<order_pk>[0-9]+)/$', 'cancel_order'),
+
+)
+
+# console端接口
+urlpatterns += patterns(
+    'trade.views',
+
+    # # 获取订单列表
+    # url(r'^list-order/$', 'list_order'),
+
+    # # 确认订单
+    # url(r'^confirm-order/(?P<order_pk>[0-9]+)/$', 'confirm_order'),
+
+    # # 退回订单
+    # url(r'^reject-order/(?P<order_pk>[0-9]+)/$', 'reject_order'),
+
+    # # 结束订单(已结账)
+    # url(r'^finish-order/(?P<order_pk>[0-9]+)/$', 'finish_order'),
 )
