@@ -15,7 +15,7 @@ class Cart(models.Model):
             related_name="carts", null=True)
     member = models.ForeignKey("account.Member", related_name="carts",\
             null=True)
-    items = models.ManyToManyField("menu.Product", through="CartItem")
+    # items = models.ManyToManyField("menu.Product", through="CartItem")
 
 
 class CartItem(models.Model):
@@ -23,7 +23,7 @@ class CartItem(models.Model):
     购物车item
     多对多关系实体
     """
-    cart = models.ForeignKey("trade.Cart")
+    cart = models.ForeignKey("trade.Cart", related_name="cart_items", null=True)
     product = models.ForeignKey("menu.Product")
     count = models.IntegerField(default=0)
 

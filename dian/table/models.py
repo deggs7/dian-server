@@ -12,6 +12,10 @@ class Table(models.Model):
     restaurant = models.ForeignKey('restaurant.Restaurant', related_name="tables", null=True)
     table_type = models.ForeignKey('table.TableType', related_name="tables", null=True)
 
+    # 餐桌在就餐过程中的信息和状态
+    order = models.ForeignKey('trade.Order', null=True)
+    # status = models.IntegerField(choices=STATUS, default=STATUS[0][0])
+
 
 class TableType(models.Model):
     """
