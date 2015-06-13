@@ -34,9 +34,10 @@ class Order(models.Model):
     """
 
     STATUS = (
-        (0, "placed"), # 已下单（或者追加菜后），待确认
-        (1, "confirmed"), # 餐厅确认通过后，待付款
-        (2, "paid"), # 已付款
+        (0, "placed"),      # 已下单（或者追加菜后），待确认
+        (1, "confirmed"),   # 餐厅确认通过后，待付款
+        (2, "paid"),        # 已付款
+        (3, "reject")
     )
 
     restaurant = models.ForeignKey('restaurant.Restaurant',\

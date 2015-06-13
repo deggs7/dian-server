@@ -55,21 +55,37 @@ def confirm_order(request, order_pk):
         responseMessages:
             - code: 200
               message: OK
-            - code: 201
-              message: Created
             - code: 400
               message: Bad Request
+            - code: 403
+              message: Forbidden
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        order = Order.objects.get(pk=order_pk)
+    except Order.DoesNotExist:
+        return Response('order not found', status=status.HTTP_404_NOT_FOUND)
+
+    if not order.restaurant or order.restaurant != request.current_restaurant:
+        return Response('order forbidden', status.HTTP_403_FORBIDDEN)
+
+    if order.status != Order.STATUS[0][0]:
+        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+
+    order.status = Order.STATUS[1][0]
+    order.save()
+    serializer = OrderSerializer(data=order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @restaurant_required
 def reject_order(request, order_pk):
     """
-    餐厅退回顾客提交的订单
+    餐厅退回顾客提交的订单(订单在已下单情况下才可以使用已退回功能)
     ---
         serializer: trade.serializers.OrderSerializer
         omit_serializer: false
@@ -77,14 +93,30 @@ def reject_order(request, order_pk):
         responseMessages:
             - code: 200
               message: OK
-            - code: 201
-              message: Created
             - code: 400
               message: Bad Request
+            - code: 403
+              message: Forbidden
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        order = Order.objects.get(pk=order_pk)
+    except Order.DoesNotExist:
+        return Response('order not found', status=status.HTTP_404_NOT_FOUND)
+
+    if not order.restaurant or order.restaurant != request.current_restaurant:
+        return Response('order forbidden', status.HTTP_403_FORBIDDEN)
+
+    if order.status != Order.STATUS[0][0]:
+        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+
+    order.status = Order.STATUS[3][0]
+    order.save()
+    serializer = OrderSerializer(data=order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -103,10 +135,25 @@ def finish_order(request, order_pk):
               message: Created
             - code: 400
               message: Bad Request
+            - code: 404
+              message: Not Found
             - code: 401
               message: Not authenticated
     """
-    return Response(None, status=status.HTTP_200_OK)
+    try:
+        order = Order.objects.get(pk=order_pk)
+    except Order.DoesNotExist:
+        return Response('order not found', status=status.HTTP_404_NOT_FOUND)
 
+    if not order.restaurant or order.restaurant != request.current_restaurant:
+        return Response('order forbidden', status.HTTP_403_FORBIDDEN)
+
+    if order.status != Order.STATUS[1][0]:
+        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+
+    order.status = Order.STATUS[2][0]
+    order.save()
+    serializer = OrderSerializer(data=order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
