@@ -45,7 +45,7 @@ class TableTypeDetailSerializer(ModelSerializer):
 class TableSerializer(ModelSerializer):
 
     class Meta:
-        fields = ("name", "table_type")
+        fields = ("id", "name", "table_type")
         model = Table
 
 

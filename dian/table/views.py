@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #! -*- encoding:utf-8 -*-
 
+import re
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -104,10 +106,28 @@ def create_table(request):
     data = request.DATA.copy()
     serializer = TableSerializer(data=data)
     if serializer.is_valid():
-        table = serializer.save()
-        table.restaurant = request.current_restaurant
-        table.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        match = re.search("\[(\d+)\-(\d+)\]", data['name'])
+        if match:
+            start_number, end_number = match.groups()
+            split_list = re.split("\[\d+\-\d+\]", data['name'])
+            ret = []
+            for table_number in range(int(start_number), int(end_number)+1):
+                table_data = request.DATA.copy()
+                table_data['name'] = ('%s' % table_number).join(split_list)
+
+                r_serializer = TableSerializer(data=table_data)
+                if r_serializer.is_valid():
+                    table = r_serializer.save()
+                    table.restaurant = request.current_restaurant
+                    table.save()
+                    ret.append(r_serializer.data)
+
+            return Response(ret, status=status.HTTP_201_CREATED)
+        else:
+            table = serializer.save()
+            table.restaurant = request.current_restaurant
+            table.save()
+            return Response([serializer.data], status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
