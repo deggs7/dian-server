@@ -70,9 +70,7 @@ def list_table(request):
 
         responseMessages:
             - code: 200
-              message: OK
-            - code: 201
-              message: Created
+              message: table list, 其中餐桌包含的订单状态有如下几种(0: 已下单，1: 待付款，2：已付款，3：已取消)
             - code: 400
               message: Bad Request
             - code: 401

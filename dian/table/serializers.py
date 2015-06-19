@@ -43,10 +43,14 @@ class TableTypeDetailSerializer(ModelSerializer):
 
 
 class TableSerializer(ModelSerializer):
+    order_status = SerializerMethodField(method_name="get_table_order_status")
 
     class Meta:
-        fields = ("id", "name", "table_type")
+        fields = ("id", "name", "table_type", "order_status")
         model = Table
+
+    def get_table_order_status(self, obj):
+        return obj.order.status if obj.order else None
 
 
 class TableDetailSerializer(ModelSerializer):
