@@ -23,3 +23,10 @@ urlpatterns = patterns(
     url(r'^delete-table/(?P<pk>[0-9]+)/$', 'delete_table'),
     url(r'^list-detail-table/$', 'list_detail_table'),
 )
+
+urlpatterns += patterns(
+    'table.wp_views',
+
+    url(r'^list-table-type-by-restaurant/$', 'list_table_type_by_restaurant'),
+
+)
