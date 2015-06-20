@@ -40,13 +40,15 @@ MD5_SEED = 'diankuai.cn'
 # django-cors-headers settings, 
 
 CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:9000',
-    'localhost:9000',
-    'diankuai.cc',
+    # '127.0.0.1:9000',
+    # 'localhost:9000',
+    # '127.0.0.1:3000',
+    # 'localhost:3000',
     'diankuai.cn',
     'www.diankuai.cn',
     'api.diankuai.cn',
     'c.diankuai.cn',
+    'wp.diankuai.cn',
 )
 
 

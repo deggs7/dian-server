@@ -64,22 +64,20 @@ def list_table_type_details(request):
 def list_table(request):
     """
     获取餐桌列表
+    其中餐桌包含的订单状态有如下几种(0: 已下单，1: 待付款，2：已付款，3：已取消)
     ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 200
-              message: table list, 其中餐桌包含的订单状态有如下几种(0: 已下单，1: 待付款，2：已付款，3：已取消)
-            - code: 400
-              message: Bad Request
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 200
+          message: table list
+        - code: 400
+          message: Bad Request
+        - code: 401
+          message: Not authenticated
     """
-    tables = []
-    for table_type in request.current_restaurant.table_types.order_by('id'):
-        tables.extend(table_type.tables.all())
-
+    tables = request.current_restaurant.tables
     serializer = TableSerializer(tables, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -90,16 +88,16 @@ def create_table(request):
     """
     创建餐桌
     ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 201
-              message: Created
-            - code: 400
-              message: Bad Request
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 201
+          message: Created
+        - code: 400
+          message: Bad Request
+        - code: 401
+          message: Not authenticated
     """
     data = request.DATA.copy()
     serializer = TableSerializer(data=data)
@@ -135,16 +133,16 @@ def get_table(request, pk):
     """
     获取指定餐桌
     ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 404
-              message: Not Found
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 200 
+          message: OK
+        - code: 404
+          message: Not Found
+        - code: 401
+          message: Not authenticated
     """
     try:
         table = Table.objects.get(pk=pk)
@@ -160,18 +158,18 @@ def update_table(request, pk):
     """
     修改指定餐桌
     ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 202
-              message: Accepted
-            - code: 404
-              message: Not Found
-            - code: 400
-              message: Bad Request
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 202
+          message: Accepted
+        - code: 404
+          message: Not Found
+        - code: 400
+          message: Bad Request
+        - code: 401
+          message: Not authenticated
     """
     try:
         table = Table.objects.get(pk=pk)
@@ -190,16 +188,16 @@ def delete_table(request, pk):
     """
     删除指定餐桌
     ---
-        serializer: table.serializers.TableSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 200 
-              message: OK
-            - code: 404
-              message: Not Found
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 200 
+          message: OK
+        - code: 404
+          message: Not Found
+        - code: 401
+          message: Not authenticated
     """
     try:
         table = Table.objects.get(pk=pk)
@@ -215,14 +213,14 @@ def list_detail_table(request):
     """
     获取全部餐桌详情
     ---
-        serializer: table.serializers.TableDetailSerializer
-        omit_serializer: false
+    serializer: table.serializers.TableDetailSerializer
+    omit_serializer: false
 
-        responseMessages:
-            - code: 200
-              message: OK
-            - code: 401
-              message: Not authenticated
+    responseMessages:
+        - code: 200
+          message: OK
+        - code: 401
+          message: Not authenticated
     """
     tables = []
     for table_type in request.current_restaurant.table_types.order_by('id'):
