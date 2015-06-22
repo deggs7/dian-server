@@ -14,3 +14,11 @@ urlpatterns = patterns(
     url(r'^uptoken-restaurant/$', 'uptoken_default_restaurant'),
 
 )
+
+
+urlpatterns += patterns(
+    'restaurant.wp_views',
+
+    url(r'^get-restaurant/$', 'get_restaurant'),
+
+)
