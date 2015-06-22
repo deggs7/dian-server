@@ -9,9 +9,11 @@ from trade.models import OrderItem
 
 
 class CartSerializer(ModelSerializer):
+    cart_items = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
+        fields = ('id', 'restaurant', 'member', 'cart_items')
 
 
 class CartItemSerializer(ModelSerializer):
@@ -21,9 +23,24 @@ class CartItemSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
+    restaurant_name = SerializerMethodField('get_restaurant_name')
 
     class Meta:
         model = Order
+        fields = ('id', 'restaurant', 'restaurant_name', 'create_time',
+                  'price', 'status', 'confirm_time', 'pay_time')
+
+    def get_restaurant_name(self, obj):
+        return obj.restaurant.name
+
+
+class OrderDetailSerializer(ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'restaurant', 'member', 'create_time', 'confirm_time', 'pay_time',
+                  'status', 'price', 'order_items')
 
 
 class OrderItemSerializer(ModelSerializer):

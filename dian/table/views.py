@@ -209,7 +209,7 @@ def delete_table(request, pk):
 
 @api_view(['GET'])
 @restaurant_required
-def list_detail_table(request):
+def get_table_detail(request, pk):
     """
     获取全部餐桌详情
     ---
@@ -222,9 +222,9 @@ def list_detail_table(request):
         - code: 401
           message: Not authenticated
     """
-    tables = []
-    for table_type in request.current_restaurant.table_types.order_by('id'):
-        tables.extend(table_type.tables.all())
-
-    serializer = TableDetailSerializer(tables, many=True)
+    try:
+        table = Table.objects.get(pk=pk)
+    except Table.DoesNotExist:
+        return Response('table not found', status=status.HTTP_404_NOT_FOUND)
+    serializer = TableDetailSerializer(table)
     return Response(serializer.data, status=status.HTTP_200_OK)

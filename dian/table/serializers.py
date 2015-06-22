@@ -6,6 +6,8 @@ from table.models import TableType
 from table.models import Table
 from registration.serializers import RegistrationSerializer
 
+from trade.serializers import OrderDetailSerializer
+
 
 class TableTypeSerializer(ModelSerializer):
     front_left = SerializerMethodField(method_name="get_front_left")
@@ -55,10 +57,11 @@ class TableSerializer(ModelSerializer):
 
 class TableDetailSerializer(ModelSerializer):
     table_type_desc = SerializerMethodField(method_name="get_table_type_slug")
+    order = OrderDetailSerializer()
 
     class Meta:
         model = Table
-        fields = ("id", "name", "restaurant", "table_type", "table_type_desc")
+        fields = ("id", "name", "restaurant", "table_type", "table_type_desc", "order")
 
     def get_table_type_slug(self, obj):
         table_type = obj.table_type

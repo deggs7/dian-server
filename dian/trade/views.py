@@ -4,16 +4,11 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import datetime
 
-from trade.models import Cart
-from trade.models import CartItem
 from trade.models import Order
-from trade.models import OrderItem
 
-from trade.serializers import CartSerializer
-from trade.serializers import CartItemSerializer
 from trade.serializers import OrderSerializer
-from trade.serializers import OrderItemSerializer
 
 from dian.utils import restaurant_required
 
@@ -76,6 +71,7 @@ def confirm_order(request, order_pk):
         return Response('order error status', status.HTTP_400_BAD_REQUEST)
 
     order.status = Order.STATUS[1][0]
+    order.confirm_time = datetime.datetime.now()
     order.save()
     serializer = OrderSerializer(data=order)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -152,6 +148,7 @@ def finish_order(request, order_pk):
         return Response('order error status', status.HTTP_400_BAD_REQUEST)
 
     order.status = Order.STATUS[2][0]
+    order.pay_time = datetime.datetime.now()
     order.save()
     serializer = OrderSerializer(data=order)
     return Response(serializer.data, status=status.HTTP_200_OK)
