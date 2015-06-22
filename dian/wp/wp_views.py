@@ -40,7 +40,7 @@ from registration.serializers import RegistrationSerializer
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def get_member_info(request):
+def get_member(request):
     """
     根据微信redirect后的code，获取微信会员的wp_openid
     只有在关注后，或者以snsapi_userinfo方式授权后，才能获得详细用户信息
@@ -84,7 +84,7 @@ def get_member_info(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes(())
 @permission_classes(())
 def confirm_table_type(request):
@@ -123,7 +123,7 @@ def confirm_table_type(request):
         res = {
             "queue_name": obj.queue_name,
             "queue_number": obj.queue_number,
-            "waiting_count": obj.table_type.get_registration_left
+            "waiting_count": obj.table_type.get_registration_left()
                 }
         return Response(res, status.HTTP_200_OK)
     else:
