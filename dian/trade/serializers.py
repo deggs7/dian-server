@@ -8,18 +8,18 @@ from trade.models import Order
 from trade.models import OrderItem
 
 
+class CartItemSerializer(ModelSerializer):
+
+    class Meta:
+        model = CartItem
+
+
 class CartSerializer(ModelSerializer):
     cart_items = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
         fields = ('id', 'restaurant', 'member', 'cart_items')
-
-
-class CartItemSerializer(ModelSerializer):
-
-    class Meta:
-        model = CartItem
 
 
 class OrderSerializer(ModelSerializer):
@@ -34,6 +34,12 @@ class OrderSerializer(ModelSerializer):
         return obj.restaurant.name
 
 
+class OrderItemSerializer(ModelSerializer):
+
+    class Meta:
+        model = OrderItem
+
+
 class OrderDetailSerializer(ModelSerializer):
     order_items = OrderItemSerializer(many=True, read_only=True)
 
@@ -41,11 +47,3 @@ class OrderDetailSerializer(ModelSerializer):
         model = Order
         fields = ('id', 'restaurant', 'member', 'create_time', 'confirm_time', 'pay_time',
                   'status', 'price', 'order_items')
-
-
-class OrderItemSerializer(ModelSerializer):
-
-    class Meta:
-        model = OrderItem
-
-
