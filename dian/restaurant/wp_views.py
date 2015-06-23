@@ -14,10 +14,6 @@ from restaurant.models import Restaurant
 
 from restaurant.serializers import RestaurantSerializer
 
-from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
-from dian.settings import QINIU_BUCKET_PUBLIC
-from dian.utils import get_md5
-
 
 @api_view(["GET"])
 @authentication_classes(())

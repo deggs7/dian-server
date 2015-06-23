@@ -44,6 +44,12 @@ class TableTypeDetailSerializer(ModelSerializer):
         return obj.name + u"（" + "%d" % obj.min_seats + u"-" + "%d" % obj.max_seats + u"人）"
 
 
+class TableCreateSerializer(ModelSerializer):
+
+    class Meta:
+        model = Table
+
+
 class TableSerializer(ModelSerializer):
     order_status = SerializerMethodField(method_name="get_table_order_status")
 

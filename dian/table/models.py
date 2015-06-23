@@ -9,11 +9,11 @@ class Table(models.Model):
     餐桌
     """
     name = models.CharField(max_length=255, blank=False, null=False)
-    restaurant = models.ForeignKey('restaurant.Restaurant', related_name="tables", null=True)
+    restaurant = models.ForeignKey('restaurant.Restaurant', related_name="tables", null=True, blank=True)
     table_type = models.ForeignKey('table.TableType', related_name="tables", null=True)
 
     # 餐桌在就餐过程中的信息和状态
-    order = models.ForeignKey('trade.Order', null=True)
+    order = models.ForeignKey('trade.Order', null=True, blank=True)
     # status = models.IntegerField(choices=STATUS, default=STATUS[0][0])
 
 

@@ -12,7 +12,7 @@ class Menu(models.Model):
     后期一家餐厅可以配置多个菜单，并可以设置菜单的有效时间范围
     """
     restaurant = models.ForeignKey('restaurant.Restaurant',
-                                   related_name="menus", null=True)
+                                   related_name="menus", blank=True, null=True)
     name = models.CharField(max_length=255, blank=False, null=False,
                             default=u"默认菜单")
     

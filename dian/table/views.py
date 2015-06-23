@@ -12,6 +12,7 @@ from table.serializers import TableTypeSerializer
 from table.serializers import TableTypeDetailSerializer
 from table.serializers import TableSerializer
 from table.serializers import TableDetailSerializer
+from table.serializers import TableCreateSerializer
 
 from dian.utils import restaurant_required
 
@@ -88,7 +89,7 @@ def create_table(request):
     """
     创建餐桌
     ---
-    serializer: table.serializers.TableSerializer
+    serializer: table.serializers.TableCreateSerializer
     omit_serializer: false
 
     responseMessages:
@@ -100,7 +101,7 @@ def create_table(request):
           message: Not authenticated
     """
     data = request.DATA.copy()
-    serializer = TableSerializer(data=data)
+    serializer = TableCreateSerializer(data=data)
     if serializer.is_valid():
         match = re.search("\[(\d+)\-(\d+)\]", data['name'])
         if match:

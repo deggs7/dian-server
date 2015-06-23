@@ -51,7 +51,10 @@ def get_member(request):
     code = request.GET.get('code', None)
 
     if DEBUG:
-        member = Member.objects.all()[0]
+        members = Member.objects.all()
+        member = None
+        if not members:
+            member = Member.objects.get_or_create(wp_openid="test")[0]
         # 返回会员信息
         serializer = MemberSerializer(member)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

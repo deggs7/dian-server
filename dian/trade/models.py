@@ -11,11 +11,8 @@ class Cart(models.Model):
     购物车
     每个顾客访问每家餐厅，都会有一个对应的购物车实体
     """
-    restaurant = models.ForeignKey("restaurant.Restaurant",\
-            related_name="carts", null=True)
-    member = models.ForeignKey("account.Member", related_name="carts",\
-            null=True)
-    # items = models.ManyToManyField("menu.Product", through="CartItem")
+    restaurant = models.ForeignKey("restaurant.Restaurant", related_name="carts", null=False)
+    member = models.ForeignKey("account.Member", related_name="carts", null=False)
 
 
 class CartItem(models.Model):

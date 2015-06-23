@@ -51,7 +51,7 @@ def get_cart_by_restaurant(request):
     except Member.DoesNotExist:
         return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
 
-    cart = Cart.objects.get_or_create(restaurant=restaurant, member=member)
+    cart = Cart.objects.get_or_create(restaurant=restaurant, member=member)[0]
     serializer = CartSerializer(data=cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

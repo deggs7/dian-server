@@ -6,6 +6,13 @@ from django.conf.urls import url
 
 
 urlpatterns = patterns(
+    'menu.wp_views',
+
+    url(r'^get-menus-by-restaurant/$', 'get_restaurant_menu_list'),
+
+)
+
+urlpatterns += patterns(
     'menu.views',
 
     # 菜单管理相关
