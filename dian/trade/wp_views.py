@@ -273,7 +273,7 @@ def cancel_order(request, order_pk):
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def get_order_list(request):
+def list_order(request):
     """
     获取订单列表
     param参数：
@@ -301,7 +301,7 @@ def get_order_list(request):
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def get_order_detail(request, order_pk):
+def get_detail_order(request, order_pk):
     """
     获取订单详细信息
     ---

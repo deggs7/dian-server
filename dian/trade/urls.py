@@ -28,10 +28,10 @@ urlpatterns = patterns(
     url(r'^cancel-order/(?P<order_pk>[0-9]+)/$', 'cancel_order'),
 
     # 获取历史订单列表
-    url(r'^get-order-list/$', 'get_order_list'),
+    url(r'^list-order/$', 'list_order'),
 
     # 获取订单详细信息
-    url(r'^get-order-detail/(?P<order_pk>[0-9]+)/$', 'get_order_detail')
+    url(r'^get-detail-order/(?P<order_pk>[0-9]+)/$', 'get_detail_order')
 )
 
 # console端接口
