@@ -73,7 +73,7 @@ def confirm_order(request, order_pk):
     order.status = Order.STATUS[1][0]
     order.confirm_time = datetime.datetime.now()
     order.save()
-    serializer = OrderSerializer(data=order)
+    serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -111,7 +111,7 @@ def reject_order(request, order_pk):
 
     order.status = Order.STATUS[3][0]
     order.save()
-    serializer = OrderSerializer(data=order)
+    serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -150,7 +150,7 @@ def finish_order(request, order_pk):
     order.status = Order.STATUS[2][0]
     order.pay_time = datetime.datetime.now()
     order.save()
-    serializer = OrderSerializer(data=order)
+    serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

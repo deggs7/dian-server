@@ -20,6 +20,7 @@ from table.serializers import TableTypeSerializer
 def list_table_type_by_restaurant(request):
     """
     根据餐厅的openid，获取餐厅的所有table_type
+    param参数：openid —— restaurant的openid
     ---
     serializer: table.serializers.TableTypeSerializer
     omit_serializer: false

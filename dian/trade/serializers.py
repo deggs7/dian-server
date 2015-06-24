@@ -15,11 +15,11 @@ class CartItemSerializer(ModelSerializer):
 
 
 class CartSerializer(ModelSerializer):
-    # cart_items = CartItemSerializer(many=True, read_only=True)
+    cart_items = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
-        # fields = ('id', 'restaurant', 'member')
+        fields = ('id', 'restaurant', 'member', 'cart_items')
 
 
 class OrderSerializer(ModelSerializer):
