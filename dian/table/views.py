@@ -78,7 +78,7 @@ def list_table(request):
         - code: 401
           message: Not authenticated
     """
-    tables = request.current_restaurant.tables
+    tables = request.current_restaurant.tables.all()
     serializer = TableSerializer(tables, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
