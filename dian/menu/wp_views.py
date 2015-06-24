@@ -32,5 +32,5 @@ def get_restaurant_menu_list(request):
     except Restaurant.DoesNotExist:
         return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = MenuDetailSerializer(data=restaurant.menus.all(), many=True)
+    serializer = MenuDetailSerializer(restaurant.menus.all(), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
