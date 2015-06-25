@@ -5,8 +5,11 @@ DEBUG = False
 
 # ref: https://docs.djangoproject.com/en/1.7/ref/settings/
 ALLOWED_HOSTS = (
-    'diankuai.cc',
     'diankuai.cn',
+    '127.0.0.1:9000',
+    'localhost:9000',
+    '127.0.0.1:3000',
+    'localhost:3000',
 )
 
 
@@ -40,15 +43,15 @@ MD5_SEED = 'diankuai.cn'
 # django-cors-headers settings, 
 
 CORS_ORIGIN_WHITELIST = (
-    # '127.0.0.1:9000',
-    # 'localhost:9000',
-    # '127.0.0.1:3000',
-    # 'localhost:3000',
     'diankuai.cn',
     'www.diankuai.cn',
     'api.diankuai.cn',
     'c.diankuai.cn',
     'wp.diankuai.cn',
+    '127.0.0.1:9000',
+    'localhost:9000',
+    '127.0.0.1:3000',
+    'localhost:3000',
 )
 
 
