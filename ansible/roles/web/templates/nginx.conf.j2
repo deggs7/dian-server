@@ -1,0 +1,80 @@
+# diankuai_nginx.conf
+
+# the upstream component nginx needs to connect to
+upstream dian {
+    server unix:///var/run/dian/dian_server.sock; # for a file socket
+    # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+}
+
+uwsgi_read_timeout     30m;
+uwsgi_send_timeout     30m;
+uwsgi_connect_timeout  30m;
+
+server_names_hash_bucket_size   64;
+
+# default server
+server {
+    return 404;
+}
+
+# configuration of the server
+server {
+    listen      80;
+    server_name api.diankuai.cn;
+
+    charset     utf-8;
+
+    access_log	/var/log/nginx/dian_server_access.log;
+    error_log	/var/log/nginx/dian_server_error.log;
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+
+    # Django media
+    # location /media  {
+    #     alias /path/to/your/mysite/media;  # your Django project's media files - amend as required
+    # }
+
+    location /static {
+        alias {{projects_root_dir}}/dian-server/dian/static; # your Django project's static files - amend as required
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        uwsgi_pass  dian;
+        include     {{projects_root_dir}}/dian-server/run/uwsgi_params; # the uwsgi_params file you installed
+    }
+}
+
+# configuration of the server
+server {
+    listen      80;
+    server_name c.diankuai.cn;
+
+    access_log	/var/log/nginx/dian_web_access.log;
+    error_log	/var/log/nginx/dian_web_error.log;
+
+    location / {
+        root   {{projects_root_dir}}/dian-web/dist;
+        index  index.html index.htm;
+        expires    4h;
+        # add_header Cache-Control: no-cache;
+        # add_header Cache-Control: no-store;
+    }
+}
+
+server {
+    listen      80;
+    server_name diankuai.cn www.diankuai.cn;
+
+    access_log	/var/log/nginx/dian_home_access.log;
+    error_log	/var/log/nginx/dian_home_error.log;
+
+    location / {
+        root   {{projects_root_dir}}/dian-web/dist/homepage;
+        index  index.html index.htm;
+        expires    1d;
+        # add_header Cache-Control: no-cache;
+        # add_header Cache-Control: no-store;
+    }
+}
