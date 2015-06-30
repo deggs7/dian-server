@@ -3,6 +3,9 @@
 - hosts: vagrant
   sudo: yes
   vars:
+    user: dian
+    group: dian
+    projects_root_dir: /home/dian
     whoami: "{{lookup('env','USER')}}"
     user_home: "{{lookup('env','HOME')}}"
     git_user_name: "Xiao Hanyu"

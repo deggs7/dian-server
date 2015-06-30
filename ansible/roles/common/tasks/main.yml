@@ -1,5 +1,14 @@
 ---
 
+- group: create a normal group
+  group: name={{group}} state=present
+
+- name: create a normal user
+  user: name={{user}} state=present
+        shell=/bin/bash home=/home/{{user}}
+        group={{group}}
+        generate_ssh_key=yes
+
 - name: enable epel source for yum
   yum: name={{item}} state=present
   with_items:
