@@ -1,0 +1,21 @@
+---
+
+- name: install git and tmux
+  yum: name={{item}} state=present
+  with_items:
+    - git
+    - tmux
+
+- name: install the missing package manager for python
+  yum: name={{item}} state=present
+  with_items:
+    - python-setuptools
+  register: result
+  ignore_errors: True
+
+- name: install virtualenv and supervisor from python
+  pip: name={{item}} state=present
+  with_items:
+    - supervisor
+    - virtualenv
+  when: result

@@ -1,0 +1,16 @@
+---
+
+- hosts: localhost
+  connection: local
+  sudo: yes
+  vars:
+    whoami: "{{lookup('env','USER')}}"
+    user_home: "{{lookup('env','HOME')}}"
+    git_user_name: "Xiao Hanyu"
+    git_user_email: "xiaohanyu1988@gmail.com"
+    role_basic_done: false
+  roles:
+    - basic
+    - web
+    - db
+    - mq
