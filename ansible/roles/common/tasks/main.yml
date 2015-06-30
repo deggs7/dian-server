@@ -1,5 +1,10 @@
 ---
 
+- name: enable epel source for yum
+  yum: name={{item}} state=present
+  with_items:
+    - epel-release
+
 - name: install git and tmux
   yum: name={{item}} state=present
   with_items:
@@ -9,7 +14,7 @@
 - name: install the missing package manager for python
   yum: name={{item}} state=present
   with_items:
-    - python-setuptools
+    - python-pip
   register: result
   ignore_errors: True
 

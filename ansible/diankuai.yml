@@ -1,16 +1,15 @@
 ---
 
-- hosts: localhost
-  connection: local
+- hosts: vagrant
   sudo: yes
   vars:
     whoami: "{{lookup('env','USER')}}"
     user_home: "{{lookup('env','HOME')}}"
     git_user_name: "Xiao Hanyu"
     git_user_email: "xiaohanyu1988@gmail.com"
-    role_basic_done: false
+    role_common_done: false
   roles:
-    - basic
-    - web
-    - db
-    - mq
+    - common
+    # - web
+    # - db
+    # - mq

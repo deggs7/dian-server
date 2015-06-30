@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -68,4 +68,14 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
+
+  config.vm.provision :ansible do |ansible|
+    ansible.sudo = true
+    ansible.sudo_user = "root"
+    ansible.playbook = "ansible/diankuai.yml"
+    ansible.inventory_path = "ansible/hosts"
+    ansible.verbose = true
+    ansible.extra_vars = {ansible_ssh_user: 'vagrant'}
+    ansible.limit = 'all'
+  end
 end
