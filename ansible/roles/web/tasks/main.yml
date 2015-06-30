@@ -1,0 +1,56 @@
+---
+
+- name: update yum nginx repo for latest stable nginx.
+  copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
+
+- name: install nginx
+  yum: name={{item}} state=present
+  with_items:
+    - nginx
+
+- name: enable nginx service
+  service: name=nginx state=started enabled=yes
+
+- name: enable http service port in firewall settings
+  firewalld: service={{item}} permanent=true state=enabled
+  with_items:
+    - http
+
+- name: copy ssh key
+  copy: src={{item}} dest=/home/{{user}}/.ssh/
+        owner={{user}} group={{group}} mode=0400
+  with_items:
+    - id_rsa_dian-server
+    - id_rsa_dian-web
+    - id_rsa_dian-home
+    - id_rsa_dian-wp
+
+# `git clone --depth=1` to improve speed
+# set `update=yes` to do `git pull` by default
+# specify custom private keys for each repo to clone private github repos.
+- name: git clone multiple repos from diankuai
+  sudo_user: dian
+  git: repo=git@github.com:diankuai/{{item}}
+       dest={{projects_root_dir}}/{{item}}
+       depth=1
+       update={{git['pull']}}
+       accept_hostkey=yes
+       recursive=no
+       key_file=/home/{{user}}/.ssh/id_rsa_{{item}}
+  with_items:
+    - dian-server
+    - dian-web
+    - dian-home
+    - dian-wp
+
+- name: install libs for compiling uwsgi
+  yum: name={{item}} state=present
+  with_items:
+    - python-devel
+
+- name: install uwsgi
+  pip: name={{item}} state=present
+  with_items:
+    - uwsgi
+
+- include: dian-server.yml

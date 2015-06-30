@@ -1,0 +1,57 @@
+* Ansible Deployment
+
+[[http://www.ansible.com/home][Ansible]] 类似于 puppet, chef ，是由前 puppet 员工创建，其架构使用都非常简单。
+
+关于 dian-server 的 ansible 部署，简要说明如下。
+
+Role:
+- ~common~: 用于初始化系统环境， ~common~ 是其它 role 的依赖项。
+  - 创建 ~dian~ 用户和组
+  - (CentOS) 初始化 epel 软件源
+  - 初始安装 git/tmux/vim/firewalld 软件包
+  - 安装 python-devel 包，许多 python 的 pip 包需要
+  - 安装 python pip 包管理器
+  - 通过 pip 安装 virtualenv 和 supervisor
+- ~db~: 初始化数据库
+  - 安装 mariadb-server 和 mariadb-devel 两个 yum 包
+  - 安装 MySQL-python pip 包
+  - 启动 mariadb 服务
+  - [[https://dev.mysql.com/doc/refman/5.0/en/mysql-secure-installation.html][mysql_secure_installation]]
+  - 设置 mysql 编码为 utf8
+  - 创建 ~dian~ 数据库
+  - 创建并初始化数据库用户及权限
+  - 配置用户设置文件，方便用户登录 mysql
+- ~mq~: 初始化消息队列
+  - 安装 rabbitmq-server 包
+  - 启动 rabbitmq-server 服务
+  - 创建并初始化 rabbitmq vhost, user 等并初始化权限
+- ~web~: 安装 dian-server api 服务
+  - 安装最新版本 nginx 包
+  - 启动 nginx 服务
+  - 调整防火墙规则，允许 HTTP 流量
+  - 设置合适的 ssh-key 并 clone github 私有代码库到服务器上
+  - 安装 uwsgi 包
+  - 创建虚拟环境并通过 pip 安装 dian-server 的依赖包(requirements.txt)
+  - 配置 ~local_settings.py~
+  - ~python manage.py collectstatic~
+  - ~python manage.py syncdb~
+  - ~python manage.py migrate~
+  - ~python manage.py createsuperuser~
+  - ~mkdir /var/log/dian-server~, ~mkdir /var/run/dian-server~
+  - 创建并配置 dian-server systemd 服务
+  - 配置 uwsgi
+  - 配置 nginx
+
+Refs:
+- https://help.github.com/articles/git-automation-with-oauth-tokens/
+- https://developer.github.com/guides/managing-deploy-keys/
+- https://help.github.com/articles/generating-ssh-keys/
+- https://help.github.com/articles/git-automation-with-oauth-tokens/
+- https://github.com/mitchellh/vagrant/issues/3096
+- http://stackoverflow.com/questions/16444306/ansible-idempotent-mysql-installation-playbook
+- http://docs.ansible.com/mysql_user_module.html
+- http://outofcontrol.ca/blog/comments/change-mysql-5.5-default-character-set-to-utf8
+- http://dev.mysql.com/doc/refman/5.5/en/server-options.html#option_mysqld_default-character-set
+- http://kosalads.blogspot.ca/2013/03/mysql-55-how-to-change-mysql-default.html
+- https://docs.djangoproject.com/en/1.8/ref/contrib/staticfiles/
+- http://docs.ansible.com/django_manage_module.html

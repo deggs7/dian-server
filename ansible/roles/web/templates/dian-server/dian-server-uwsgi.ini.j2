@@ -3,13 +3,13 @@
 
 # Django-related settings
 # the base directory (full path)
-chdir = /home/dian/dian-server/dian
+chdir = {{projects_root_dir}}/dian-server/dian
 
 # Django's wsgi file
 module = dian.wsgi
 
 # the virtualenv (full path)
-home = /home/dian/dian-server/.venv
+home = {{projects_root_dir}}/dian-server/.venv
 
 # process-related settings
 # master
@@ -19,7 +19,8 @@ master = true
 processes = 10
 
 # the socket (use the full path to be safe)
-socket = /var/run/dian/dian_server.sock
+socket = /var/run/dian-server/dian_server.sock
+# socket = :8001
 
 # with appropriate permissions - may be needed
 chmod-socket = 666
@@ -28,4 +29,4 @@ chmod-socket = 666
 vacuum = true
 
 # daemonize = /var/log/uwsgi.log
-pidfile = /var/run/dian/dian_uwsgi.pid
+pidfile = /var/run/dian-server/dian_uwsgi.pid

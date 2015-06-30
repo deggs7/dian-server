@@ -1,0 +1,20 @@
+[Unit]
+Description=diankuai.cn
+Documentation=http:/www.diankuai.cn/
+After=syslog.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/dian-server/supervisord.pid
+ExecStart=/usr/bin/uwsgi --ini {{projects_root_dir}}/dian-server/dian/local/dian-server-uwsgi.ini
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

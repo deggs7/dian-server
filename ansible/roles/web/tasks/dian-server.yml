@@ -1,0 +1,71 @@
+---
+
+- name: pip install requirements in virtualenv
+  pip: requirements={{projects_root_dir}}/dian-server/requirements.txt
+       virtualenv={{projects_root_dir}}/dian-server/.venv
+  sudo_user: "{{user}}"
+
+- name: configure dian-server
+  template: src=dian-server/local_settings.py.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/local_settings.py
+            owner={{user}} group={{group}} mode=0644
+
+- name: run django manage.py collectstatic
+  django_manage: command=collectstatic
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
+  sudo_user: "{{user}}"
+
+- name: run django manage.py syncdb
+  django_manage: command=syncdb
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
+
+- name: run django manage.py migrate
+  django_manage: command=migrate
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
+
+- name: run django manage.py createsuperuser
+  django_manage: command="createsuperuser --noinput --username=admin"
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
+  ignore_errors: yes
+
+- name: create proper runtime directories under `/var/run/dian-server` for
+  file: path={{item}} state=directory owner={{user}} group={{group}}
+  with_items:
+    - /var/run/dian-server
+    - /var/log/dian-server
+
+- name: create dian-server systemd service[1]
+  template: src=dian-server/dian-server.service.j2 dest=/usr/lib/systemd/system/dian-server.service
+
+- name: create dian-server systemd service[2]
+  template: src=dian-server/dian-server.conf.j2 dest=/usr/lib/tmpfiles.d/dian-server.conf
+
+- name: configure uwsgi[1]
+  template: src=dian-server/dian-server-uwsgi.ini.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/dian-server-uwsgi.ini
+            owner={{user}} group={{group}} mode=0644
+
+- name: configure uwsgi[2]
+  template: src=dian-server/uwsgi_params.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/uwsgi_params
+            owner={{user}} group={{group}} mode=0644
+  notify:
+    - restart nginx
+
+- name: update nginx conf
+  template: src=dian-server/nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: update nginx conf for dian-server site
+  template: src=dian-server/dian-server.nginx.conf.j2 dest=/etc/nginx/conf.d/dian-server.conf
+  notify:
+    - restart nginx

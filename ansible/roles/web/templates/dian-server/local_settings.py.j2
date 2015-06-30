@@ -1,0 +1,81 @@
+"""
+local settings, will overwrite dian/settings
+"""
+
+DEBUG = {{debug}}
+
+# ref: https://docs.djangoproject.com/en/1.7/ref/settings/
+ALLOWED_HOSTS = (
+    'diankuai.cn',
+    '127.0.0.1:9000',
+    'localhost:9000',
+    '127.0.0.1:3000',
+    'localhost:3000',
+)
+
+
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': "{{mysql['database']}}",       # Mysql database.
+        'USER': "{{mysql['user_name']}}",      # Not used with sqlite3.
+        'PASSWORD': "{{mysql['user_password']}}",  # Not used with sqlite3.
+        'HOST': "{{mysql['host']}}",  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': "{{mysql['port']}}",  # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+
+# Mongo settings
+# MONGO_HOST = '127.0.0.1'
+# MONGO_PORT = 27017
+# MONGO_DB = 'dian'
+
+
+# md5 seed
+MD5_SEED = 'diankuai.cn'
+
+
+# django-cors-headers settings,
+CORS_ORIGIN_WHITELIST = (
+    'diankuai.cn',
+    'www.diankuai.cn',
+    'api.diankuai.cn',
+    'c.diankuai.cn',
+    'wp.diankuai.cn',
+    '127.0.0.1:9000',
+    'localhost:9000',
+    '127.0.0.1:3000',
+    'localhost:3000',
+)
+
+
+# qiniu settings
+QINIU_ACCESS_KEY = "{{qiniu['access_key']}}"
+QINIU_SECRET_KEY = "{{qiniu['secret_key']}}"
+QINIU_BUCKET_PUBLIC = "{{qiniu['bucket_public']}}"
+QINIU_DOMAIN = "{{qiniu['domain']}}"
+
+
+# Weixin configration
+APP_ID = "{{weixin['app_id']}}"
+APP_SECRET = "{{weixin['app_secret']}}"
+
+
+# API domain
+API_DOMAIN = "http://api.diankuai.cn/"
+
+
+# Weixin platform
+WP_DOMAIN = "http://wp.diankuai.cn/"
+
+
+# celery queue
+BROKER_URL = "amqp://{{rabbitmq['user_name']}}:{{rabbitmq['user_password']}}@localhost:5672/dian"
+
+
+# phone message
+MSG_ACCOUNT = "{{message['account']}}"
+MSG_PASSWORD = "{{message['password']}}"

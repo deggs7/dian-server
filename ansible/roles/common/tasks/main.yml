@@ -1,0 +1,45 @@
+---
+
+- group: create a normal group
+  group: name={{group}} state=present
+
+- name: create a normal user
+  user: name={{user}} state=present
+        shell=/bin/bash home=/home/{{user}}
+        group={{group}}
+        generate_ssh_key=yes
+
+- name: enable epel source for yum
+  yum: name={{item}} state=present
+  with_items:
+    - epel-release
+
+- name: install git, tmux, vim and firewalld
+  yum: name={{item}} state=present
+  with_items:
+    - git
+    - tmux
+    - vim
+    - firewalld
+
+- name: install python-devel package for "Python.h"
+  yum: name={{item}} state=present
+  with_items:
+    - python-devel
+
+- name: install the missing package manager for python
+  yum: name={{item}} state=present
+  with_items:
+    - python-pip
+  register: result
+  ignore_errors: True
+
+- name: install virtualenv and supervisor from python
+  pip: name={{item}} state=present
+  with_items:
+    - supervisor
+    - virtualenv
+  when: result
+
+- set_fact:
+    role_common_done: true
