@@ -1,1 +1,9 @@
 ---
+
+- name: settings tmux.conf
+  copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
+
+- name: install nginx
+  yum: name={{item}} state=present
+  with_items:
+    - nginx
