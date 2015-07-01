@@ -47,7 +47,6 @@ INSTALLED_APPS = (
     'menu',
     'trade',
     'rest_framework.authtoken',
-    'wp',
     'south',
     'rest_framework_swagger',
 )
