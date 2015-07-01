@@ -11,6 +11,7 @@ from trade.models import Cart
 from trade.models import CartItem
 from trade.models import Order
 from trade.models import OrderItem
+from menu.models import Product
 from account.models import Member
 from restaurant.models import Restaurant
 
@@ -190,6 +191,48 @@ def decrease_cart_item(request, pk):
 @api_view(['POST'])
 @authentication_classes(())
 @permission_classes(())
+def update_cart(request, cart_pk):
+    """
+    更新购物车
+    ---
+        serializer: trade.serializers.CartSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+            - code: 404
+              message: Not Found
+    """
+    try:
+        cart = Cart.objects.get(pk=cart_pk)
+    except CartItem.DoesNotExist:
+        return Response('cart not found', status=status.HTTP_404_NOT_FOUND)
+
+    cart_items = cart.cart_items.all()
+    for cart_item in cart_items:
+        cart_item.delete()
+
+    for item in request.DATA:
+        if 'productid' not in item or 'count' not in item:
+            return Response('args error', status=status.HTTP_400_BAD_REQUEST)
+        try:
+            product = Product.objects.get(pk=item['productid'])
+        except Product.DoesNotExist:
+            return Response('product %d not found' % item['productid'], status=status.HTTP_404_NOT_FOUND)
+
+        cart_item = CartItem(product=product, count=item['count'], cart=cart)
+        cart_item.save()
+
+    serializer = CartSerializer(cart)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes(())
+@permission_classes(())
 def create_order_from_cart(request, cart_pk):
     """
     从购物车中创建订单
@@ -236,6 +279,7 @@ def create_order_from_cart(request, cart_pk):
                                )
         order_item.save()
         price_total += cart_item.product.price * cart_item.count
+        cart_item.delete()
     order.price = price_total
     order.save()
 
@@ -275,7 +319,7 @@ def cancel_order(request, order_pk):
 @permission_classes(())
 def list_order(request):
     """
-    获取订单列表
+    获取历史订单列表
     param参数：
               wp_openid —— member的openid
     ---
@@ -294,7 +338,36 @@ def list_order(request):
     except Member.DoesNotExist:
         return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = OrderSerializer(member.orders.all(), many=True)
+    serializer = OrderSerializer(member.orders.exclude(status__in=[0, 1]), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def list_order_now(request):
+    """
+    获取当前订单列表 （待确认和已经确认）
+    param参数：
+              wp_openid —— member的openid
+    ---
+        serializer: trade.serializers.OrderSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+    wp_openid = request.GET.get('wp_openid', None)
+    try:
+        member = Member.objects.get(wp_openid=wp_openid)
+    except Member.DoesNotExist:
+        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = OrderSerializer(member.orders.filter(status__in=[0, 1]), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

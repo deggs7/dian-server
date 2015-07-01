@@ -13,13 +13,16 @@ urlpatterns = patterns(
     url(r'^get-cart-by-restaurant/$', 'get_cart_by_restaurant'),
 
     # 添加一个商品至购物车
-    url(r'^add-cart-item/$', 'add_cart_item'),
+    # url(r'^add-cart-item/$', 'add_cart_item'),
 
     # 从购物车移除一个商品
     #url(r'^remove-cart-item/$', 'remove_cart_item'),
 
     # 修改商品数量
-    url(r'^decrease-cart-item/(?P<pk>[0-9]+)/$', 'decrease_cart_item'),
+    # url(r'^decrease-cart-item/(?P<pk>[0-9]+)/$', 'decrease_cart_item'),
+
+    # 更新购物车
+    url(r'^update-cart/(?P<cart_pk>[0-9]+)/$', 'update_cart'),
 
     # 创建订单
     url(r'^create-order-from-cart/(?P<cart_pk>[0-9]+)/$', 'create_order_from_cart'),
@@ -29,6 +32,9 @@ urlpatterns = patterns(
 
     # 获取历史订单列表
     url(r'^list-order/$', 'list_order'),
+
+    # 获取当前订单列表
+    url(r'^list-order-now/$', 'list_order_now'),
 
     # 获取订单详细信息
     url(r'^get-detail-order/(?P<order_pk>[0-9]+)/$', 'get_detail_order')
