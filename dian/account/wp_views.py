@@ -34,6 +34,8 @@ def get_member(request):
         member = None
         if not members:
             member = Member.objects.get_or_create(wp_openid="test")[0]
+        else:
+            member = members[0]
         # 返回会员信息
         serializer = MemberSerializer(member)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
