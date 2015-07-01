@@ -20,3 +20,13 @@
 #     - dian-server
 #     - dian-web
 #     - dian-home
+
+- name: install libs for compiling uwsgi
+  yum: name={{item}} state=present
+  with_items:
+    - python-devel
+
+- name: install uwsgi
+  pip: name={{item}} state=present
+  with_items:
+    - uwsgi
