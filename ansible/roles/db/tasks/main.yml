@@ -4,3 +4,6 @@
   yum: name={{item}} state=present
   with_items:
     - mariadb-server
+
+- name: enable mariadb service
+  service: name=mariadb state=started enabled=yes
