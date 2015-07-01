@@ -17,11 +17,3 @@ urlpatterns = patterns(
     # url(r'^confirm-table-type/$', 'confirm_table_type'),
 )
 
-
-urlpatterns += patterns(
-    'wp.wp_views',
-
-    url(r'^get-member/$', 'get_member'),
-    url(r'^confirm-table-type/$', 'confirm_table_type'),
-)
-

@@ -15,10 +15,3 @@ urlpatterns = patterns(
 
 )
 
-
-urlpatterns += patterns(
-    'restaurant.wp_views',
-
-    url(r'^get-restaurant/$', 'get_restaurant'),
-
-)
