@@ -14,7 +14,7 @@ from menu.serializers import MenuDetailSerializer
 @api_view(["GET"])
 @authentication_classes(())
 @permission_classes(())
-def get_restaurant_menu_list(request):
+def list_menu_by_restaurant(request):
     """
     根据餐厅的openid，获取餐厅的所有menus
     ---
