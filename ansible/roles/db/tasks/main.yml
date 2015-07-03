@@ -1,9 +1,17 @@
 ---
 
-- name: install mariadb-server
+- name: install mariadb
   yum: name={{item}} state=present
   with_items:
     - mariadb-server
+    - mariadb-devel
+
+- name: install mysql-python via pip
+  pip: name={{item}} state=present
+  with_items:
+    - MySQL-python
 
 - name: enable mariadb service
   service: name=mariadb state=started enabled=yes
+
+- include: mysql_secure_installation.yml
