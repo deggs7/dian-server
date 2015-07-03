@@ -5,7 +5,7 @@
   vars:
     user: dian
     group: dian
-    projects_root_dir: /home/dian
+    projects_root_dir: /home/dian/diankuai
     whoami: "{{lookup('env','USER')}}"
     user_home: "{{lookup('env','HOME')}}"
     git_user_name: "Xiao Hanyu"
@@ -15,4 +15,4 @@
     - common
     - web
     - db
-    # - mq
+    - mq
