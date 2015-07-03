@@ -43,9 +43,13 @@ INSTALLED_APPS = (
     'account',
     'restaurant',
     'registration',
+    'table',
+    'menu',
+    'trade',
     'rest_framework.authtoken',
     'wp',
     'south',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (

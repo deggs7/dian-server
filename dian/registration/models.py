@@ -22,7 +22,7 @@ class Registration(models.Model):
     status = models.CharField(max_length=16, choices=STATUS, default=STATUS[0][0])
 
     # 此 table_type 只是临时存储，不可以被直接引用（最好去除此属性）
-    table_type = models.ForeignKey('restaurant.TableType', related_name="registrations")
+    table_type = models.ForeignKey('table.TableType', related_name="registrations")
     
     # 记录冗余信息用于后续统计
     table_min_seats = models.IntegerField("min seats", default=1)
@@ -43,6 +43,23 @@ class Registration(models.Model):
             return current_reg.queue_number
         except:
             return 0
+
+
+class Strategy(models.Model):
+    """
+    超时策略，目前支持礼物和折扣两种模式
+    """
+    REWARD_TYPE = (
+        ('gift', 'Gift'),
+        ('discount', 'Discount'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    restaurant = models.ForeignKey("restaurant.Restaurant", related_name="strategies", null=True)
+
+    time_wait = models.IntegerField("waiting time in minutes", null=False, blank=False)
+    reward_type = models.CharField(max_length=16, choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
+    reward_info = models.CharField(max_length=512, blank=False, null=False)
 
 
 class StrategyDup(models.Model):

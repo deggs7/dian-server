@@ -120,9 +120,8 @@ class Member(models.Model):
 
     id = models.AutoField(primary_key=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    # 微信的openid
 
-    # openid	用户的唯一标识
+    # openid	微信的openid，用户的唯一标识
     wp_openid = models.CharField(max_length=255, null=True, blank=True)
     # nickname	用户昵称
     wp_nickname = models.CharField(max_length=255, null=True, blank=True)

@@ -12,7 +12,7 @@ def generate_qr_code(url):
     img.save('/Users/david/Desktop/test.png')
 
 
-def store_qr_code(url)
+def store_qr_code(url):
     """
     存储二维码
     并返回二维码文件的key
