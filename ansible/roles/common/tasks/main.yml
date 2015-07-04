@@ -19,6 +19,7 @@
   with_items:
     - git
     - tmux
+    - vim
 
 - name: install python-devel package for "Python.h"
   yum: name={{item}} state=present
