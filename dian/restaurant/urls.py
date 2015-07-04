@@ -13,5 +13,7 @@ urlpatterns = patterns(
     url(r'^update-restaurant/$', 'update_restaurant'),
     url(r'^uptoken-restaurant/$', 'uptoken_default_restaurant'),
 
+    # 获取餐厅用于取号的二维码
+    url(r'^register-qrcode/$', 'get_register_qrcode'),
 )
 

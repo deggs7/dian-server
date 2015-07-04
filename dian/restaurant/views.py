@@ -14,7 +14,14 @@ from restaurant.serializers import RestaurantSerializer
 
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
+from dian.settings import WP_DOMAIN
+
 from dian.utils import get_md5
+from dian.utils import restaurant_required
+
+from restaurant.utils import make_web_auth_url
+from restaurant.utils import generate_qr_code
+from restaurant.utils import upload_to_qiniu
 
 
 @api_view(["GET"])
@@ -69,4 +76,19 @@ def update_restaurant(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+@restaurant_required
+def get_register_qrcode(request):
+    """
+    获取微信取号的二维码
+    curl -X GET http://diankuai.cn:8000/wp/register-qrcode/ -H 'Authorization: Token f1b8ca936511301204fe627e63d502fc955fab8b' -H 'X-Restaurant-Id: 1'
+    """
+    redirect_uri = "%sregister/" % WP_DOMAIN
+    url = make_web_auth_url(redirect_uri, request.current_restaurant.openid)
+    localfile = generate_qr_code(url)
+    file_key = upload_to_qiniu(localfile)
+    return Response({
+        "file_key": file_key
+    })
 
