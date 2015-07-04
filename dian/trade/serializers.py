@@ -42,8 +42,13 @@ class OrderItemSerializer(ModelSerializer):
 
 class OrderDetailSerializer(ModelSerializer):
     order_items = OrderItemSerializer(many=True, read_only=True)
+    restaurant_name = SerializerMethodField('get_restaurant_name')
 
     class Meta:
         model = Order
-        fields = ('id', 'restaurant', 'member', 'create_time', 'confirm_time', 'pay_time',
+        fields = ('id', 'restaurant', 'restaurant_name', 'member',\
+                'create_time', 'confirm_time',  'pay_time',\
                   'status', 'price', 'order_items')
+
+    def get_restaurant_name(self, obj):
+        return obj.restaurant.name
