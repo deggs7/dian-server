@@ -6,9 +6,11 @@ from trade.models import Cart
 from trade.models import CartItem
 from trade.models import Order
 from trade.models import OrderItem
+from menu.serializers import ProductSerializer
 
 
 class CartItemSerializer(ModelSerializer):
+    product = ProductSerializer()
 
     class Meta:
         model = CartItem
