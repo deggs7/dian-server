@@ -29,3 +29,7 @@
               password={{mysql_user_password}}
               priv=dian.*:ALL
               host=localhost
+
+- name: copy user my.cnf file with {{user}} password credentials
+  template: src="my.cnf.{{user}}.j2" dest="/home/{{user}}/.my.cnf"
+             owner={{user}} group={{user}} mode=0600
