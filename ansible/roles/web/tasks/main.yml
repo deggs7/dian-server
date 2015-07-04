@@ -1,6 +1,6 @@
 ---
 
-- name: settings tmux.conf
+- name: update yum nginx repo for latest stable nginx.
   copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
 
 - name: install nginx
