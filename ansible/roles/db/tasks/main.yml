@@ -15,3 +15,8 @@
   service: name=mariadb state=started enabled=yes
 
 - include: mysql_secure_installation.yml
+
+- name: set mysql encoding to utf8
+  copy: src=utf8-mysqld.cnf dest=/etc/my.cnf.d/utf8-mysqld.cnf
+  notify:
+    - restart mariadb
