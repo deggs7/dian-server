@@ -20,3 +20,12 @@
   copy: src=utf8-mysqld.cnf dest=/etc/my.cnf.d/utf8-mysqld.cnf
   notify:
     - restart mariadb
+
+- name: create database {{mysql_db}}
+  mysql_db: name={{mysql_db}} state=present
+
+- name: create normal mysql user {{mysql_user}}
+  mysql_user: name={{mysql_user}} state=present
+              password={{mysql_user_password}}
+              priv=dian.*:ALL
+              host=localhost

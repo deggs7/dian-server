@@ -11,9 +11,12 @@
     git_user_name: "Xiao Hanyu"
     git_user_email: "xiaohanyu1988@gmail.com"
     mysql_root_password: "mysqlrootpass@2015"
+    mysql_db: "dian"
+    mysql_user: "dian"
+    mysql_user_password: "mysqluserpass@2015"
     role_common_done: false
   roles:
     - common
-    - web
+    # - web
     - db
     - mq
