@@ -13,9 +13,11 @@
     git_pull: no                # Should `git pull` for existing git repo?
     mysql_root_password: "mysqlrootpass@2015"
     mysql_db: "dian"
-    mysql_user: "dian"
+    mysql_user_name: "dian"
     mysql_user_password: "mysqluserpass@2015"
-    rabbitmq_user: "dian"
+    mysql_host: "localhost"
+    mysql_port: "3306"
+    rabbitmq_user_name: "dian"
     rabbitmq_user_password: "rabbitmquserpass@2015"
     rabbitmq_vhost: "/dian"
     role_common_done: false
