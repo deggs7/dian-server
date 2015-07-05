@@ -8,3 +8,9 @@
   template: src=dian-server/local_settings.py.j2
             dest={{projects_root_dir}}/dian-server/dian/local/local_settings.py
             owner={{user}} group={{group}} mode=0644
+
+- name: run django manage.py collectstatic
+  django_manage: command=collectstatic
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
