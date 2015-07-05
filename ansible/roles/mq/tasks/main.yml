@@ -12,7 +12,7 @@
   rabbitmq_vhost: name={{rabbitmq_vhost}} state=present
 
 - name: create a rabbitmq user and assign full access control
-  rabbitmq_user: user={{rabbitmq_user}}
+  rabbitmq_user: user={{rabbitmq_user_name}}
                  password={{rabbitmq_user_password}}
                  vhost={{rabbitmq_vhost}}
                  configure_priv=.*
