@@ -36,6 +36,6 @@
       app_secret: '8c114x06f05e2e242ca5638b883482a31'
     role_common_done: false
   roles:
-    - web
     - db
     - mq
+    - web

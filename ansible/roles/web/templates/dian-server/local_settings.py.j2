@@ -19,6 +19,7 @@ ALLOWED_HOSTS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': "{{mysql['database']}}",       # Mysql database.
         'USER': "{{mysql['user_name']}}",      # Not used with sqlite3.
         'PASSWORD': "{{mysql['user_password']}}",  # Not used with sqlite3.
         'HOST': "{{mysql['host']}}",  # Set to empty string for localhost. Not used with sqlite3.
