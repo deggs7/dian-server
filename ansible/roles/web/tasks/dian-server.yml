@@ -1,0 +1,5 @@
+---
+
+- name: pip install requirements in virtualenv
+  pip: requirements={{projects_root_dir}}/dian-server/requirements.txt
+       virtualenv={{projects_root_dir}}/dian-server/.venv
