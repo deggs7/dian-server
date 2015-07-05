@@ -14,7 +14,7 @@
   with_items:
     - epel-release
 
-- name: install git and tmux
+- name: install git, tmux and vim
   yum: name={{item}} state=present
   with_items:
     - git
