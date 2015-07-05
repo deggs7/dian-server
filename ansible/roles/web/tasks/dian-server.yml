@@ -3,3 +3,8 @@
 - name: pip install requirements in virtualenv
   pip: requirements={{projects_root_dir}}/dian-server/requirements.txt
        virtualenv={{projects_root_dir}}/dian-server/.venv
+
+- name: configure dian-server
+  template: src=dian-server/local_settings.py.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/local_settings.py
+            owner={{user}} group={{group}} mode=0644
