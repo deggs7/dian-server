@@ -13,16 +13,19 @@
       user_email: "xiaohanyu1988@gmail.com"
       pull: no                  # Should `git pull` for existing git repo?
     mysql:
-      root_password: "mysqlrootpass@2015"
+      root_password: "mysqlrootpass$2015"
       database: "dian"
       user_name: "dian"
-      user_password: "mysqluserpass@2015"
+      user_password: "mysqluserpass$2015"
       host: "localhost"
       port: "3306"
     rabbitmq:
       user_name: "dian"
-      user_password: "rabbitmquserpass@2015"
+      user_password: "rabbitmquserpass$2015"
       vhost: "/dian"
+    message:
+      account: "13021045329"
+      password: "28788DE1EDAF72E75A1BFAF2F98E"
     qiniu:
       access_key: "WbBF2OGhoW23qBTcNkdgmpuvDgI3S-m-IzIz0xTp"
       secret_key: "zykcP-49eXiX53kQR3nsLQHDXbg9FW5avL4OSOvD"

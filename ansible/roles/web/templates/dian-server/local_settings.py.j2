@@ -69,3 +69,12 @@ API_DOMAIN = "http://api.diankuai.cn/"
 
 # Weixin platform
 WP_DOMAIN = "http://wp.diankuai.cn/"
+
+
+# celery queue
+BROKER_URL = "amqp://{{rabbitmq['user_name']}}:{{rabbitmq['user_password']}}@localhost:5672/dian"
+
+
+# phone message
+MSG_ACCOUNT = "{{message['account']}}"
+MSG_PASSWORD = "{{message['password']}}"
