@@ -7,7 +7,7 @@
 
 - name: Change root user password on first run
   mysql_user: name=root
-              password={{mysql_root_password}}
+              password={{mysql['root_password']}}
   ignore_errors: yes
 
 - name: copy user my.cnf file with root password credentials
@@ -17,7 +17,7 @@
 # http://ansible.cc/docs/modules.html#mysql-user
 - name: Change root user password on first run
   mysql_user: name=root
-              password={{mysql_root_password}}
+              password={{mysql['root_password']}}
               priv=*.*:ALL,GRANT
               host={{item}}
               check_implicit_admin=yes

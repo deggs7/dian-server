@@ -8,21 +8,23 @@
     projects_root_dir: /home/dian/diankuai
     whoami: "{{lookup('env','USER')}}"
     user_home: "{{lookup('env','HOME')}}"
-    git_user_name: "Xiao Hanyu"
-    git_user_email: "xiaohanyu1988@gmail.com"
-    git_pull: no                # Should `git pull` for existing git repo?
-    mysql_root_password: "mysqlrootpass@2015"
-    mysql_db: "dian"
-    mysql_user_name: "dian"
-    mysql_user_password: "mysqluserpass@2015"
-    mysql_host: "localhost"
-    mysql_port: "3306"
-    rabbitmq_user_name: "dian"
-    rabbitmq_user_password: "rabbitmquserpass@2015"
-    rabbitmq_vhost: "/dian"
+    git:
+      user_name: "Xiao Hanyu"
+      user_email: "xiaohanyu1988@gmail.com"
+      pull: no                  # Should `git pull` for existing git repo?
+    mysql:
+      root_password: "mysqlrootpass@2015"
+      database: "dian"
+      user_name: "dian"
+      user_password: "mysqluserpass@2015"
+      host: "localhost"
+      port: "3306"
+    rabbitmq:
+      user_name: "dian"
+      user_password: "rabbitmquserpass@2015"
+      vhost: "/dian"
     role_common_done: false
   roles:
-    - common
     - web
     - db
     - mq

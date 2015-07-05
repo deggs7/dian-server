@@ -31,7 +31,7 @@
   git: repo=git@github.com:diankuai/{{item}}
        dest={{projects_root_dir}}/{{item}}
        depth=1
-       update={{git_pull}}
+       update={{git['pull']}}
        accept_hostkey=yes
        recursive=no
        key_file=/home/{{user}}/.ssh/id_rsa_{{item}}
