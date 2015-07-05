@@ -25,6 +25,14 @@ class Restaurant(models.Model):
     owner = models.ForeignKey(User, related_name="own_restaurants")
     openid = models.CharField(max_length=255, blank=True, null=True)
 
+    # 餐厅微信信息
+    wp_name = models.CharField(max_length=255, blank=True, null=True)
+    wp_qrcode_file_key = models.CharField(max_length=255, blank=True, null=True)
+
+    # 餐厅wifi信息
+    wifi_name = models.CharField(max_length=255, blank=True, null=True)
+    wifi_password = models.CharField(max_length=255, blank=True, null=True)
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self.openid = get_md5("%s-%s-%s" % (MD5_SEED,\
