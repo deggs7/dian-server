@@ -15,6 +15,9 @@
     mysql_db: "dian"
     mysql_user: "dian"
     mysql_user_password: "mysqluserpass@2015"
+    rabbitmq_user: "dian"
+    rabbitmq_user_password: "rabbitmquserpass@2015"
+    rabbitmq_vhost: "/dian"
     role_common_done: false
   roles:
     - common

@@ -7,3 +7,15 @@
 
 - name: enable rabbitmq-server service
   service: name=rabbitmq-server state=started enabled=yes
+
+- name: create a rabbitmq vhost
+  rabbitmq_vhost: name={{rabbitmq_vhost}} state=present
+
+- name: create a rabbitmq user and assign full access control
+  rabbitmq_user: user={{rabbitmq_user}}
+                 password={{rabbitmq_user_password}}
+                 vhost={{rabbitmq_vhost}}
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
+                 state=present
