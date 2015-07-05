@@ -13,6 +13,7 @@ class Cart(models.Model):
     """
     restaurant = models.ForeignKey("restaurant.Restaurant", related_name="carts", null=False)
     member = models.ForeignKey("account.Member", related_name="carts", null=False)
+    table = models.ForeignKey("table.Table", related_name="carts", null=True, blank=True)
 
 
 class CartItem(models.Model):
@@ -41,6 +42,7 @@ class Order(models.Model):
             related_name="orders", null=True)
     member = models.ForeignKey('account.Member', related_name="orders",\
             null=True)
+    table_name = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.DateTimeField(default=datetime.datetime.now())
     confirm_time = models.DateTimeField(null=True)
     pay_time = models.DateTimeField(null=True)

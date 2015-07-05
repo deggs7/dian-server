@@ -13,7 +13,7 @@ class Table(models.Model):
     table_type = models.ForeignKey('table.TableType', related_name="tables", null=True)
 
     # 餐桌在就餐过程中的信息和状态
-    order = models.ForeignKey('trade.Order', null=True, blank=True)
+    order = models.OneToOneField('trade.Order', null=True, blank=True, related_name="table")
     # status = models.IntegerField(choices=STATUS, default=STATUS[0][0])
 
 

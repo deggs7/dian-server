@@ -11,6 +11,7 @@ from trade.models import Cart
 from trade.models import CartItem
 from trade.models import Order
 from trade.models import OrderItem
+from table.models import Table
 from menu.models import Product
 from account.models import Member
 from restaurant.models import Restaurant
@@ -24,7 +25,7 @@ from trade.serializers import OrderDetailSerializer
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def get_cart_by_restaurant(request):
+def get_cart_by_restaurant(request, table_pk):
     """
     获取购物车
     每个顾客访问每个餐厅，都会有一个对应的cart实体
@@ -51,8 +52,14 @@ def get_cart_by_restaurant(request):
         member = Member.objects.get(wp_openid=wp_openid)
     except Member.DoesNotExist:
         return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
+    try:
+        table = Table.objects.get(pk=table_pk)
+        if table.restaurant != restaurant:
+            return Response('param error: no table not in restaurant', status=status.HTTP_400_BAD_REQUEST)
+    except Table.DoesNotExist:
+        return Response('param error: no table found', status=status.HTTP_400_BAD_REQUEST)
 
-    cart = Cart.objects.get_or_create(restaurant=restaurant, member=member)[0]
+    cart = Cart.objects.get_or_create(restaurant=restaurant, member=member, table=table)[0]
     serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -264,7 +271,8 @@ def create_order_from_cart(request, cart_pk):
     except Member.DoesNotExist:
         return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
 
-    order = Order(restaurant=restaurant, member=member)
+    table = cart.table
+    order = Order(restaurant=restaurant, member=member, table_name=table.name)
     order.save()
     price_total = 0
     for cart_item in cart.cart_items.all():
@@ -275,13 +283,19 @@ def create_order_from_cart(request, cart_pk):
                                price=cart_item.product.price,
                                unit=cart_item.product.unit,
                                description=cart_item.product.description,
-                               count=cart_item.count
+                               count=cart_item.count,
                                )
         order_item.save()
         price_total += cart_item.product.price * cart_item.count
         cart_item.delete()
     order.price = price_total
     order.save()
+
+    table.order = order
+    table.save()
+
+    cart.table = None
+    cart.save()
 
     serializer = OrderDetailSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)

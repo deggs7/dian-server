@@ -10,7 +10,7 @@ urlpatterns = patterns(
     'trade.wp_views',
 
     # 获取指定餐厅的购物车
-    url(r'^get-cart-by-restaurant/$', 'get_cart_by_restaurant'),
+    url(r'^get-cart-by-restaurant/(?P<table_pk>[0-9]+)/$', 'get_cart_by_restaurant'),
 
     # 添加一个商品至购物车
     # url(r'^add-cart-item/$', 'add_cart_item'),

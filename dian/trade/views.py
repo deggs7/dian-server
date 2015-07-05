@@ -111,6 +111,13 @@ def reject_order(request, order_pk):
 
     order.status = Order.STATUS[3][0]
     order.save()
+
+    try:
+        table = order.table
+        table.order = None
+        table.save()
+    except AttributeError:
+        pass
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -150,6 +157,13 @@ def finish_order(request, order_pk):
     order.status = Order.STATUS[2][0]
     order.pay_time = datetime.datetime.now()
     order.save()
+
+    try:
+        table = order.table
+        table.order = None
+        table.save()
+    except AttributeError:
+        pass
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
