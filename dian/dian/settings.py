@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'table',
     'menu',
     'trade',
+    'reward',
     'rest_framework.authtoken',
     'south',
     'rest_framework_swagger',
