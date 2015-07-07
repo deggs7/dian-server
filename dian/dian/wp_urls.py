@@ -21,5 +21,6 @@ urlpatterns = patterns('',
     url(r'^restaurant/', include('restaurant.wp_urls')),
     url(r'^table/', include('table.wp_urls')),
     url(r'^trade/', include('trade.wp_urls')),
+    url(r'^wechat/', include('wechat.wp_urls')),
 
 )

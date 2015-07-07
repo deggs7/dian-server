@@ -1,41 +1,19 @@
 #!/usr/bin/env python
 #! -*- encoding:utf-8 -*-
 
-from django.http import HttpResponse
-from django.shortcuts import render, render_to_response
-from django.views.decorators.csrf import csrf_protect
-from django.template import RequestContext
-
-import requests
 import urllib
 import qrcode
 import qiniu
 import os
 import datetime
 
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.decorators import authentication_classes
-from rest_framework.decorators import permission_classes 
-
 from dian.settings import APP_ID, APP_SECRET
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
-from dian.settings import QINIU_DOMAIN
 from dian.settings import TEMP_DIR
 from dian.settings import DEBUG
-from dian.settings import API_DOMAIN
-from dian.settings import WP_DOMAIN
 
 from dian.utils import get_md5
-from dian.utils import restaurant_required
-
-from account.models import Member
-from account.serializers import MemberSerializer
-
-from restaurant.models import Restaurant
-from registration.serializers import RegistrationSerializer
 
 
 def make_web_auth_url(redirect_uri, state=""):

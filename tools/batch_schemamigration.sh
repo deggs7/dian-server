@@ -4,3 +4,4 @@ python dian/manage.py schemamigration --auto registration
 python dian/manage.py schemamigration --auto restaurant
 python dian/manage.py schemamigration --auto table
 python dian/manage.py schemamigration --auto trade
+python dian/manage.py schemamigration --auto wechat
