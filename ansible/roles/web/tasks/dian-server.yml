@@ -39,3 +39,9 @@
   with_items:
     - /var/run/dian-server
     - /var/log/dian-server
+
+- name: create dian-server systemd service[1]
+  template: src=dian-server/dian-server.service.j2 dest=/usr/lib/systemd/system/dian-server.service
+
+- name: create dian-server systemd service[2]
+  template: src=dian-server/dian-server.conf.j2 dest=/usr/lib/tmpfiles.d/dian-server.conf
