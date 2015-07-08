@@ -14,6 +14,11 @@
 - name: enable nginx service
   service: name=nginx state=started enabled=yes
 
+- name: enable http service port in firewall settings
+  firewalld: service={{item}} permanent=true state=enabled
+  with_items:
+    - http
+
 - name: copy ssh key
   copy: src={{item}} dest=/home/{{user}}/.ssh/
         owner={{user}} group={{group}} mode=0400
