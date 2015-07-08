@@ -2,7 +2,7 @@
 
 # the upstream component nginx needs to connect to
 upstream dian {
-    server unix:///var/run/dian/dian_server.sock; # for a file socket
+    server unix:///var/run/dian-server/dian_server.sock; # for a file socket
     # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
 }
 

@@ -34,7 +34,7 @@
                  virtualenv={{projects_root_dir}}/dian-server/.venv
   ignore_errors: yes
 
-- name: create proper runtime directories under `/var/run/dian` for
+- name: create proper runtime directories under `/var/run/dian-server` for
   file: path={{item}} state=directory owner={{user}} group={{group}}
   with_items:
     - /var/run/dian-server
