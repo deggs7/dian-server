@@ -32,3 +32,10 @@
                  app_path={{projects_root_dir}}/dian-server/dian/
                  settings=dian.settings
                  virtualenv={{projects_root_dir}}/dian-server/.venv
+  ignore_errors: yes
+
+- name: create proper runtime directories under `/var/run/dian` for
+  file: path={{item}} state=directory owner={{user}} group={{group}}
+  with_items:
+    - /var/run/dian-server
+    - /var/log/dian-server
