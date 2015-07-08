@@ -11,8 +11,8 @@
 - name: update nginx conf
   template: src=nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf
 
-# - name: enable nginx service
-#   service: name=nginx state=started enabled=yes
+- name: enable nginx service
+  service: name=nginx state=started enabled=yes
 
 - name: copy ssh key
   copy: src={{item}} dest=/home/{{user}}/.ssh/

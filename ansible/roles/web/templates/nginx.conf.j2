@@ -42,7 +42,7 @@ server {
     # Finally, send all non-media requests to the Django server.
     location / {
         uwsgi_pass  dian;
-        include     {{projects_root_dir}}/dian-server/run/uwsgi_params; # the uwsgi_params file you installed
+        include     {{projects_root_dir}}/dian-server/dian/local/uwsgi_params; # the uwsgi_params file you installed
     }
 }
 
