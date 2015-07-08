@@ -5,7 +5,7 @@ Documentation=http:/www.diankuai.cn/
 [Service]
 Type=forking
 PIDFile=/var/run/dian/supervisord.pid
-ExecStart=/usr/bin/uwsgi --ini {{projects_root_dir}}/dian_uwsgi.ini
+ExecStart=/usr/bin/uwsgi --ini {{projects_root_dir}}/dian-server/dian/local/dian-server-uwsgi.ini
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 PrivateTmp=true

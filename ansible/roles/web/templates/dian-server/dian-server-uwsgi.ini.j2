@@ -19,7 +19,7 @@ master = true
 processes = 10
 
 # the socket (use the full path to be safe)
-socket = /var/run/dian/dian_server.sock
+socket = /var/run/dian-server/dian_server.sock
 
 # with appropriate permissions - may be needed
 chmod-socket = 666
@@ -28,4 +28,4 @@ chmod-socket = 666
 vacuum = true
 
 # daemonize = /var/log/uwsgi.log
-pidfile = /var/run/dian/dian_uwsgi.pid
+pidfile = /var/run/dian-server/dian_uwsgi.pid
