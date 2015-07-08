@@ -14,12 +14,13 @@
   with_items:
     - epel-release
 
-- name: install git, tmux and vim
+- name: install git, tmux, vim and firewalld
   yum: name={{item}} state=present
   with_items:
     - git
     - tmux
     - vim
+    - firewalld
 
 - name: install python-devel package for "Python.h"
   yum: name={{item}} state=present
