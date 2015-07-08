@@ -20,3 +20,15 @@
                  app_path={{projects_root_dir}}/dian-server/dian/
                  settings=dian.settings
                  virtualenv={{projects_root_dir}}/dian-server/.venv
+
+- name: run django manage.py migrate
+  django_manage: command=migrate
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
+
+- name: run django manage.py createsuperuser
+  django_manage: command="createsuperuser --noinput --username=admin"
+                 app_path={{projects_root_dir}}/dian-server/dian/
+                 settings=dian.settings
+                 virtualenv={{projects_root_dir}}/dian-server/.venv
