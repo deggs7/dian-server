@@ -45,3 +45,13 @@
 
 - name: create dian-server systemd service[2]
   template: src=dian-server/dian-server.conf.j2 dest=/usr/lib/tmpfiles.d/dian-server.conf
+
+- name: configure uwsgi[1]
+  template: src=dian-server/dian-server-uwsgi.ini.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/dian-server-uwsgi.ini
+            owner={{user}} group={{group}} mode=0644
+
+- name: configure uwsgi[2]
+  template: src=dian-server/uwsgi_params.j2
+            dest={{projects_root_dir}}/dian-server/dian/local/uwsgi_params
+            owner={{user}} group={{group}} mode=0644
