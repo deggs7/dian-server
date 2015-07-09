@@ -61,6 +61,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'restaurant.middleware.RestaurantMiddleware',
+    'account.middleware.MemberMiddleware',
 )
 
 ROOT_URLCONF = 'dian.urls'
