@@ -50,7 +50,7 @@ def get_jsapi_signature(request):
         - code: 400
           message: Url Error
     """
-    url = request.GET.get('url', None)
+    url = request.DATA.get('url', None)
     if url:
         return Response(_generate_jsapi_signature_body(url))
     else:
