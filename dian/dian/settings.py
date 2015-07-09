@@ -139,6 +139,7 @@ CORS_ALLOW_HEADERS = (
     'Content-Type',
     'Authorization',
     'X-Restaurant-Id',
+    'X-Member-Id',
 )
 
 

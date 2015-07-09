@@ -8,7 +8,7 @@ class MemberMiddleware(object):
 
     def process_request(self, request):
         """
-        从header重读出x_member_id(微信会员), 从而获取当前微信会员，放入request中。
+        从header中读出x_member_id(微信会员), 获取当前微信会员，放入request中。
         """
         member_id = request.META.get('HTTP_X_MEMBER_ID', None)
         if member_id:
