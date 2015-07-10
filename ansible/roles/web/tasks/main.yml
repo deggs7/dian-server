@@ -13,6 +13,7 @@
 
 - name: enable nginx service
   service: name=nginx state=started enabled=yes
+  ignore_errors: yes
 
 - name: enable http service port in firewall settings
   firewalld: service={{item}} permanent=true state=enabled
