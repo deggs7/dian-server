@@ -11,3 +11,4 @@ migrations
 dian/static
 
 *~
+.vagrant
