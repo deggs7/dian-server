@@ -9,3 +9,5 @@ migrations
 *.swp
 .venv
 dian/static
+
+*~
