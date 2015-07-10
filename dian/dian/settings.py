@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'menu',
     'trade',
     'wechat',
+    'reward',
     'rest_framework.authtoken',
     'south',
     'rest_framework_swagger',

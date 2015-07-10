@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^table/', include('table.urls')),
     url(r'^menu/', include('menu.urls')),
     url(r'^trade/', include('trade.urls')),
+    url(r'^reward/', include('reward.urls')),
 
     url(r'^captcha/$', views.captcha),
     url(r'^reset-passwd/$', views.reset_passwd),

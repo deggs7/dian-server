@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from account.models import MsgStatistics
-from registration.models import Registration, StrategyDup
+from registration.models import Registration
 from restaurant.models import Restaurant
 
 MSG_SEND_API = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
@@ -165,10 +165,10 @@ def registration_time_out_strategy():
             for reg in regs_post:
                 if not settings.DEBUG:
                     send_registration_remind(reg, 'reward', MsgStatistics.MSG_TYPE[2][0], strategy=strategy)
-                strategy_dup = StrategyDup(strategy_id=strategy.id,
-                                           time_wait=strategy.time_wait,
-                                           reward_type=strategy.reward_type,
-                                           reward_info=strategy.reward_info,
-                                           registration=reg)
-                strategy_dup.save()
+                # strategy_dup = StrategyDup(strategy_id=strategy.id,
+                #                            time_wait=strategy.time_wait,
+                #                            reward_type=strategy.reward_type,
+                #                            reward_info=strategy.reward_info,
+                #                            registration=reg)
+                # strategy_dup.save()
 

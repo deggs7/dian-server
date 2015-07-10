@@ -8,7 +8,6 @@ from rest_framework.serializers import SerializerMethodField
 from rest_framework.serializers import TimeField
 
 from registration.models import Registration
-from registration.models import Strategy
 
 
 class RegistrationSerializer(ModelSerializer):
@@ -154,17 +153,3 @@ class RegistrationDetailSerializer(ModelSerializer):
         except:
             return {}
 
-
-class StrategySerializer(ModelSerializer):
-    reward_type_desc = SerializerMethodField(method_name='get_reward_type_desc')
-
-    class Meta:
-        model = Strategy
-        fields = ("id", "time_wait", "reward_type", "reward_info", "reward_type_desc")
-
-    def get_reward_type_desc(self, obj):
-        desc = {
-            "gift": "赠送礼物",
-            "discount": "消费折扣"
-        }
-        return desc[obj.reward_type]
