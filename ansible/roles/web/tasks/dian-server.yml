@@ -58,3 +58,8 @@
             owner={{user}} group={{group}} mode=0644
   notify:
     - restart nginx
+
+- name: update nginx conf
+  template: src=dian-server.nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf
+  notify:
+    - restart nginx

@@ -8,12 +8,8 @@
   with_items:
     - nginx
 
-- name: update nginx conf
-  template: src=nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf
-
 - name: enable nginx service
   service: name=nginx state=started enabled=yes
-  ignore_errors: yes
 
 - name: enable http service port in firewall settings
   firewalld: service={{item}} permanent=true state=enabled
