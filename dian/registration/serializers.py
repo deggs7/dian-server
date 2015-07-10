@@ -101,6 +101,60 @@ class RegistrationHistorySerializer(ModelSerializer):
             return {}
 
 
+class RegistrationDetailSerializer(ModelSerializer):
+    """
+    目前用于微信端对排号实体的展示
+    """
+    create_time = TimeField(format="%Y-%m-%d %H:%M:%S")
+    end_time = TimeField(format="%Y-%m-%d %H:%M:%S")
+    status = SerializerMethodField(method_name="get_status_desc")
+    table_type = SerializerMethodField(method_name="get_table_type")
+    restaurant = SerializerMethodField(method_name="get_restaurant")
+    current_registration =\
+    SerializerMethodField(method_name="get_current_registration")
+
+    class Meta:
+        model = Registration
+        fields = ("id", "queue_number", "create_time", "end_time",\
+                "status", "table_type", "restaurant", "current_registration")
+
+    def get_table_type(self, obj):
+        try:
+            rt = {
+                'id': obj.table_type.id,
+                'name': obj.table_type.name,
+            }
+            return rt
+        except:
+            return {}
+
+    def get_status_desc(self, obj):
+        desc = {
+            "waiting": u"等待中",
+            "turn": u"下一个",
+            "expired": u"已就餐",
+            "passed": u"已过号"
+        }
+        return desc[obj.status]
+
+    def get_current_registration(self, obj):
+        try:
+            current_reg = obj.table_type.registrations.filter(status='turn').first()
+            return current_reg.queue_number 
+        except:
+            return None
+
+    def get_restaurant(self, obj):
+        try:
+            rt = {
+                'id': obj.restaurant.id,
+                'name': obj.restaurant.name,
+            }
+            return rt
+        except:
+            return {}
+
+
 class StrategySerializer(ModelSerializer):
     reward_type_desc = SerializerMethodField(method_name='get_reward_type_desc')
 

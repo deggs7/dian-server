@@ -22,11 +22,15 @@ def list_table_type_by_restaurant(request):
     根据餐厅的openid，获取餐厅的所有table_type
     param参数：openid —— restaurant的openid
     ---
+    parameters:
+        - name: openid
+          type: string
+          paramType: query
+          required: true
+
     serializer: table.serializers.TableTypeSerializer
-    omit_serializer: false
 
     responseMessages:
-        - code: 200
         - code: 400
           message: prama error
     """
@@ -35,6 +39,7 @@ def list_table_type_by_restaurant(request):
         restaurant = Restaurant.objects.get(openid=openid)
     except Restaurant.DoesNotExist:
         return Response('param error', status=status.HTTP_400_BAD_REQUEST)
-    serializer = TableTypeSerializer(restaurant.table_types.all(), many=True)
+    table_type_list = restaurant.table_types.all()
+    serializer = TableTypeSerializer(table_type_list, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

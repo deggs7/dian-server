@@ -33,8 +33,9 @@ from dian.utils import restaurant_required
 from account.models import Member
 from account.serializers import MemberSerializer
 
-from restaurant.models import Restaurant
+from registration.models import Registration
 from registration.serializers import RegistrationSerializer
+from registration.serializers import RegistrationDetailSerializer
 
 
 @api_view(['POST'])
@@ -43,12 +44,32 @@ from registration.serializers import RegistrationSerializer
 def confirm_table_type(request):
     """
     选择餐桌，及确认取号
-    """
-    restaurant_openid = request.POST.get('restaurant_openid', None)
-    wp_openid = request.POST.get('wp_openid', None)
-    table_type = request.POST.get('table_type', None)
+    ---
+    request_serializer: RegistrationSerializer
 
-    member = Member.objects.get(wp_openid=wp_openid)
+    type:
+        queue_name:
+            required: true
+            type: string
+        queue_number:
+            required: true
+            type: string
+        waiting_count:
+            required: true
+            type: string
+
+    responseMessages:
+        - code: 400
+          message: register error
+        - code: 400
+          message: Parameter Error(can not get member)
+
+    """
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
 
     data = request.POST.copy()
     serializer = RegistrationSerializer(data=data)
@@ -109,3 +130,90 @@ def _get_userinfo_res(openid, access_token):
     userinfo_res = requests.get(userinfo_url, params=userinfo_params)
     return userinfo_res
 
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def list_current_registration(request):
+    """
+    获取顾客当前进行中的排号
+    ---
+    serializer: RegistrationDetailSerializer
+
+    responseMessages:
+        - code: 400
+          message: Parameter Error(can not get member)
+
+    """
+    member = request.member
+    if member:
+        registrationList = Registration.objects.filter(member=member,\
+                status__in=('waiting', 'turn'))
+        serializer = RegistrationDetailSerializer(registrationList)
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def list_history_registration(request):
+    """
+    获取顾客的历史排号记录
+    ---
+    serializer: RegistrationDetailSerializer
+
+    responseMessages:
+        - code: 400
+          message: Parameter Error(can not get member)
+
+    """
+    member = request.member
+    if member:
+        registrationList = Registration.objects.filter(member=member,\
+                status__in=('expired', 'passed'))
+        serializer = RegistrationDetailSerializer(registrationList)
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def get_detail_registration(request):
+    """
+    获取某一个排号的详情
+    ---
+    parameters:
+        - name: id
+          type: string
+          paramType: query
+          required: true
+
+    serializer: RegistrationDetailSerializer
+
+    responseMessages:
+        - code: 400
+          message: Parameter Error(can not get member)
+        - code: 400
+          message: Parameter Error(registration_id)
+    """
+    member = request.member
+    if member:
+        try:
+            registration_id = request.GET.get('id', None)
+            if not registration_id:
+                raise Exception()
+            registration = Registration.objects.get(id=registration_id)
+            serializer = RegistrationDetailSerializer(registration)
+            return Response(serializer.data, status.HTTP_200_OK)
+        except :
+            return Response('Parameter Error(registration_id)',\
+                    status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
