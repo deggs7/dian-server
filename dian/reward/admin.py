@@ -1,7 +1,6 @@
 from django.contrib import admin
-from reward.models import Table
-from table.models import TableType
+from reward.models import Reward, Strategy
 
 # Register your models here.
-admin.site.register(Table)
-admin.site.register(TableType)
+admin.site.register(Reward)
+admin.site.register(Strategy)

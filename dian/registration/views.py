@@ -10,10 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from registration.models import Registration
-from registration.models import Strategy
-
 from registration.serializers import RegistrationSerializer
-from registration.serializers import StrategySerializer
 
 from dian.tasks import send_registration_remind
 from dian.utils import restaurant_required
@@ -99,44 +96,6 @@ def create_msg_task(request):
     registation = Registration.objects.get(pk=registration_id)
     send_registration_remind(registation, msg_type)
     return Response(None, status=status.HTTP_202_ACCEPTED)
-
-
-
-# for strategy
-@api_view(['GET', 'POST'])
-@restaurant_required
-def list_or_create_strategy(request):
-    if request.method == 'GET':
-        serializer = StrategySerializer(request.current_restaurant.strategies.all(), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == 'POST':
-        data = request.DATA.copy()
-        serializer = StrategySerializer(data=data)
-        if serializer.is_valid():
-            strategy = serializer.save()
-            strategy.restaurant = request.current_restaurant
-            strategy.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['PUT', 'DELETE'])
-@restaurant_required
-def update_or_delete_strategy(request, pk):
-    try:
-        strategy = Strategy.objects.get(pk=pk)
-    except Strategy.DoesNotExist:
-        return Response('strategy not found', status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'PUT':
-        serializer = StrategySerializer(strategy, data=request.DATA, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        strategy.delete()
-        return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
 # for statistics report

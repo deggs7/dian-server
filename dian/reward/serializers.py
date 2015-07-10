@@ -1,7 +1,7 @@
 #! -*- encoding: utf-8 -*-
 
 
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 
 from reward.models import Strategy, Reward
 
@@ -12,8 +12,14 @@ class RewardSerializer(ModelSerializer):
         model = Reward
 
 
-class StrategySerializer(ModelSerializer):
+class StrategyGetSerializer(ModelSerializer):
     reward = RewardSerializer()
+
+    class Meta:
+        model = Strategy
+
+
+class StrategySerializer(ModelSerializer):
 
     class Meta:
         model = Strategy

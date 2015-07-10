@@ -14,6 +14,7 @@ class Reward(models.Model):
     )
 
     id = models.AutoField(primary_key=True)
+    restaurant = models.ForeignKey("restaurant.Restaurant", related_name="rewards", null=True, blank=True)
     type = models.IntegerField(choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
     # 如果type是0，则输入百分比
     # 如果type是1，则输入礼物名称
@@ -33,7 +34,7 @@ class Strategy(models.Model):
         (0, "greater"),         # 大于
     )
     id = models.AutoField(primary_key=True)
-    restaurant = models.ForeignKey("restaurant.Restaurant", related_name="strategies", null=True)
+    restaurant = models.ForeignKey("restaurant.Restaurant", related_name="strategies", null=True, blank=True)
     reward = models.ForeignKey(Reward, related_name="strategies", null=False)
 
     type = models.IntegerField(choices=STRATEGY_TYPE, default=STRATEGY_TYPE[0][0], null=False)

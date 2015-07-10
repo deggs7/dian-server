@@ -17,10 +17,6 @@ urlpatterns = [
 urlpatterns += patterns(
     'registration.views',
 
-    # for strategy
-    url(r'^strategy/$', 'list_or_create_strategy'),
-    url(r'^strategy/(?P<pk>[0-9]+)/$', 'update_or_delete_strategy'),
-
     # for statistics report
     url(r'^statistics/daily-registration/$', 'get_daily_registration'),
     url(r'^statistics/avg-waiting-time/$', 'get_avg_waiting_time'),
