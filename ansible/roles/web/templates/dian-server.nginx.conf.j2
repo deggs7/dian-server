@@ -1,9 +1,9 @@
 # diankuai_nginx.conf
 
 # the upstream component nginx needs to connect to
-upstream dian {
-    # server unix:///var/run/dian-server/dian_server.sock; # for a file socket
-    server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+upstream dian-server {
+    server unix:///var/run/dian-server/dian_server.sock; # for a file socket
+    # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
 }
 
 uwsgi_read_timeout     30m;
@@ -41,8 +41,8 @@ server {
 
     # Finally, send all non-media requests to the Django server.
     location / {
-        uwsgi_pass  dian;
-        include     {{projects_root_dir}}/dian-server/dian/local/uwsgi_params; # the uwsgi_params file you installed
+        uwsgi_pass  dian-server;
+        include     uwsgi_params; # the uwsgi_params file you installed
     }
 }
 
