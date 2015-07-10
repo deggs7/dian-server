@@ -3,6 +3,7 @@
 - name: pip install requirements in virtualenv
   pip: requirements={{projects_root_dir}}/dian-server/requirements.txt
        virtualenv={{projects_root_dir}}/dian-server/.venv
+  sudo_user: "{{user}}"
 
 - name: configure dian-server
   template: src=dian-server/local_settings.py.j2
