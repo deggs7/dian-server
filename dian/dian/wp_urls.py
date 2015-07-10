@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'dian.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    
+
     # 业务模块
     url(r'^account/', include('account.wp_urls')),
     url(r'^menu/', include('menu.wp_urls')),
@@ -24,4 +24,5 @@ urlpatterns = patterns('',
     url(r'^wechat/', include('wechat.wp_urls')),
     url(r'^reward/', include('reward.wp_urls')),
     url(r'^game/', include('game.wp_urls')),
+    url(r'^post/', include('post.wp_urls')),
 )
