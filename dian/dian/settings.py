@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'registration',
     'table',
     'menu',
+    'post',
     'trade',
     'wechat',
     'reward',
@@ -127,7 +128,7 @@ REST_FRAMEWORK = {
 }
 
 
-# django-cors-headers settings, 
+# django-cors-headers settings,
 # https://github.com/ottoyiu/django-cors-headers/
 
 CORS_ORIGIN_ALLOW_ALL = False
