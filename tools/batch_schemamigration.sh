@@ -5,3 +5,5 @@ python dian/manage.py schemamigration --auto restaurant
 python dian/manage.py schemamigration --auto table
 python dian/manage.py schemamigration --auto trade
 python dian/manage.py schemamigration --auto wechat
+python dian/manage.py schemamigration --auto reward
+python dian/manage.py schemamigration --auto game 
