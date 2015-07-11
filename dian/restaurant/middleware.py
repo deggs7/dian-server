@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from restaurant.models import Restaurant
+from dian.settings import DEBUG
 
 
 class RestaurantMiddleware(object):
@@ -20,4 +21,8 @@ class RestaurantMiddleware(object):
                     request.current_restaurant = None
             else:
                 request.current_restaurant = None
+
+        if DEBUG and not request.current_restaurant:
+            request.current_restaurant = Restaurant.objects.all()[0]
+
         return
