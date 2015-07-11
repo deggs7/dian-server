@@ -58,8 +58,8 @@ def delete_tag():
 
 
 @api_view(['GET'])
-def list_post():
-    pass
+def list_post(request):
+    return Response("Hello list_post", status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
