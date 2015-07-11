@@ -21,6 +21,8 @@ class RestaurantMiddleware(object):
                     request.current_restaurant = None
             else:
                 request.current_restaurant = None
+        else:
+            request.current_restaurant = None
 
         if DEBUG and not request.current_restaurant:
             request.current_restaurant = Restaurant.objects.all()[0]
