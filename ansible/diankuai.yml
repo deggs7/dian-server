@@ -8,6 +8,7 @@
     projects_root_dir: /home/dian/diankuai
     whoami: "{{lookup('env','USER')}}"
     user_home: "{{lookup('env','HOME')}}"
+    debug: false
     git:
       user_name: "Xiao Hanyu"
       user_email: "xiaohanyu1988@gmail.com"

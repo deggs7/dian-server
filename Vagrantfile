@@ -75,7 +75,10 @@ Vagrant.configure(2) do |config|
     ansible.playbook = "ansible/diankuai.yml"
     ansible.inventory_path = "ansible/hosts"
     ansible.verbose = true
-    ansible.extra_vars = {ansible_ssh_user: 'vagrant'}
+    ansible.extra_vars = {
+      ansible_ssh_user: 'vagrant',
+      debug: true
+    }
     ansible.limit = 'all'
   end
 end

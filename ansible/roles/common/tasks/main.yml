@@ -40,3 +40,6 @@
     - supervisor
     - virtualenv
   when: result
+
+- set_fact:
+    role_common_done: true
