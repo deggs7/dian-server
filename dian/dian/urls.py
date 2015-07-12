@@ -21,7 +21,7 @@ urlpatterns = patterns('',
         'rest_framework.authtoken.views.obtain_auth_token'),
 
 
-    # 各业务模块 
+    # 各业务模块
     url(r'^account/', include('account.urls')),
     url(r'^restaurant/', include('restaurant.urls')),
     url(r'^registration/', include('registration.urls')),
@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^menu/', include('menu.urls')),
     url(r'^trade/', include('trade.urls')),
     url(r'^reward/', include('reward.urls')),
+    url(r'^post/', include('post.urls')),
 
     url(r'^captcha/$', views.captcha),
     url(r'^reset-passwd/$', views.reset_passwd),
