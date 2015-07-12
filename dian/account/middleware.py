@@ -19,9 +19,10 @@ class MemberMiddleware(object):
         if member_id:
             try:
                 member = Member.objects.get(wp_openid=member_id)
-                request.member = member 
+                request.member = member
             except Member.DoesNotExist:
                 request.member = None
         else:
             request.member = None
+
         return
