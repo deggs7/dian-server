@@ -44,6 +44,7 @@
     content: Tag 1
     create_time: "2012-05-05T00:38:50Z"
     post: 1
+    restaurant: 1
 
 - model: post.tag
   pk: 2
@@ -52,6 +53,34 @@
     content: Tag 2
     create_time: "2012-05-05T00:38:50Z"
     post: 2
+    restaurant: 2
+
+- model: post.tag
+  pk: 3
+  fields:
+    type: 3
+    content: Tag 3
+    create_time: "2012-05-05T00:38:50Z"
+    post: 3
+    restaurant: 3
+
+- model: post.tag
+  pk: 4
+  fields:
+    type: 4
+    content: Tag 4
+    create_time: "2012-05-05T00:38:50Z"
+    post: 4
+    restaurant: 4
+
+- model: post.tag
+  pk: 5
+  fields:
+    type: 5
+    content: Tag 5
+    create_time: "2012-05-05T00:38:50Z"
+    post: 5
+    restaurant: 5
 
 # like
 - model: post.like
@@ -185,3 +214,115 @@
     wp_country: CN
     wp_headimgurl: http://wp.com/headimage1.png
     wp_privilege: chinaunicom
+
+# User
+- model: account.user
+  pk: 1
+  fields:
+    username: username 1
+    email: username1@example.com
+    alias: username alias 1
+    is_active: true
+    is_admin: false
+
+- model: account.user
+  pk: 2
+  fields:
+    username: username 2
+    email: username2@example.com
+    alias: username alias 2
+    is_active: true
+    is_admin: false
+
+- model: account.user
+  pk: 3
+  fields:
+    username: username 3
+    email: username3@example.com
+    alias: username alias 3
+    is_active: true
+    is_admin: false
+
+- model: account.user
+  pk: 4
+  fields:
+    username: username 4
+    email: username4@example.com
+    alias: username alias 4
+    is_active: true
+    is_admin: false
+
+- model: account.user
+  pk: 5
+  fields:
+    username: username 5
+    email: username5@example.com
+    alias: username alias 5
+    is_active: true
+    is_admin: false
+
+# restaurant
+- model: restaurant.restaurant
+  pk: 1
+  fields:
+    name: Restaurant 1
+    file_key: file_key 1
+    create_time: "2012-01-01T00:38:50Z"
+    owner: 1
+    openid: 1
+    wp_name: restaurant wp name 1
+    wp_qrcode_file_key: restaurant qrcode file key 1
+    wifi_name: restaurant wifi name 1
+    wifi_password: restaurant wifi password 1
+
+- model: restaurant.restaurant
+  pk: 2
+  fields:
+    name: Restaurant 2
+    file_key: file_key 2
+    create_time: "2012-01-01T00:38:50Z"
+    owner: 2
+    openid: 2
+    wp_name: restaurant wp name 2
+    wp_qrcode_file_key: restaurant qrcode file key 2
+    wifi_name: restaurant wifi name 2
+    wifi_password: restaurant wifi password 2
+
+- model: restaurant.restaurant
+  pk: 3
+  fields:
+    name: Restaurant 3
+    file_key: file_key 3
+    create_time: "2012-01-01T00:38:50Z"
+    owner: 3
+    openid: 3
+    wp_name: restaurant wp name 3
+    wp_qrcode_file_key: restaurant qrcode file key 3
+    wifi_name: restaurant wifi name 3
+    wifi_password: restaurant wifi password 3
+
+- model: restaurant.restaurant
+  pk: 4
+  fields:
+    name: Restaurant 4
+    file_key: file_key 4
+    create_time: "2012-01-01T00:38:50Z"
+    owner: 4
+    openid: 4
+    wp_name: restaurant wp name 4
+    wp_qrcode_file_key: restaurant qrcode file key 4
+    wifi_name: restaurant wifi name 4
+    wifi_password: restaurant wifi password 4
+
+- model: restaurant.restaurant
+  pk: 5
+  fields:
+    name: Restaurant 5
+    file_key: file_key 5
+    create_time: "2012-01-01T00:38:50Z"
+    owner: 5
+    openid: 5
+    wp_name: restaurant wp name 5
+    wp_qrcode_file_key: restaurant qrcode file key 5
+    wifi_name: restaurant wifi name 5
+    wifi_password: restaurant wifi password 5

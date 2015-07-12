@@ -53,3 +53,9 @@ def get_tag():
 @api_view(['TAG'])
 def update_tag():
     pass
+
+
+@api_view(['GET'])
+def list_tag_with_restaurant(request, restaurant_openid):
+    serializer = TagSerializer(Tag.objects.all(), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

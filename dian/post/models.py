@@ -16,6 +16,7 @@ class Tag(models.Model):
     content = models.CharField(max_length=255)
     create_time = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey('post.Post', related_name="tags")
+    restaurant = models.ForeignKey('restaurant.Restaurant', related_name='tags')
 
 
 class Like(models.Model):
