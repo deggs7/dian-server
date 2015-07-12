@@ -3,7 +3,7 @@
 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from reward.models import Strategy, Reward
+from reward.models import Strategy, Reward, Coupon
 
 
 class RewardSerializer(ModelSerializer):
@@ -27,3 +27,9 @@ class StrategySerializer(ModelSerializer):
 
     class Meta:
         model = Strategy
+
+
+class CouponSerializer(ModelSerializer):
+
+    class Meta:
+        model = Coupon
