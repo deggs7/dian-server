@@ -8,6 +8,11 @@ from post.models import Like
 from post.models import Image
 from post.models import Post
 
+from post.serializers import TagSerializer
+from post.serializers import LikeSerializer
+from post.serializers import ImageSerializer
+from post.serializers import PostSerializer
+
 
 @api_view(['GET'])
 def list_post(request):
@@ -31,8 +36,8 @@ def update_post():
 
 @api_view(['GET'])
 def list_tag(request):
-    data = Tag.objects.all()
-    return Response(str(data), status=status.HTTP_200_OK)
+    serializer = TagSerializer(Tag.objects.all(), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
