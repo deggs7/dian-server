@@ -27,3 +27,5 @@ class PostSerializer(ModelSerializer):
 
     class Meta:
         model = Post
+        fields = ('id', 'create_time', 'member', 'tags', 'images')
+        depth = 1

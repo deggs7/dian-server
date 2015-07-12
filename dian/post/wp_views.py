@@ -16,7 +16,9 @@ from post.serializers import PostSerializer
 
 @api_view(['GET'])
 def list_post(request):
-    return Response("Hello list_post", status=status.HTTP_200_OK)
+    query_set = Post.objects.all()
+    serializer = PostSerializer(query_set, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
