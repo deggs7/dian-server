@@ -1,4 +1,4 @@
-#! -*- encoding:utf-8 -*-
+# -*- encoding:utf-8 -*-
 import random
 
 from rest_framework.decorators import api_view
@@ -28,19 +28,40 @@ def get_next_post_list(request, limit=5):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-def create_post():
-    pass
+@api_view(['GET'])
+def list_my_post(request, member_id=None):
+    if not member_id:
+        member_id = request.member
+    query_set = Post.objects.filter(member=member_id)
+    serializer = PostSerializer(query_set, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
-def get_post():
-    pass
+def get_overview_of_my_post(request, member_id=None):
+    if not member_id:
+        member_id = request.member
+    query_set = Post.objects.filter(member=member_id)
+    return Response({'count': len(query_set)},
+                    status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-def update_post():
-    pass
+@api_view(['GET'])
+def list_my_like(request, member_id=None):
+    if not member_id:
+        member_id = request.member
+    query_set = Like.objects.filter(member=member_id)
+    serializer = LikeSerializer(query_set, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_overview_of_my_like(request, member_id=None):
+    if not member_id:
+        member_id = request.member
+    query_set = Like.objects.filter(member=member_id)
+    return Response({'count': len(query_set)},
+                    status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -55,18 +76,3 @@ def list_tag_with_activity(request):
     query_set = Tag.objects.filter(type=0)
     serializer = TagSerializer(query_set, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def create_tag():
-    pass
-
-
-@api_view(['GET'])
-def get_tag():
-    pass
-
-
-@api_view(['TAG'])
-def update_tag():
-    pass
