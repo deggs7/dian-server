@@ -1,4 +1,6 @@
 #! -*- encoding:utf-8 -*-
+import random
+
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
@@ -15,9 +17,14 @@ from post.serializers import PostSerializer
 
 
 @api_view(['GET'])
-def list_post(request):
+def get_next_post_list(request, limit=5):
     query_set = Post.objects.all()
-    serializer = PostSerializer(query_set, many=True)
+    random_query_set = set([])
+    length = len(query_set)
+    while (len(random_query_set) < int(limit)):
+        rand_int = random.randint(0, length - 1)
+        random_query_set.add(query_set[rand_int])
+    serializer = PostSerializer(random_query_set, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

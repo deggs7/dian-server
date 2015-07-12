@@ -9,7 +9,7 @@ urlpatterns = patterns(
 
     url(r'^list-post/$', 'list_post'),
     url(r'^create-post/$', 'create_post'),
-    url(r'^get-post/(?P<pk>[0-9]+)/$', 'get_post'),
+    url(r'^get-next-post-list/(?P<limit>[0-9]+)/$', 'get_next_post_list'),
     url(r'^update-post/(?P<pk>[0-9]+)/$', 'update_post'),
 
     url(r'^list-tag-with-restaurant/(?P<restaurant_openid>\w+)/$', 'list_tag_with_restaurant'),
