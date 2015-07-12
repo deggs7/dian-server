@@ -12,7 +12,7 @@ urlpatterns = patterns(
     url(r'^get-post/(?P<pk>[0-9]+)/$', 'get_post'),
     url(r'^update-post/(?P<pk>[0-9]+)/$', 'update_post'),
 
-    url(r'^list-tag/$', 'list_tag'),
+    url(r'^list-tag-with-restaurant/(?P<restaurant_openid>\w+)/$', 'list_tag_with_restaurant'),
     url(r'^create-tag/$', 'create_tag'),
     url(r'^get-tag/(?P<pk>[0-9]+)/$', 'get_tag'),
     url(r'^update-tag/(?P<pk>[0-9]+)/$', 'update_tag'),

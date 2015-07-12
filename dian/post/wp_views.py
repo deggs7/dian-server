@@ -35,8 +35,9 @@ def update_post():
 
 
 @api_view(['GET'])
-def list_tag(request):
-    serializer = TagSerializer(Tag.objects.all(), many=True)
+def list_tag_with_restaurant(request, restaurant_openid):
+    query_set = Tag.objects.filter(restaurant__openid=restaurant_openid)
+    serializer = TagSerializer(query_set, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -53,9 +54,3 @@ def get_tag():
 @api_view(['TAG'])
 def update_tag():
     pass
-
-
-@api_view(['GET'])
-def list_tag_with_restaurant(request, restaurant_openid):
-    serializer = TagSerializer(Tag.objects.all(), many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
