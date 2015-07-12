@@ -1,0 +1,187 @@
+---
+
+# image
+- model: post.image
+  pk: 1
+  fields:
+    file_key: file_key1
+    create_time: "2012-01-01T00:38:50Z"
+    post: 1
+
+- model: post.image
+  pk: 2
+  fields:
+    file_key: file_key2
+    create_time: "2012-02-02T00:38:50Z"
+    post: 2
+
+- model: post.image
+  pk: 3
+  fields:
+    file_key: file_key3
+    create_time: "2014-03-03T00:38:50Z"
+    post: 3
+
+- model: post.image
+  pk: 4
+  fields:
+    file_key: file_key4
+    create_time: "2013-04-04T00:38:50Z"
+    post: 4
+
+- model: post.image
+  pk: 5
+  fields:
+    file_key: file_key5
+    create_time: "2015-05-05T00:38:50Z"
+    post: 5
+
+# tag
+- model: post.tag
+  pk: 1
+  fields:
+    type: 1
+    content: Tag 1
+    create_time: "2012-05-05T00:38:50Z"
+    post: 1
+
+- model: post.tag
+  pk: 2
+  fields:
+    type: 2
+    content: Tag 2
+    create_time: "2012-05-05T00:38:50Z"
+    post: 2
+
+# like
+- model: post.like
+  pk: 1
+  fields:
+    member: 1
+    post: 1
+    create_time: "2012-05-05T00:38:50Z"
+
+- model: post.like
+  pk: 2
+  fields:
+    member: 2
+    post: 2
+    create_time: "2012-05-05T00:38:50Z"
+
+- model: post.like
+  pk: 3
+  fields:
+    member: 3
+    post: 3
+    create_time: "2014-05-05T00:38:50Z"
+
+- model: post.like
+  pk: 4
+  fields:
+    member: 4
+    post: 4
+    create_time: "2014-05-05T00:48:50Z"
+
+- model: post.like
+  pk: 5
+  fields:
+    member: 5
+    post: 5
+    create_time: "2014-05-05T00:58:50Z"
+
+# post
+- model: post.post
+  pk: 1
+  fields:
+    member: 1
+    create_time: "2012-05-05T00:38:50Z"
+
+- model: post.post
+  pk: 2
+  fields:
+    member: 2
+    create_time: "2012-05-05T00:38:50Z"
+
+- model: post.post
+  pk: 3
+  fields:
+    member: 3
+    create_time: "2014-05-05T00:38:50Z"
+
+- model: post.post
+  pk: 4
+  fields:
+    member: 4
+    create_time: "2013-05-05T00:38:50Z"
+
+- model: post.post
+  pk: 5
+  fields:
+    member: 5
+    create_time: "2015-05-05T00:38:50Z"
+
+# member
+- model: account.member
+  pk: 1
+  fields:
+    phone: 15878731234
+    wp_openid: 1
+    wp_nickname: nickname1
+    wp_sex: 1
+    wp_province: Hebei
+    wp_city: Cangzhou
+    wp_country: CN
+    wp_headimgurl: http://wp.com/headimage1.png
+    wp_privilege: chinaunicom
+
+- model: account.member
+  pk: 2
+  fields:
+    phone: 15878731234
+    wp_openid: 2
+    wp_nickname: nickname2
+    wp_sex: 2
+    wp_province: Hebei
+    wp_city: Cangzhou
+    wp_country: CN
+    wp_headimgurl: http://wp.com/headimage1.png
+    wp_privilege: chinaunicom
+
+- model: account.member
+  pk: 3
+  fields:
+    phone: 15878731234
+    wp_openid: 3
+    wp_nickname: nickname3
+    wp_sex: 3
+    wp_province: Hebei
+    wp_city: Cangzhou
+    wp_country: CN
+    wp_headimgurl: http://wp.com/headimage1.png
+    wp_privilege: chinaunicom
+
+- model: account.member
+  pk: 4
+  fields:
+    phone: 15878731234
+    wp_openid: 4
+    wp_nickname: nickname4
+    wp_sex: 4
+    wp_province: Hebei
+    wp_city: Cangzhou
+    wp_country: CN
+    wp_headimgurl: http://wp.com/headimage1.png
+    wp_privilege: chinaunicom
+
+- model: account.member
+  pk: 5
+  fields:
+    phone: 15878731234
+    wp_openid: 5
+    wp_nickname: nickname5
+    wp_sex: 5
+    wp_province: Hebei
+    wp_city: Cangzhou
+    wp_country: CN
+    wp_headimgurl: http://wp.com/headimage1.png
+    wp_privilege: chinaunicom

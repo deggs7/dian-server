@@ -22,6 +22,7 @@ class Like(models.Model):
     id = models.AutoField(primary_key=True)
     member = models.ForeignKey('account.Member', related_name="member")
     post = models.ForeignKey('post.Post', related_name="likes")
+    create_time = models.DateTimeField(auto_now_add=True)
 
 
 class Post(models.Model):

@@ -22,8 +22,3 @@ def get_post():
 @api_view(['POST'])
 def update_post():
     pass
-
-
-@api_view(['GET'])
-def delete_post():
-    pass
