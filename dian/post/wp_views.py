@@ -41,6 +41,13 @@ def list_tag_with_restaurant(request, restaurant_openid):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def list_tag_with_activity(request):
+    query_set = Tag.objects.filter(type=0)
+    serializer = TagSerializer(query_set, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 def create_tag():
     pass

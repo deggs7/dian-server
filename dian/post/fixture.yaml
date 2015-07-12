@@ -58,25 +58,25 @@
 - model: post.tag
   pk: 3
   fields:
-    type: 3
+    type: 0
     content: Tag 3
     create_time: "2012-05-05T00:38:50Z"
     post: 3
-    restaurant: 2
+    restaurant:
 
 - model: post.tag
   pk: 4
   fields:
-    type: 4
+    type: 0
     content: Tag 4
     create_time: "2012-05-05T00:38:50Z"
     post: 4
-    restaurant: 4
+    restaurant:
 
 - model: post.tag
   pk: 5
   fields:
-    type: 5
+    type: 1
     content: Tag 5
     create_time: "2012-05-05T00:38:50Z"
     post: 5
