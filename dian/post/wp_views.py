@@ -50,8 +50,9 @@ def get_overview_of_my_post(request, member_id=None):
 def list_my_like(request, member_id=None):
     if not member_id:
         member_id = request.member
-    query_set = Like.objects.filter(member=member_id)
-    serializer = LikeSerializer(query_set, many=True)
+    member_obj = Member.objects.get(id=member_id)
+    query_set = member_obj.like_posts.all()
+    serializer = PostSerializer(query_set, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -59,7 +60,8 @@ def list_my_like(request, member_id=None):
 def get_overview_of_my_like(request, member_id=None):
     if not member_id:
         member_id = request.member
-    query_set = Like.objects.filter(member=member_id)
+    member_obj = Member.objects.get(id=member_id)
+    query_set = member_obj.like_posts.all()
     return Response({'count': len(query_set)},
                     status=status.HTTP_200_OK)
 
@@ -69,11 +71,10 @@ def like_post(request, post_id=None, member_id=None):
     if not member_id:
         member_id = request.member
 
-    post = Post.objects.get(id=post_id)
-    member = Member.objects.get(id=member_id)
-    like = Like.objects.create(member=member, post=post)
-    like.save()
-    serializer = LikeSerializer(like)
+    post_obj = Post.objects.get(id=post_id)
+    member_obj = Member.objects.get(id=member_id)
+    post_obj.likes.add(member_obj)
+    serializer = PostSerializer(post_obj)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
