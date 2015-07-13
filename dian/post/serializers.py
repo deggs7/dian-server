@@ -2,19 +2,13 @@
 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from post.models import Tag, Like, Image, Post
+from post.models import Tag, Image, Post
 
 
 class TagSerializer(ModelSerializer):
 
     class Meta:
         model = Tag
-
-
-class LikeSerializer(ModelSerializer):
-
-    class Meta:
-        model = Like
 
 
 class ImageSerializer(ModelSerializer):

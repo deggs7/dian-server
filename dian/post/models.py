@@ -20,14 +20,8 @@ class Tag(models.Model):
                                    related_name='tags', null=True, blank=True)
 
 
-class Like(models.Model):
-    id = models.AutoField(primary_key=True)
-    member = models.ForeignKey('account.Member', related_name="member")
-    post = models.ForeignKey('post.Post', related_name="likes")
-    create_time = models.DateTimeField(auto_now_add=True)
-
-
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
     create_time = models.DateTimeField(auto_now_add=True)
     member = models.ForeignKey('account.Member', related_name="posts")
+    likes = models.ManyToManyField('account.Member', related_name='like_posts')

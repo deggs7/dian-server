@@ -5,13 +5,13 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 
+from account.models import Member
+
 from post.models import Tag
-from post.models import Like
 from post.models import Image
 from post.models import Post
 
 from post.serializers import TagSerializer
-from post.serializers import LikeSerializer
 from post.serializers import ImageSerializer
 from post.serializers import PostSerializer
 
@@ -62,6 +62,19 @@ def get_overview_of_my_like(request, member_id=None):
     query_set = Like.objects.filter(member=member_id)
     return Response({'count': len(query_set)},
                     status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def like_post(request, post_id=None, member_id=None):
+    if not member_id:
+        member_id = request.member
+
+    post = Post.objects.get(id=post_id)
+    member = Member.objects.get(id=member_id)
+    like = Like.objects.create(member=member, post=post)
+    like.save()
+    serializer = LikeSerializer(like)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
