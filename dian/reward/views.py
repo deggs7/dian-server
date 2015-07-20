@@ -6,11 +6,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from reward.serializers import StrategySerializer, StrategyGetSerializer
+from reward.serializers import StrategySerializer, StrategyGetSerializer, CouponSerializer
 from reward.serializers import RewardSerializer
 
 from reward.models import Reward
 from reward.models import Strategy
+from reward.models import Coupon
 
 from dian.utils import restaurant_required
 
@@ -228,3 +229,65 @@ def delete_reward(request, pk):
 
     reward.delete()
     return Response(None, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+@restaurant_required
+def get_coupon_by_code(request):
+    """
+    验证验证码是否有效，返回验证码对应的奖励信息
+    ---
+    parameters:
+        - name: coupon_code
+          type: string
+          paramType: form
+          required: true
+
+    serializer: reward.serializers.CouponSerializer
+
+    responseMessages:
+        - code: 400
+          message: bad request
+        - code: 404
+          message: Not Found
+        - code: 200
+          message: OK
+    """
+    data = request.DATA.copy()
+    if 'coupon_code' not in data:
+        return Response("bad request", status=status.HTTP_400_BAD_REQUEST)
+
+    coupon = Coupon.objects.filter(code=data['coupon_code']).first()
+    if not coupon:
+        return Response("coupon is not valid", status=status.HTTP_404_NOT_FOUND)
+
+    return Response(CouponSerializer(instance=coupon).data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@restaurant_required
+def exchange_coupon(request, pk):
+    """
+    完成指定优惠码的兑奖
+    ---
+    serializer: reward.serializers.CouponSerializer
+
+    responseMessages:
+        - code: 400
+          message: bad request, coupon is already used
+        - code: 404
+          message: Not Found
+        - code: 200
+          message: OK
+    """
+    try:
+        coupon = Coupon.objects.get(pk=pk)
+    except Coupon.DoesNotExist:
+        return Response('coupon not found', status=status.HTTP_404_NOT_FOUND)
+
+    if coupon.is_used:
+        return Response('coupon has been used', status=status.HTTP_400_BAD_REQUEST)
+
+    coupon.is_used = True
+    coupon.save()
+    return Response(CouponSerializer(instance=coupon).data, status=status.HTTP_200_OK)

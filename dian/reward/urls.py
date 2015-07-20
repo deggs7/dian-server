@@ -19,5 +19,9 @@ urlpatterns = patterns(
     url(r'^list-reward/$', 'list_reward'),
     url(r'^create-reward/$', 'create_reward'),
     url(r'^update-reward/(?P<pk>[0-9]+)/$', 'update_reward'),
-    url(r'^delete-reward/(?P<pk>[0-9]+)/$', 'delete_reward')
+    url(r'^delete-reward/(?P<pk>[0-9]+)/$', 'delete_reward'),
+
+    # 兑换
+    url(r'^get-coupon-by-code/$', 'get_coupon_by_code'),
+    url(r'^exchange-coupon/(?P<pk>[0-9]+)/$', 'exchange_coupon'),
 )
