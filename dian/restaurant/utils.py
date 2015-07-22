@@ -34,7 +34,7 @@ appid=%(appid)s\
     params = {
             "appid": APP_ID,
             "redirect_uri": redirect_uri,
-            "scope": "snsapi_userinfo",     # snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
+            "scope": "snsapi_base",     # snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
             "state": state,
             }
     return url % params
