@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'registration',
     'table',
     'menu',
-    'post',
+    'photo',
     'trade',
     'wechat',
     'reward',

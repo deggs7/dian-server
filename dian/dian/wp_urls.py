@@ -24,5 +24,5 @@ urlpatterns = patterns('',
     url(r'^wechat/', include('wechat.wp_urls')),
     url(r'^reward/', include('reward.wp_urls')),
     url(r'^game/', include('game.wp_urls')),
-    url(r'^post/', include('post.wp_urls')),
+    url(r'^photo/', include('photo.wp_urls')),
 )

@@ -21,7 +21,7 @@ class Photo(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
-    type = models.IntegerField(choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
+    type = models.IntegerField(choices=TAG_TYPE, default=TAG_TYPE[0][0])
     restaurant = models.ForeignKey('restaurant.Restaurant',
                                    related_name='tags', null=True, blank=True)
 
