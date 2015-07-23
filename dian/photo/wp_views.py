@@ -4,6 +4,8 @@ import random
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.decorators import authentication_classes
+from rest_framework.decorators import permission_classes 
 
 from account.models import Member
 
@@ -17,6 +19,8 @@ from photo.models import TAG_TYPE_ACTIVITY
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def get_next_photo_list(request):
     """
     获取下一个随机 n 个 photo, n 默认为 5
@@ -45,6 +49,8 @@ def get_next_photo_list(request):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def like_photo(request, photo_id=None):
     """
     赞一个 photo
@@ -63,6 +69,8 @@ def like_photo(request, photo_id=None):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def list_tag_with_restaurant(request, restaurant_openid):
     """
     获取 tag 的列表（餐厅入口），包含这家餐厅的tag还有全部的活动tag
@@ -82,6 +90,8 @@ def list_tag_with_restaurant(request, restaurant_openid):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def list_tag_with_activity(request):
     """
     获取 tag 的列表（活动入口），只列出全部的获得tag
@@ -98,6 +108,8 @@ def list_tag_with_activity(request):
 
 
 @api_view(['POST'])
+@authentication_classes(())
+@permission_classes(())
 def create_photo(request):
     """
     发布图片，并返回新创建的图片信息
@@ -122,6 +134,8 @@ def create_photo(request):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def get_overview_of_my_photo(request):
     """
     获得我（当前 member）发过的 photo 数量的统计（见原型）
@@ -153,6 +167,8 @@ def get_overview_of_my_photo(request):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def list_my_photo(request):
     """
     获得我（当前 member）发过的 photo 的全部列表，并且每一项都是详细信息
@@ -171,6 +187,8 @@ def list_my_photo(request):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def get_overview_of_my_like(request):
     """
     获得我（当前 member）赞过的 photo 的数量
@@ -193,6 +211,8 @@ def get_overview_of_my_like(request):
 
 
 @api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def list_my_like(request):
     """
     获得我（当前 member）赞过的 photo 的全部列表，
