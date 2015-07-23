@@ -14,7 +14,8 @@ TAG_TYPE = (
 class Photo(models.Model):
     file_key = models.CharField(max_length=255)
     member = models.ForeignKey('account.Member', related_name="photos")
-    likes = models.ManyToManyField('account.Member', related_name='like_photos')
+    likes = models.ManyToManyField('account.Member',\
+            related_name='like_photos', null=True)
     tag = models.ForeignKey('photo.Tag', related_name='photos')
     create_time = models.DateTimeField(auto_now_add=True)
 
