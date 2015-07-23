@@ -5,3 +5,6 @@ python dian/manage.py schemamigration --initial restaurant
 python dian/manage.py schemamigration --initial table
 python dian/manage.py schemamigration --initial trade
 python dian/manage.py schemamigration --initial wechat
+python dian/manage.py schemamigration --initial reward
+python dian/manage.py schemamigration --initial game
+python dian/manage.py schemamigration --initial photo
