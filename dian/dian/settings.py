@@ -221,11 +221,11 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d\
+            'format': '[%(levelname)s] %(asctime)s %(module)s %(process)d\
             %(thread)d %(message)s'
         },
         'simple': {
-            'format': '%(levelname)s %(message)s'
+            'format': '[%(levelname)s] %(message)s'
         },
     },
     'handlers': {
@@ -247,11 +247,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'django': {
-            'handlers': ['console'],
-            # 'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'level': 'DEBUG',
-        },
+        # 'django': {
+        #     'handlers': ['console'],
+        #     # 'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        #     'level': 'DEBUG',
+        # },
     },
 }
 

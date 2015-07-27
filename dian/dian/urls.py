@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^trade/', include('trade.urls')),
     url(r'^reward/', include('reward.urls')),
     url(r'^photo/', include('photo.urls')),
+    url(r'^wechat/', include('wechat.urls')),
 
     url(r'^captcha/$', views.captcha),
     url(r'^reset-passwd/$', views.reset_passwd),
