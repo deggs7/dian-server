@@ -78,3 +78,8 @@ API_DOMAIN = "http://api.diankuai.cn/"
 
 WP_DOMAIN = "http://wp.diankuai.cn/"
 
+
+# LOG_FILENAME
+LOG_FILENAME = 'log_dian_server.log'
+
+
