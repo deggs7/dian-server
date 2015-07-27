@@ -232,7 +232,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'dian-server-log',
+            'filename': 'log_dian_server.log',
             'formatter': 'verbose',
         },
         'console': {
