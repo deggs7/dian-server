@@ -17,6 +17,9 @@ from photo.serializers import PhotoSerializer
 
 from photo.models import TAG_TYPE_ACTIVITY
 
+import logging
+logger = logging.getLogger('dian')
+
 
 @api_view(['GET'])
 @authentication_classes(())
@@ -179,7 +182,6 @@ def list_my_photo(request):
         - code: 400
           message: prama error
     """
-
     member = request.member
     query_set = Photo.objects.filter(member=member)
     serializer = PhotoSerializer(query_set, many=True)
@@ -203,10 +205,13 @@ def get_overview_of_my_like(request):
           message: prama error
     """
     member = request.member
+    if not member:
+        return Response('param error', status=status.HTTP_400_BAD_REQUEST)
+
     query_set = member.like_photos.all()
     rt = {
-            'total': len(query_set),
-            }
+        'total': len(query_set),
+    }
     return Response(rt, status=status.HTTP_200_OK)
 
 
