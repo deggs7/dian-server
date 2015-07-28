@@ -11,15 +11,19 @@ import logging
 logger = logging.getLogger('dian')
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes(())
 @permission_classes(())
 def receive_message(request):
     """
     收取微信消息
     """
+    if request.method == 'GET':
+        logger.debug(int(request.GET.get('echostr')))
+        return Response(int(request.GET.get('echostr')))
+    elif request.method == 'POST':
+        logger.debug('====================')
+        logger.debug(request.body)
+        return Response(int(request.GET.get('echostr')))
 
-    logger.debug(request.DATA)
-    # import pdb; pdb.set_trace()
-    
-    return Response('hello')
+
