@@ -67,6 +67,7 @@ QINIU_DOMAIN = "http://7u2ghq.com1.z0.glb.clouddn.com/"
 
 APP_ID = 'wx8f2xfe405cfec552c'
 APP_SECRET = '8c114x06f05e2e242ca5638b883482a31'
+WECHAT_TOKEN = 'diankuai'
 
 
 # API domain
