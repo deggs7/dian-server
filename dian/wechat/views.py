@@ -27,88 +27,68 @@ def receive_message(request):
     signature = request.GET.get('signature')
     timestamp = request.GET.get('timestamp')
     nonce = request.GET.get('nonce')
+    echostr = request.GET.get('echostr')
 
     wechat = WechatBasic(token=WECHAT_TOKEN)
 
-    logger.debug(request.GET)
-
-    if request.method == 'GET':
-        """
-        用于在微信配置响应服务器时的验证
-        {u'nonce': [u'280474307'], u'timestamp': [u'143801
-        5570'], u'echostr': [u'3904558954066704850'], u'signature':
-        [u'cfbd4c33549370f85424415310449f44e962c5d7']}
-        """
-        echostr = request.GET.get('echostr')
-
-        if wechat.check_signature(signature=signature, timestamp=timestamp,\
-                nonce=nonce):
-            logger.debug('echostr')
+    """
+    用于在微信配置响应服务器时的验证
+    {u'nonce': [u'280474307'], u'timestamp': [u'1438015570'],\
+    u'echostr': [u'3904558954066704850'],\
+    u'signature': [u'cfbd4c33549370f85424415310449f44e962c5d7']}
+    """
+    if wechat.check_signature(signature=signature, timestamp=timestamp,\
+            nonce=nonce):
+        if request.method == 'GET':
             if echostr:
                 return Response(int(echostr))
-        r = Response(u'中文')
-        logger.debug(r.__dict__)
-        return r
+        elif request.method == 'POST':
+            body = request.body
+            try:
+                wechat.parse_data(body)
+                message = wechat.get_message()
+                response = _reply_message(message)
+                return Response(response)
+            except Exception, e:
+                logger.error(e)
+    return Response('')
 
-    elif request.method == 'POST':
-        body = request.body
-        logger.debug(body)
-        try:
-            logger.debug('===========')
-            wechat.parse_data(body)
-            message = wechat.get_message()
-            logger.debug(message)
 
-            response = ''
-
-            if isinstance(message, TextMessage):
-                response = wechat.response_text(content=u'文字信息')
-            elif isinstance(message, VoiceMessage):
-                response = wechat.response_text(content=u'语音信息')
-            elif isinstance(message, ImageMessage):
-                response = wechat.response_text(content=u'图片信息')
-            elif isinstance(message, VideoMessage):
-                response = wechat.response_text(content=u'视频信息')
-            elif isinstance(message, LinkMessage):
-                response = wechat.response_text(content=u'链接信息')
-            elif isinstance(message, LocationMessage):
-                response = wechat.response_text(content=u'地理位置信息')
-            elif isinstance(message, EventMessage):  # 事件信息
-                if message.type == 'subscribe':  # 关注事件(包括普通关注事件和扫描二维码造成的关注事件)
-                    if message.key and message.ticket:  # 如果 key 和 ticket 均不为空，则是扫描二维码造成的关注事件
-                        response = wechat.response_text(content=u'用户尚未关注时的二维码扫描关注事件')
-                    else:
-                        response = wechat.response_text(content=u'普通关注事件')
-                elif message.type == 'unsubscribe':
-                    response = wechat.response_text(content=u'取消关注事件')
-                elif message.type == 'scan':
-                    response = wechat.response_text(content=u'用户已关注时的二维码扫描事件')
-                elif message.type == 'location':
-                    response = wechat.response_text(content=u'上报地理位置事件')
-                elif message.type == 'click':
-                    response = wechat.response_text(content=u'自定义菜单点击事件')
-                elif message.type == 'view':
-                    response = wechat.response_text(content=u'自定义菜单跳转链接事件')
-                elif message.type == 'templatesendjobfinish':
-                    response = wechat.response_text(content=u'模板消息事件')
-        except Exception, e:
-            logger.debug('===========')
-            logger.error(e)
-
-        logger.debug(type(response))
-        logger.debug(response)
-        # import chardet
-        # logger.debug(chardet.detect(response))
-
-        r = Response(response)
-        # r._headers = {'content-type': 'application/json'}
-        # r.data = r.data.encode('utf-8')
-        # r.data = u'\n    <xml>\n    <ToUserName><![CDATA[oujehv_2F040QFdpoJYaujITRhlE]]></ToUserName>\n    <FromUserName><![CDATA[gh_9efb0cbdea2d]]></FromUserName>\n    <CreateTime>1438314503</CreateTime>\n    <MsgType><![CDATA[text]]></MsgType>\n    <Content><![CDATA[不信了]]></Content>\n    </xml>\n    '
-        logger.debug(r.__dict__)
-        # logger.debug(r.data.__dict__)
-        # chardet.detect(r.data)
-        # logger.debug(REST_FRAMEWORK)
-
-        return r
+def _reply_message(message):
+    """
+    根据消息的类型，做相应的处理
+    """
+    response = None
+    if isinstance(message, TextMessage):
+        response = wechat.response_text(content=u'文字信息')
+    elif isinstance(message, VoiceMessage):
+        response = wechat.response_text(content=u'语音信息')
+    elif isinstance(message, ImageMessage):
+        response = wechat.response_text(content=u'图片信息')
+    elif isinstance(message, VideoMessage):
+        response = wechat.response_text(content=u'视频信息')
+    elif isinstance(message, LinkMessage):
+        response = wechat.response_text(content=u'链接信息')
+    elif isinstance(message, LocationMessage):
+        response = wechat.response_text(content=u'地理位置信息')
+    elif isinstance(message, EventMessage):  # 事件信息
+        if message.type == 'subscribe':  # 关注事件(包括普通关注事件和扫描二维码造成的关注事件)
+            if message.key and message.ticket:  # 如果 key 和 ticket 均不为空，则是扫描二维码造成的关注事件
+                response = wechat.response_text(content=u'用户尚未关注时的二维码扫描关注事件')
+            else:
+                response = wechat.response_text(content=u'普通关注事件')
+        elif message.type == 'unsubscribe':
+            response = wechat.response_text(content=u'取消关注事件')
+        elif message.type == 'scan':
+            response = wechat.response_text(content=u'用户已关注时的二维码扫描事件')
+        elif message.type == 'location':
+            response = wechat.response_text(content=u'上报地理位置事件')
+        elif message.type == 'click':
+            response = wechat.response_text(content=u'自定义菜单点击事件')
+        elif message.type == 'view':
+            response = wechat.response_text(content=u'自定义菜单跳转链接事件')
+        elif message.type == 'templatesendjobfinish':
+            response = wechat.response_text(content=u'模板消息事件')
+    return response
 
 
