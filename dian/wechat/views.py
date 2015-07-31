@@ -47,14 +47,14 @@ def receive_message(request):
             try:
                 wechat.parse_data(body)
                 message = wechat.get_message()
-                response = _reply_message(message)
+                response = _reply_message(message, wechat)
                 return Response(response)
             except Exception, e:
                 logger.error(e)
     return Response('')
 
 
-def _reply_message(message):
+def _reply_message(message, wechat):
     """
     根据消息的类型，做相应的处理
     """
