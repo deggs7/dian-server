@@ -40,18 +40,21 @@ def receive_message(request):
         [u'cfbd4c33549370f85424415310449f44e962c5d7']}
         """
         echostr = request.GET.get('echostr')
-        logger.debug(echostr)
 
         if wechat.check_signature(signature=signature, timestamp=timestamp,\
                 nonce=nonce):
-            return Response(int(echostr))
-        else:
-            return Response('')
+            logger.debug('echostr')
+            if echostr:
+                return Response(int(echostr))
+        r = Response(u'中文')
+        logger.debug(r.__dict__)
+        return r
 
     elif request.method == 'POST':
         body = request.body
         logger.debug(body)
-        if body:
+        try:
+            logger.debug('===========')
             wechat.parse_data(body)
             message = wechat.get_message()
             logger.debug(message)
@@ -88,9 +91,24 @@ def receive_message(request):
                     response = wechat.response_text(content=u'自定义菜单跳转链接事件')
                 elif message.type == 'templatesendjobfinish':
                     response = wechat.response_text(content=u'模板消息事件')
+        except Exception, e:
+            logger.debug('===========')
+            logger.error(e)
 
+        logger.debug(type(response))
         logger.debug(response)
+        # import chardet
+        # logger.debug(chardet.detect(response))
 
-        return Response(response)
+        r = Response(response)
+        # r._headers = {'content-type': 'application/json'}
+        # r.data = r.data.encode('utf-8')
+        # r.data = u'\n    <xml>\n    <ToUserName><![CDATA[oujehv_2F040QFdpoJYaujITRhlE]]></ToUserName>\n    <FromUserName><![CDATA[gh_9efb0cbdea2d]]></FromUserName>\n    <CreateTime>1438314503</CreateTime>\n    <MsgType><![CDATA[text]]></MsgType>\n    <Content><![CDATA[不信了]]></Content>\n    </xml>\n    '
+        logger.debug(r.__dict__)
+        # logger.debug(r.data.__dict__)
+        # chardet.detect(r.data)
+        # logger.debug(REST_FRAMEWORK)
+
+        return r
 
 
