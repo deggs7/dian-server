@@ -11,7 +11,10 @@ from wechat_sdk.basic import WechatBasic
 from wechat_sdk.messages import TextMessage, VoiceMessage, ImageMessage,\
 VideoMessage, LinkMessage, LocationMessage, EventMessage 
 
+from dian.utils import restaurant_required
 from dian.settings import WECHAT_TOKEN
+from wechat.utils import get_auth_url_with_confirm
+from wechat.utils import send_article_message
 
 import logging
 logger = logging.getLogger('dian')
@@ -60,7 +63,47 @@ def _reply_message(message, wechat):
     """
     response = None
     if isinstance(message, TextMessage):
-        response = wechat.response_text(content=u'文字信息')
+        if message.content == u'链接':
+            logger.info('进入链接')
+            response = wechat.response_news([
+                {
+                    'title': u'第一条新闻标题',
+                    'description': u'第一条新闻描述，这条新闻没有预览图',
+                    'url': u'http://www.google.com.hk/',
+                },
+                {
+                    'title': u'第二条新闻标题, 这条新闻无描述',
+                    'picurl': u'http://doraemonext.oss-cn-hangzhou.aliyuncs.com/test/wechat-test.jpg',
+                    'url': u'http://www.github.com/',
+                },
+            ])
+        elif message.content == u'link':
+            logger.info('进入link')
+            redirect_path = "register/"
+            url = get_auth_url_with_confirm(redirect_path)
+            response = wechat.response_news([
+                {
+                    'title': u'进入取号页面',
+                    'description': u'需要用户确认获取信息',
+                    'url': url,
+                },
+            ])
+        elif message.content == u'other':
+            logger.info('进入other')
+            response = wechat.response_text(content=u'会有两条消息')
+            logger.info(message.source)
+
+            redirect_path = "#/queue/"
+            url = get_auth_url_with_confirm(redirect_path)
+            send_article_message(message.source, [
+                {
+                    'title': u'进入排队首页',
+                    'description': u'需要用户确认获取信息',
+                    'url': url,
+                },
+            ])
+        else:
+            response = wechat.response_text(content=u'文字信息')
     elif isinstance(message, VoiceMessage):
         response = wechat.response_text(content=u'语音信息')
     elif isinstance(message, ImageMessage):
@@ -92,3 +135,10 @@ def _reply_message(message, wechat):
     return response
 
 
+@api_view(['GET'])
+@restaurant_required
+def get_qrcode_list(request):
+    """
+    获取餐厅部署用到的全部二维码，包括：餐厅排队二维码，餐桌二维码
+    """
+    restaurant = request.current_restaurant

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #! -*- encoding:utf-8 -*-
 
-import urllib
 import qrcode
 import qiniu
 import os
@@ -14,30 +13,6 @@ from dian.settings import TEMP_DIR
 from dian.settings import DEBUG
 
 from dian.utils import get_md5
-
-
-def make_web_auth_url(redirect_uri, state=""):
-    """
-    获取网页授权url
-
-    redirect_uri: 认证后跳转url
-    state: 认证后跳转携带的state参数
-    """
-    redirect_uri = urllib.quote_plus(redirect_uri)
-    url = "https://open.weixin.qq.com/connect/oauth2/authorize?\
-appid=%(appid)s\
-&redirect_uri=%(redirect_uri)s\
-&response_type=code\
-&scope=%(scope)s\
-&state=%(state)s\
-#wechat_redirect"
-    params = {
-            "appid": APP_ID,
-            "redirect_uri": redirect_uri,
-            "scope": "snsapi_base",     # snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
-            "state": state,
-            }
-    return url % params
 
 
 def generate_qr_code(url):

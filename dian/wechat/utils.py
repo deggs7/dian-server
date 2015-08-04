@@ -8,7 +8,7 @@ import os
 import datetime
 import time
 
-from dian.settings import APP_ID, APP_SECRET
+from dian.settings import APP_ID, APP_SECRET, WP_DOMAIN
 
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
@@ -24,11 +24,15 @@ import logging
 logger = logging.getLogger('dian')
 
 
+"""
+认证相关
+"""
+
 def create_jsapi_signature(timestamp, nonceStr, url):
     """
     创建jsapi_signature
     """
-    jsapi_ticket = get_jsapi_ticket()
+    jsapi_ticket = _get_jsapi_ticket()
     wechat = WechatBasic(appid=APP_ID, appsecret=APP_SECRET,\
             jsapi_ticket=jsapi_ticket)
     signature = wechat.generate_jsapi_signature(timestamp, nonceStr, url,\
@@ -37,7 +41,7 @@ def create_jsapi_signature(timestamp, nonceStr, url):
     return signature
 
 
-def get_jsapi_ticket():
+def _get_jsapi_ticket():
     """
     返回jsapi_ticket，如果缓存的时间戳超过7000秒(微信过期7200)，就重新去获取
     :return: jsapi_ticket
@@ -92,4 +96,110 @@ def get_access_token():
         access_token.save()
 
     return access_token.value
+
+
+def get_auth_url_without_confirm(path, state=""):
+    """
+    获取微信授权的url，无用户确认提示
+    """
+    scope = "snsapi_base"
+    return _make_auth_url(path, scope, state)
+
+
+def get_auth_url_with_confirm(path, state=""):
+    """
+    获取微信授权的url，需用户确认：公众号获取个人信息
+    """
+    scope = "snsapi_userinfo"
+    return _make_auth_url(path, scope, state)
+
+
+def _make_auth_url(path, scope="snsapi_base", state="", domain=WP_DOMAIN):
+    """
+    获取微信网页授权url
+
+    path: 跳转的路径 
+    scope: snsapi_base:不弹出授权页面, snsapi_userinfo:弹出授权页面
+    state: 认证后跳转携带的state参数
+    domain: 跳转的域名
+    """
+
+    # redirect_uri: 认证后跳转url
+    redirect_uri = urllib.quote_plus("%s%s" % (domain, path))
+
+    url = "https://open.weixin.qq.com/connect/oauth2/authorize?\
+appid=%(appid)s\
+&redirect_uri=%(redirect_uri)s\
+&response_type=code\
+&scope=%(scope)s\
+&state=%(state)s\
+#wechat_redirect"
+    params = {
+            "appid": APP_ID,
+            "redirect_uri": redirect_uri,
+            "scope": scope,
+            "state": state,
+            }
+    return url % params
+
+
+"""
+菜单相关
+"""
+
+def update_menu():
+    """
+    目前仅用作在pyhton shell中调用
+    """
+    wechat = WechatBasic(appid=APP_ID, appsecret=APP_SECRET)
+    logger.info(wechat.get_menu())
+    # 删除当前菜单
+    wechat.delete_menu()
+    # 创建菜单
+    wechat.create_menu({
+    'button':[
+        {
+            'type': 'view',
+            'name': u'排队',
+            'url': get_auth_url_with_confirm('#/queue'),
+        },
+        {
+            'type': 'view',
+            'name': u'点菜',
+            'url': get_auth_url_with_confirm('#/menu'),
+        },
+        {
+            'type': 'view',
+            'name': u'图片',
+            'url': get_auth_url_with_confirm('#/photo/index'),
+        },
+        # {
+        #     'name': '菜单',
+        #     'sub_button': [
+        #         {
+        #             'type': 'view',
+        #             'name': '视频',
+        #             'url': 'http://v.qq.com/'
+        #         },
+        #         {
+        #             'type': 'click',
+        #             'name': '赞一下我们',
+        #             'key': 'V1001_GOOD'
+        #         }
+        #     ]
+        # }
+    ]})
+
+
+"""
+消息相关
+"""
+
+def send_article_message(openid, articles):
+    """
+    给微信用户发送链接类的客服消息
+    """
+    wechat = WechatBasic(appid=APP_ID, appsecret=APP_SECRET)
+    wechat.send_article_message(openid, articles)
+
 

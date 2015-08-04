@@ -9,6 +9,9 @@ from .serializers import SeedUserSerializer
 
 @api_view(["GET"])
 def get_my_account(request):
+    """
+    获取当前登陆的账号信息
+    """
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data)
@@ -16,6 +19,9 @@ def get_my_account(request):
 
 @api_view(["PUT"])
 def change_passwd(request):
+    """
+    更改密码
+    """
     data = request.DATA.copy()
     old_password = data.get('old_password', None)
     new_password1 = data.get('new_password1', None)
@@ -38,6 +44,9 @@ def change_passwd(request):
 @authentication_classes(())
 @permission_classes(())
 def create_seed_user(request):
+    """
+    创建种子用户，为门户页面上提交开通申请而设置的
+    """
     data = request.DATA.copy()
     serializer = SeedUserSerializer(data=data)
     if serializer.is_valid():
