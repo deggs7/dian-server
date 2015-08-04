@@ -64,7 +64,6 @@ def _reply_message(message, wechat):
     response = None
     if isinstance(message, TextMessage):
         if message.content == u'链接':
-            logger.info('进入链接')
             response = wechat.response_news([
                 {
                     'title': u'第一条新闻标题',
@@ -78,8 +77,7 @@ def _reply_message(message, wechat):
                 },
             ])
         elif message.content == u'link':
-            logger.info('进入link')
-            redirect_path = "register/"
+            redirect_path = "pages/register/"
             url = get_auth_url_with_confirm(redirect_path)
             response = wechat.response_news([
                 {
@@ -89,10 +87,7 @@ def _reply_message(message, wechat):
                 },
             ])
         elif message.content == u'other':
-            logger.info('进入other')
             response = wechat.response_text(content=u'会有两条消息')
-            logger.info(message.source)
-
             redirect_path = "#/queue/"
             url = get_auth_url_with_confirm(redirect_path)
             send_article_message(message.source, [

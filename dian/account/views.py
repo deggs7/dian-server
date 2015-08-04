@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#! -*- encoding:utf-8 -*-
+
 from rest_framework.decorators import api_view
 from rest_framework.decorators import authentication_classes
 from rest_framework.decorators import permission_classes 
