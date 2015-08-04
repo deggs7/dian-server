@@ -14,6 +14,7 @@ from dian.settings import DEBUG
 
 from account.models import Member
 from account.serializers import MemberSerializer
+from wechat.utils import get_access_token
 
 import logging
 logger = logging.getLogger('dian')
@@ -53,8 +54,9 @@ def get_member(request):
             openid = access_res.json().get('openid', None)
             # access_token = access_res.json().get('access_token', None)
 
-            basic_access_res = _get_access_res_for_basic()
-            access_token = basic_access_res.json().get('access_token', None)
+            # basic_access_res = _get_access_res_for_basic()
+            # access_token = basic_access_res.json().get('access_token', None)
+            access_token = get_access_token()
 
             # 获取或者创建会员对象
             member = Member.objects.get_or_create(wp_openid=openid)[0]
