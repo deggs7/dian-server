@@ -28,7 +28,7 @@ from dian.settings import DEBUG
 from dian.settings import API_DOMAIN
 
 from dian.utils import get_md5
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 from account.models import Member
 from account.serializers import MemberSerializer

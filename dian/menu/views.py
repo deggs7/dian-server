@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 from menu.models import Menu
 from menu.models import Category

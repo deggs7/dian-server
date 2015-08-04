@@ -15,5 +15,6 @@ urlpatterns = patterns(
 
     # 获取餐厅用于取号的二维码
     url(r'^register-qrcode/$', 'get_register_qrcode'),
+    url(r'^all-qrcode/$', 'get_all_qrcode'),
 )
 

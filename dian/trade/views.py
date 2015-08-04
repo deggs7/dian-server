@@ -10,7 +10,7 @@ from trade.models import Order
 
 from trade.serializers import OrderSerializer
 
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 
 @api_view(['GET'])

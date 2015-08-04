@@ -13,7 +13,7 @@ from reward.models import Reward
 from reward.models import Strategy
 from reward.models import Coupon
 
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 
 @api_view(['GET'])

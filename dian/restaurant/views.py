@@ -17,11 +17,14 @@ from dian.settings import QINIU_BUCKET_PUBLIC
 from dian.settings import WP_DOMAIN
 
 from dian.utils import get_md5
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
-from restaurant.utils import generate_qr_code
-from restaurant.utils import upload_to_qiniu
+from dian.utils import generate_qr_code
+from dian.utils import upload_to_qiniu
 from wechat.utils import get_auth_url_with_confirm
+
+import logging
+logger = logging.getLogger('dian')
 
 
 @api_view(["GET"])
@@ -91,4 +94,54 @@ def get_register_qrcode(request):
     return Response({
         "file_key": file_key
     })
+
+
+@api_view(['GET'])
+@restaurant_required
+def get_all_qrcode(request):
+    """
+    获取餐厅部署用到的全部二维码，包括：餐厅排队二维码，餐桌二维码
+    """
+    restaurant = request.current_restaurant
+    rt = {
+        "queue": _get_queue_qrcode(restaurant),
+        "menu": _get_menu_qrcode(restaurant),
+    }
+    logger.debug(rt)
+    return Response(rt)
+
+
+def _get_queue_qrcode(restaurant):
+    """
+    获取餐厅排队二维码
+    """
+    redirect_path = "pages/register/"
+    url = get_auth_url_with_confirm(redirect_path, restaurant.openid)
+    localfile = generate_qr_code(url)
+    file_key = upload_to_qiniu(localfile)
+    rt = {
+        "restaurant_name": restaurant.name,
+        "file_key": file_key,
+    }
+    return rt
+
+
+def _get_menu_qrcode(restaurant):
+    """
+    获取每个餐桌的二维码
+    """
+    table_list = restaurant.tables.all()
+    rt = []
+    for table in table_list:
+        table_name = "%s%s" % (table.table_type.name, table.name)
+        redirect_path = "#/menu/qrcode"
+        url = get_auth_url_with_confirm(redirect_path, table.pk)
+        localfile = generate_qr_code(url)
+        file_key = upload_to_qiniu(localfile)
+        rt.append({
+            "table_name": table_name,
+            "file_key": file_key,
+        })
+    return rt
+
 

@@ -13,7 +13,7 @@ from registration.models import Registration
 from registration.serializers import RegistrationSerializer
 
 from dian.tasks import send_registration_remind
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 
 class RegistrationList(generics.ListCreateAPIView):

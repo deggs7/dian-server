@@ -11,7 +11,7 @@ from wechat_sdk.basic import WechatBasic
 from wechat_sdk.messages import TextMessage, VoiceMessage, ImageMessage,\
 VideoMessage, LinkMessage, LocationMessage, EventMessage 
 
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 from dian.settings import WECHAT_TOKEN
 from wechat.utils import get_auth_url_with_confirm
 from wechat.utils import send_article_message
@@ -130,10 +130,3 @@ def _reply_message(message, wechat):
     return response
 
 
-@api_view(['GET'])
-@restaurant_required
-def get_qrcode_list(request):
-    """
-    获取餐厅部署用到的全部二维码，包括：餐厅排队二维码，餐桌二维码
-    """
-    restaurant = request.current_restaurant

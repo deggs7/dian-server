@@ -14,7 +14,7 @@ from table.serializers import TableSerializer
 from table.serializers import TableDetailSerializer
 from table.serializers import TableCreateSerializer
 
-from dian.utils import restaurant_required
+from restaurant.utils import restaurant_required
 
 
 @api_view(['GET', 'POST'])
