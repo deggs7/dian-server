@@ -20,6 +20,9 @@ from wechat_sdk.basic import WechatBasic
 from dian.utils import get_md5
 from wechat.models import WechatStore
 
+import logging
+logger = logging.getLogger('dian')
+
 
 def create_jsapi_signature(timestamp, nonceStr, url):
     """
@@ -60,7 +63,7 @@ def get_jsapi_ticket():
                 WechatStore.objects.get_or_create(key='access_token_expires_at')[0]
         access_token = WechatStore.objects.get_or_create(key='access_token')[0]
         token_res = wechat.get_access_token()
-        access_token_expires_at.value = token_res.get('access_token_expires_at',\
+        access_token_expires_at.value = token_res.get('expires_in',\
                 None)
         access_token_expires_at.save()
         access_token.value = token_res.get('access_token', None)
@@ -83,7 +86,7 @@ def get_access_token():
         int(time.time()) > (int(access_token_expires_at.value)-200)): # 多算200秒
         # 获取新access_token
         res = wechat.grant_token()
-        access_token_expires_at.value = res['access_token_expires_at']
+        access_token_expires_at.value = res['expires_in']
         access_token_expires_at.save()
         access_token.value = res['access_token']
         access_token.save()
