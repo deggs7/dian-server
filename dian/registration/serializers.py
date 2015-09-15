@@ -9,6 +9,7 @@ from rest_framework.serializers import DateTimeField
 
 from registration.models import Registration
 
+DATE_TIME_FORMAT = u'%Y-%m-%d %H:%M'
 
 class RegistrationSerializer(ModelSerializer):
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
@@ -58,8 +59,8 @@ class RegistrationSerializer(ModelSerializer):
 
 
 class RegistrationHistorySerializer(ModelSerializer):
-    create_time = DateTimeField(format="%H:%M:%S")
-    end_time = DateTimeField(format="%H:%M:%S")
+    # create_time = DateTimeField(format=DATE_TIME_FORMAT)
+    # end_time = DateTimeField(format=DATE_TIME_FORMAT)
     phone = SerializerMethodField(method_name="get_phone")
     status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
@@ -103,8 +104,8 @@ class RegistrationDetailSerializer(ModelSerializer):
     """
     目前用于微信端对排号实体的展示
     """
-    create_time = DateTimeField(format="%Y-%m-%d %H:%M:%S")
-    end_time = DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    # create_time = DateTimeField(format=DATE_TIME_FORMAT)
+    # end_time = DateTimeField(format=DATE_TIME_FORMAT)
     status = SerializerMethodField(method_name="get_status_desc")
     table_type = SerializerMethodField(method_name="get_table_type")
     restaurant = SerializerMethodField(method_name="get_restaurant")
