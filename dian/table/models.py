@@ -34,3 +34,10 @@ class TableType(models.Model):
         """
         return self.registrations.filter(status='waiting').count()
 
+    def next_queue(self):
+        """
+        餐桌排队号码+1
+        """
+        self.next_queue_number += 1
+        self.save()
+

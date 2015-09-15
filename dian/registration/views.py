@@ -53,14 +53,6 @@ class RegistrationList(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def register_by_wp(request):
-    """
-    TODO 替换上面的方法
-    """
-    pass
-
-
 @api_view(['PUT'])
 def update_registration(request, pk):
     """

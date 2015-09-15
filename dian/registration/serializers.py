@@ -5,21 +5,20 @@ import datetime
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import IntegerField
 from rest_framework.serializers import SerializerMethodField
-from rest_framework.serializers import TimeField
+from rest_framework.serializers import DateTimeField
 
 from registration.models import Registration
 
 
 class RegistrationSerializer(ModelSerializer):
-    queue_number = IntegerField(read_only=True)
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
     phone_display = SerializerMethodField(method_name="get_phone")
     member_display = SerializerMethodField(method_name="get_member")
 
     class Meta:
         model = Registration
-        fields = ("id", "phone", "table_type", "queue_number", "waiting_time",\
-                "phone_display", "status", "member_display", "reg_method")
+        # fields = ("id", "table_type", "queue_number", "waiting_time",\
+        #         "phone_display", "status", "member_display", "reg_method")
 
     def get_waiting_time(self, obj):
         time_delta = datetime.datetime.now() - obj.create_time.replace(tzinfo=None)
@@ -59,8 +58,8 @@ class RegistrationSerializer(ModelSerializer):
 
 
 class RegistrationHistorySerializer(ModelSerializer):
-    create_time = TimeField(format="%H:%M:%S")
-    end_time = TimeField(format="%H:%M:%S")
+    create_time = DateTimeField(format="%H:%M:%S")
+    end_time = DateTimeField(format="%H:%M:%S")
     phone = SerializerMethodField(method_name="get_phone")
     status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
@@ -104,8 +103,8 @@ class RegistrationDetailSerializer(ModelSerializer):
     """
     目前用于微信端对排号实体的展示
     """
-    create_time = TimeField(format="%Y-%m-%d %H:%M:%S")
-    end_time = TimeField(format="%Y-%m-%d %H:%M:%S")
+    create_time = DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    end_time = DateTimeField(format="%Y-%m-%d %H:%M:%S")
     status = SerializerMethodField(method_name="get_status_desc")
     table_type = SerializerMethodField(method_name="get_table_type")
     restaurant = SerializerMethodField(method_name="get_restaurant")

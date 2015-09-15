@@ -30,10 +30,14 @@ from dian.settings import API_DOMAIN
 from dian.utils import get_md5
 from restaurant.utils import restaurant_required
 
+from restaurant.models import Restaurant
+from table.models import TableType
+
 from account.models import Member
 from account.serializers import MemberSerializer
 
 from registration.models import Registration
+from registration.models import REG_METHOD_WECHAT
 from registration.serializers import RegistrationSerializer
 from registration.serializers import RegistrationDetailSerializer
 
@@ -47,20 +51,19 @@ def confirm_table_type(request):
     ---
     request_serializer: RegistrationSerializer
 
-    type:
-        queue_name:
-            required: true
-            type: string
-        queue_number:
-            required: true
-            type: string
-        waiting_count:
-            required: true
-            type: string
+    parameters:
+        - name: restaurant_openid
+          type: string
+          paramType: form
+          required: true
+        - name: table_type_id
+          type: string
+          paramType: form
+          required: true
 
     responseMessages:
         - code: 400
-          message: register error
+          message: Field Error
         - code: 400
           message: Parameter Error(can not get member)
 
@@ -71,37 +74,50 @@ def confirm_table_type(request):
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
 
-    data = request.POST.copy()
+    restaurant_openid = request.DATA.get('restaurant_openid')
+    table_type_id = request.DATA.get('table_type_id')
+
+    try:
+        restaurant = Restaurant.objects.get(openid=restaurant_openid)
+    except Restaurant.DoesNotExist:
+        return Response('restaurant not found', status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        restaurant = Restaurant.objects.get(openid=restaurant_openid)
+    except Restaurant.DoesNotExist:
+        return Response('restaurant not found', status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        table_type = TableType.objects.get(pk=table_type_id)
+    except TableType.DoesNotExist:
+        return Response('table type not found', status=status.HTTP_404_NOT_FOUND)
+
+    data = {
+        'restaurant': restaurant.pk,
+        'member': member.pk,
+        'queue_name': table_type.name,
+        'queue_number': table_type.next_queue_number,
+        'table_min_seats': table_type.min_seats,
+        'table_max_seats': table_type.max_seats,
+        'reg_method': REG_METHOD_WECHAT,
+        'table_type': table_type.pk
+    }
     serializer = RegistrationSerializer(data=data)
 
     if serializer.is_valid():
-        obj = serializer.save(force_insert=True)
-        queue_number = obj.table_type.next_queue_number
-        obj.queue_number = queue_number
-        obj.create_time = datetime.datetime.now()
-        obj.table_min_seats = obj.table_type.min_seats
-        obj.table_max_seats = obj.table_type.max_seats
-        obj.queue_name = obj.table_type.name
-        obj.restaurant = obj.table_type.restaurant
-        obj.member = member
-
-        # 取号方式：微信
-        obj.reg_method = 1 
-
-        obj.save()
-
+        obj = serializer.save()
         # 让餐桌的拍号+1
-        obj.table_type.next_queue_number += 1
-        obj.table_type.save()
+        obj.table_type.next_queue()
 
         res = {
-            "queue_name": obj.queue_name,
-            "queue_number": obj.queue_number,
-            "waiting_count": obj.table_type.get_registration_left()
-                }
+            "id": obj.pk
+            # "queue_name": obj.queue_name,
+            # "queue_number": obj.queue_number,
+            # "waiting_count": obj.table_type.get_registration_left()
+        }
         return Response(res, status.HTTP_200_OK)
     else:
-        return Response('register error', status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 def _get_access_res(code):
@@ -146,14 +162,47 @@ def list_current_registration(request):
 
     """
     member = request.member
-    if member:
-        registrationList = Registration.objects.filter(member=member,\
-                status__in=('waiting', 'turn'))
-        serializer = RegistrationDetailSerializer(registrationList)
-        return Response(serializer.data, status.HTTP_200_OK)
-    else:
+    if not member:
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
+
+    registrationList = Registration.objects.filter(member=member,\
+            status__in=('waiting', 'turn'))
+    serializer = RegistrationDetailSerializer(registrationList)
+    return Response(serializer.data, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def list_current_registration_by_restaurant(request):
+    """
+    获取顾客在当前餐厅的排号
+    ---
+    serializer: RegistrationDetailSerializer
+
+    parameters:
+        - name: restaurant_openid
+          type: string
+          paramType: form
+          required: true
+
+    responseMessages:
+        - code: 400
+          message: Parameter Error(can not get member)
+
+    """
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    restaurant_openid = request.GET.get('restaurant_openid', None)
+
+    registrationList = Registration.objects.filter(member=member,\
+            restaurant__openid=restaurant_openid, status__in=('waiting', 'turn'))
+    serializer = RegistrationDetailSerializer(registrationList)
+    return Response(serializer.data, status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -171,14 +220,14 @@ def list_history_registration(request):
 
     """
     member = request.member
-    if member:
-        registrationList = Registration.objects.filter(member=member,\
-                status__in=('expired', 'passed'))
-        serializer = RegistrationDetailSerializer(registrationList)
-        return Response(serializer.data, status.HTTP_200_OK)
-    else:
+    if not member:
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
+
+    registrationList = Registration.objects.filter(member=member,\
+            status__in=('expired', 'passed'))
+    serializer = RegistrationDetailSerializer(registrationList)
+    return Response(serializer.data, status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -203,17 +252,17 @@ def get_detail_registration(request):
           message: Parameter Error(registration_id)
     """
     member = request.member
-    if member:
-        try:
-            registration_id = request.GET.get('id', None)
-            if not registration_id:
-                raise Exception()
-            registration = Registration.objects.get(id=registration_id)
-            serializer = RegistrationDetailSerializer(registration)
-            return Response(serializer.data, status.HTTP_200_OK)
-        except :
-            return Response('Parameter Error(registration_id)',\
-                    status.HTTP_400_BAD_REQUEST)
-    else:
+    if not member:
         return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    try:
+        registration_id = request.GET.get('id', None)
+        if not registration_id:
+            raise Exception()
+        registration = Registration.objects.get(id=registration_id)
+        serializer = RegistrationDetailSerializer(registration)
+        return Response(serializer.data, status.HTTP_200_OK)
+    except :
+        return Response('Parameter Error(registration_id)',\
                 status.HTTP_400_BAD_REQUEST)
