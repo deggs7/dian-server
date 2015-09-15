@@ -21,6 +21,7 @@ from restaurant.utils import restaurant_required
 
 from dian.utils import generate_qr_code
 from dian.utils import upload_to_qiniu
+from wechat.utils import get_auth_url_with_confirm
 from wechat.utils import get_auth_url_without_confirm
 
 import logging
@@ -87,7 +88,7 @@ def get_register_qrcode(request):
     获取微信取号的二维码
     curl -X GET http://diankuai.cn:8000/wp/register-qrcode/ -H 'Authorization: Token f1b8ca936511301204fe627e63d502fc955fab8b' -H 'X-Restaurant-Id: 1'
     """
-    redirect_path = "pages/register/"
+    redirect_path = "#/queue/join/"
     url = get_auth_url_without_confirm(redirect_path, request.current_restaurant.openid)
     localfile = generate_qr_code(url)
     file_key = upload_to_qiniu(localfile)
@@ -115,7 +116,7 @@ def _get_queue_qrcode(restaurant):
     """
     获取餐厅排队二维码
     """
-    redirect_path = "pages/register/"
+    redirect_path = "#/queue/join/"
     url = get_auth_url_without_confirm(redirect_path, restaurant.openid)
     localfile = generate_qr_code(url)
     file_key = upload_to_qiniu(localfile)
