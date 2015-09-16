@@ -68,8 +68,8 @@ class RegistrationHistorySerializer(ModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ("id", "phone", "queue_number", "create_time", "end_time",\
-                "status", "table_name", "reg_method", "member_display")
+        # fields = ("id", "phone", "queue_number", "create_time", "end_time",\
+        #         "status", "table_name", "reg_method", "member_display")
 
     def get_phone(self, obj):
         try:
@@ -114,8 +114,8 @@ class RegistrationDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ("id", "queue_number", "create_time", "end_time",\
-                "status", "table_type", "restaurant", "current_registration")
+        # fields = ("id", "queue_number", "create_time", "end_time",\
+        #         "status", "table_type", "restaurant", "current_registration")
 
     def get_table_type(self, obj):
         try:
