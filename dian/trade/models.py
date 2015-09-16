@@ -43,7 +43,7 @@ class Order(models.Model):
     member = models.ForeignKey('account.Member', related_name="orders",\
             null=True)
     table_name = models.CharField(max_length=255, blank=True, null=True)
-    create_time = models.DateTimeField(default=datetime.datetime.now())
+    create_time = models.DateTimeField(default=datetime.datetime.now)
     confirm_time = models.DateTimeField(null=True)
     pay_time = models.DateTimeField(null=True)
     price = models.DecimalField(max_digits=12, decimal_places=3, default=0)

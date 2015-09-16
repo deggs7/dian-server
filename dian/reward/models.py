@@ -55,7 +55,7 @@ class Coupon(models.Model):
     reward_type = models.IntegerField(choices=REWARD_TYPE, default=REWARD_TYPE[0][0])
     reward_content = models.CharField(max_length=512, blank=False, null=False)
     strategy_condition = models.CharField(max_length=512, blank=False, null=False)
-    create_time = models.DateTimeField(default=datetime.datetime.now())
+    create_time = models.DateTimeField(default=datetime.datetime.now)
     invalid_time = models.DateTimeField(null=True, blank=True)
     code = models.CharField(max_length=512, null=True, blank=True)
     is_used = models.BooleanField(default=False)

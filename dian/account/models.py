@@ -148,4 +148,4 @@ class SeedUser(models.Model):
     address = models.CharField(max_length=1000, null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=False)
     phone = models.CharField(max_length=255, null=False, blank=False)
-    create_time = models.DateTimeField(default=datetime.datetime.now())
+    create_time = models.DateTimeField(default=datetime.datetime.now)

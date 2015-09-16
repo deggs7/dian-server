@@ -22,7 +22,7 @@ REGISTRATION_STATUS = (
 class Registration(models.Model):
 
     id = models.AutoField(primary_key=True)
-    create_time = models.DateTimeField(default=datetime.datetime.now())
+    create_time = models.DateTimeField(default=datetime.datetime.now)
     end_time = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=255,
             choices=REGISTRATION_STATUS,
