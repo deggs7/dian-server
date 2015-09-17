@@ -9,6 +9,10 @@ from rest_framework.serializers import DateTimeField
 
 from registration.models import Registration
 
+import logging
+logger = logging.getLogger('dian')
+
+
 DATE_TIME_FORMAT = u'%Y-%m-%d %H:%M'
 
 class RegistrationSerializer(ModelSerializer):
@@ -42,19 +46,18 @@ class RegistrationSerializer(ModelSerializer):
         return ret
 
     def get_phone(self, obj):
-        try:
-            return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
-        except:
-            return obj.phone
+        return format_phone(obj.phone)
 
     def get_member(self, obj):
         try:
             rt = {
                 'nickname': obj.member.wp_nickname,
                 'headimgurl': obj.member.wp_headimgurl,
+                'phone': self.get_phone(obj.member),
             }
             return rt
-        except:
+        except Exception, e:
+            logger.error(e)
             return {}
 
 
@@ -72,10 +75,7 @@ class RegistrationHistorySerializer(ModelSerializer):
         #         "status", "table_name", "reg_method", "member_display")
 
     def get_phone(self, obj):
-        try:
-            return obj.phone[:3] + '*' * 4 + obj.phone[-4:]
-        except:
-            return obj.phone
+        return format_phone(obj.phone)
 
     def get_table_name(self, obj):
         return obj.table_type.name
@@ -152,4 +152,11 @@ class RegistrationDetailSerializer(ModelSerializer):
             return rt
         except:
             return {}
+
+
+def format_phone(phone):
+    try:
+        return phone[:3] + '*' * 4 + phone[-4:]
+    except Exception, e:
+        return phone
 
