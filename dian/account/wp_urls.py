@@ -9,5 +9,6 @@ urlpatterns = patterns(
     'account.wp_views',
 
     url(r'^get-member/$', 'get_member'),
+    url(r'^get-member-by-openid/$', 'get_member_by_openid'),
 )
 

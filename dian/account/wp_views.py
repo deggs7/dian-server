@@ -72,13 +72,19 @@ def get_member(request):
                 # member.wp_country = userinfo.get('country', '').encode('iso-8859-1').decode('utf-8')
                 # member.wp_headimgurl = userinfo.get('headimgurl', None)
                 # member.wp_privilege = userinfo.get('privilege', None)
+                member.wp_subscribe = userinfo.get('subscribe', '')
+                member.wp_openid = userinfo.get('openid', '')
                 member.wp_nickname = userinfo.get('nickname', '')
                 member.wp_sex = userinfo.get('sex', None)
-                member.wp_province = userinfo.get('province', '')
                 member.wp_city = userinfo.get('city', '')
                 member.wp_country = userinfo.get('country', '')
+                member.wp_province = userinfo.get('province', '')
+                member.wp_language = userinfo.get('language', '')
                 member.wp_headimgurl = userinfo.get('headimgurl', None)
-                member.wp_privilege = userinfo.get('privilege', None)
+                member.wp_subscribe_time = userinfo.get('subscribe_time', None)
+                member.wp_unionid = userinfo.get('unionid', None)
+                member.wp_remark = userinfo.get('remark', None)
+                member.wp_groupid = userinfo.get('groupid', None)
                 member.save()
 
             # 返回会员信息
@@ -87,6 +93,25 @@ def get_member(request):
         except Exception,e:
             logger.error(e)
             return Response('param error: can not get member', status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def get_member_by_openid(request):
+    """
+    根据微信openid获取member信息
+    """
+    openid = request.GET.get('openid', None)
+    try:
+        member = Member.objects.filter(wp_openid=openid)[0]
+        serializer = MemberSerializer(member)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception, e:
+        rt = {
+            'err_msg': e.message
+        }
+        return Response(rt, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _get_access_res_for_basic():

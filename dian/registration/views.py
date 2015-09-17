@@ -10,7 +10,12 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from registration.models import Registration
+from registration.models import REG_METHOD_PHONE
 from registration.serializers import RegistrationSerializer
+
+from account.models import Member
+
+from table.models import TableType
 
 from dian.tasks import send_registration_remind
 from restaurant.utils import restaurant_required
@@ -51,6 +56,65 @@ class RegistrationList(generics.ListCreateAPIView):
                             headers=headers)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def join_queue(request):
+    """
+    选择餐桌，及确认取号
+    ---
+    request_serializer: RegistrationSerializer
+
+    parameters:
+        - name: phone
+          type: string
+          paramType: form
+          required: true
+        - name: table_type_id
+          type: string
+          paramType: form
+          required: true
+
+    responseMessages:
+        - code: 400
+          message: Field Error
+        - code: 400
+          message: Parameter Error(can not get member)
+
+    """
+
+    restaurant = request.current_restaurant
+
+    phone = request.DATA.get('phone')
+    table_type_id = request.DATA.get('table_type_id')
+
+    member = Member.objects.get_or_create(phone=phone)[0]
+
+    try:
+        table_type = TableType.objects.get(pk=table_type_id)
+    except TableType.DoesNotExist:
+        return Response('table type not found', status=status.HTTP_404_NOT_FOUND)
+
+    data = {
+        'restaurant': restaurant.pk,
+        'member': member.pk,
+        'queue_name': table_type.name,
+        'queue_number': table_type.next_queue_number,
+        'table_min_seats': table_type.min_seats,
+        'table_max_seats': table_type.max_seats,
+        'reg_method': REG_METHOD_PHONE,
+        'table_type': table_type.pk
+    }
+    serializer = RegistrationSerializer(data=data)
+
+    if serializer.is_valid():
+        obj = serializer.save()
+        # 让餐桌的拍号+1
+        obj.table_type.next_queue()
+
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])

@@ -19,4 +19,3 @@ class SeedUserSerializer(serializers.ModelSerializer):
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ('wp_openid', 'wp_nickname', 'wp_headimgurl')

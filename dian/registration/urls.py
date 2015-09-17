@@ -17,6 +17,8 @@ urlpatterns = [
 urlpatterns += patterns(
     'registration.views',
 
+    url(r'^join-queue/$', 'join_queue'),
+
     # for statistics report
     url(r'^statistics/daily-registration/$', 'get_daily_registration'),
     url(r'^statistics/avg-waiting-time/$', 'get_avg_waiting_time'),
