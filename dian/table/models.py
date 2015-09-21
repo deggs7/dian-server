@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from registration.models import REGISTRATION_STATUS_WAITING
 
 
 class Table(models.Model):
@@ -32,7 +33,7 @@ class TableType(models.Model):
         """
         TODO: 此方法缺陷较大，需进一步完善
         """
-        return self.registrations.filter(status='waiting').count()
+        return self.registrations.filter(status=REGISTRATION_STATUS_WAITING).count()
 
     def next_queue(self):
         """

@@ -7,21 +7,12 @@ import os
 import datetime
 import hashlib
 
-from django.core.cache import cache
-
 from dian.settings import MD5_SEED
 from dian.settings import APP_ID, APP_SECRET
 from dian.settings import QINIU_ACCESS_KEY, QINIU_SECRET_KEY
 from dian.settings import QINIU_BUCKET_PUBLIC
 from dian.settings import TEMP_DIR
 from dian.settings import DEBUG
-
-
-def is_verified(captcha, phone):
-    cached_captcha = cache.get(phone, None)
-    if not cached_captcha or captcha != cached_captcha:
-        return False
-    return True
 
 
 def get_md5(s):

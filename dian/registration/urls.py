@@ -7,25 +7,28 @@ from rest_framework.urlpatterns import format_suffix_patterns
 import views
 
 
-urlpatterns = [
-    url(r'^registration/$', views.RegistrationList.as_view()),
-    url(r'^registration/(?P<pk>[0-9]+)/$', views.update_registration),
+# urlpatterns = [
+    # url(r'^registration/$', views.RegistrationList.as_view()),
+    # url(r'^registration/(?P<pk>[0-9]+)/$', views.update_registration),
 
-    url(r'^msg-task/$', views.create_msg_task),
-]
+    # url(r'^msg-task/$', views.create_msg_task),
+# ]
 
-urlpatterns += patterns(
+urlpatterns = patterns(
     'registration.views',
 
     url(r'^join-queue/$', 'join_queue'),
+    url(r'make-repast/(?P<pk>[0-9]+)/$', 'make_repast'),
+    url(r'make-expired/(?P<pk>[0-9]+)/$', 'make_expired'),
+
+    # for history report
+    url(r'^history/today-registration/$', 'get_today_registration'),
 
     # for statistics report
     url(r'^statistics/daily-registration/$', 'get_daily_registration'),
     url(r'^statistics/avg-waiting-time/$', 'get_avg_waiting_time'),
     url(r'^statistics/daily-type-registration/$', 'get_daily_type_registration'),
 
-    # for history report
-    url(r'^history/today-registration/$', 'get_today_registration')
 )
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)

@@ -7,16 +7,14 @@ from django.db import models
 REG_METHOD_PHONE = 0
 REG_METHOD_WECHAT = 1
 
-REGISTRATION_STATUS_WAITING = 'waiting'
-REGISTRATION_STATUS_NEXT = 'turn'
-REGISTRATION_STATUS_EXPIRED = 'expired'
-REGISTRATION_STATUS_PASSED = 'passed'
+REGISTRATION_STATUS_WAITING = 0
+REGISTRATION_STATUS_REPAST = 1
+REGISTRATION_STATUS_EXPIRED = 2
 
 REGISTRATION_STATUS = (
     (REGISTRATION_STATUS_WAITING, 'Waiting'),
-    (REGISTRATION_STATUS_NEXT , 'Turn'),
+    (REGISTRATION_STATUS_REPAST , 'Repast'),
     (REGISTRATION_STATUS_EXPIRED , 'Expired'),
-    (REGISTRATION_STATUS_PASSED , 'Passed'),
 )
 
 class Registration(models.Model):
@@ -24,8 +22,7 @@ class Registration(models.Model):
     id = models.AutoField(primary_key=True)
     create_time = models.DateTimeField(default=datetime.datetime.now)
     end_time = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=255,
-            choices=REGISTRATION_STATUS,
+    status = models.IntegerField(choices=REGISTRATION_STATUS,\
             default=REGISTRATION_STATUS_WAITING)
     restaurant = models.ForeignKey('restaurant.Restaurant',\
             related_name="registrations")
@@ -53,7 +50,8 @@ class Registration(models.Model):
 
     def get_current_number(self):
         try:
-            current_reg = self.table_type.registrations.filter(status='turn').first()
+            current_reg = self.table_type.registrations\
+                .filter(status=REGISTRATION_STATUS_WAITING).order_by('id').first()
             return current_reg.queue_number
         except:
             return 0

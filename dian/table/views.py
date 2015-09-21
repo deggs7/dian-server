@@ -20,6 +20,9 @@ from restaurant.utils import restaurant_required
 @api_view(['GET', 'POST'])
 @restaurant_required
 def list_or_create_table_type(request):
+    """
+    此方法需重构，避免直接使用rest
+    """
     if request.method == 'GET':
         serializer = TableTypeSerializer(request.current_restaurant.table_types.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -37,6 +40,9 @@ def list_or_create_table_type(request):
 @api_view(['GET', 'PUT'])
 @restaurant_required
 def get_or_update_table_type(request, pk):
+    """
+    此方法需重构，避免直接使用rest
+    """
     try:
         table_type = TableType.objects.get(pk=pk)
     except TableType.DoesNotExist:

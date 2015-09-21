@@ -8,3 +8,4 @@ python dian/manage.py schemamigration --auto wechat
 python dian/manage.py schemamigration --auto reward
 python dian/manage.py schemamigration --auto game 
 python dian/manage.py schemamigration --auto photo 
+python dian/manage.py schemamigration --auto message

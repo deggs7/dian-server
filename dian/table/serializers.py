@@ -6,7 +6,13 @@ from table.models import TableType
 from table.models import Table
 from registration.serializers import RegistrationSerializer
 
+from registration.models import REGISTRATION_STATUS_WAITING
+
 from trade.serializers import OrderDetailSerializer
+
+
+import logging
+logger = logging.getLogger('dian')
 
 
 class TableTypeSerializer(ModelSerializer):
@@ -14,7 +20,7 @@ class TableTypeSerializer(ModelSerializer):
 
     class Meta:
         model = TableType
-        fields = ("id", "name", "min_seats", "max_seats", "front_left", "next_queue_number")
+        # fields = ("id", "name", "min_seats", "max_seats", "front_left", "next_queue_number")
 
     def get_front_left(self, obj):
         return obj.get_registration_left() - 1
@@ -27,18 +33,28 @@ class TableTypeDetailSerializer(ModelSerializer):
 
     class Meta:
         model = TableType
-        fields = ("id", "name", "slug", "queue_registrations", "current_registration")
+        # fields = ("id", "name", "slug", "queue_registrations", "current_registration")
 
     def get_current_registration(self, obj):
         try:
-            current_reg = obj.registrations.filter(status='turn').first()
+            current_reg = obj.registrations\
+                .filter(status=REGISTRATION_STATUS_WAITING).order_by('id').first()
             return RegistrationSerializer(current_reg).data if current_reg else None
-        except:
+        except Exception, e:
+            logger.error(e)
             return None
 
     def get_queue_registrations(self, obj):
-        queue_registrations = obj.registrations.filter(status='waiting').order_by('id')
-        return [RegistrationSerializer(reg).data for reg in queue_registrations]
+        try:
+            queue_registrations = obj.registrations\
+                 .filter(status=REGISTRATION_STATUS_WAITING).order_by('id')
+            rt = [RegistrationSerializer(reg).data for reg in queue_registrations]
+            if len(rt) > 0:
+                rt = rt[1:]
+            return rt
+        except Exception, e:
+            logger.error(e)
+            return None
 
     def get_slug(self, obj):
         return obj.name + u"（" + "%d" % obj.min_seats + u"-" + "%d" % obj.max_seats + u"人）"
@@ -54,7 +70,7 @@ class TableSerializer(ModelSerializer):
     order_status = SerializerMethodField(method_name="get_table_order_status")
 
     class Meta:
-        fields = ("id", "name", "table_type", "order_status", "order")
+        # fields = ("id", "name", "table_type", "order_status", "order")
         model = Table
 
     def get_table_order_status(self, obj):
@@ -67,7 +83,7 @@ class TableDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Table
-        fields = ("id", "name", "restaurant", "table_type", "table_type_desc", "order")
+        # fields = ("id", "name", "restaurant", "table_type", "table_type_desc", "order")
 
     def get_table_type_slug(self, obj):
         table_type = obj.table_type

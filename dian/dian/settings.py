@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'wechat',
     'reward',
     'game',
+    'message',
     'rest_framework.authtoken',
     'south',
     'rest_framework_swagger',
@@ -82,6 +83,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -153,12 +155,15 @@ CORS_ALLOW_HEADERS = (
 # celery
 import djcelery
 djcelery.setup_loader()
-BROKER_URL = 'amqp://dian:dian@localhost:5672/dianvhost'
+BROKER_URL = 'amqp://dian:123456@localhost:5672//dianvhost'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
-# msg
-MSG_ACCOUNT = "13021045329"
-MSG_PASSWORD = "28788DE1EDAF72E75A1BFAF2F98E"
+
+# SMS
+SMS_API_URL = "http://sms.1xinxi.cn/asmx/smsservice.aspx"
+SMS_API_NAME = "13021045329"
+SMS_API_PWD = "28788DE1EDAF72E75A1BFAF2F98E"
+SMS_API_TYPE = "pt"
 
 
 # md5 seed
@@ -248,6 +253,13 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
+        # 'celery': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': 'celery.log',
+        #     'formatter': 'simple',
+        #     'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        # },
     },
     'loggers': {
         'dian': {
@@ -255,6 +267,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        # 'celery': {
+        #     'handlers': ['celery', ],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
         # 'django': {
         #     'handlers': ['console'],
         #     # 'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),

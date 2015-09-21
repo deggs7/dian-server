@@ -7,8 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from account.models import User
-from .utils import is_verified
-from .tasks import create_and_send_captcha
+# from sms.tasks import create_and_send_captcha
 
 
 @api_view(["POST"])
@@ -28,11 +27,11 @@ def captcha(request):
 
     if not captcha:
         # create captcha
-        create_and_send_captcha(user)
+        # create_and_send_captcha(user)
         return Response(None, status.HTTP_200_OK)
     else:
         # verify captcha
-        if not is_verified(captcha, user.username):
+        if not _is_verified(captcha, user.username):
             return Response({"error": "验证码错误"}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(None, status=status.HTTP_200_OK)
@@ -55,7 +54,7 @@ def reset_passwd(request):
     if not phone or not user:
         return Response({"error": "不存在该用户"}, status=status.HTTP_400_BAD_REQUEST)
 
-    if not captcha or not is_verified(captcha, user.username):
+    if not captcha or not _is_verified(captcha, user.username):
         return Response({"error": "验证码错误"}, status=status.HTTP_400_BAD_REQUEST)
 
     if not new_password1 or new_password1 != new_password2:
@@ -65,4 +64,12 @@ def reset_passwd(request):
     user.save()
 
     return Response({"info": "change password done"}, status=status.HTTP_200_OK)
+
+
+def _is_verified(captcha, phone):
+    cached_captcha = cache.get(phone, None)
+    if not cached_captcha or captcha != cached_captcha:
+        return False
+    return True
+
 

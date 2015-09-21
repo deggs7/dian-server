@@ -41,6 +41,11 @@ from registration.models import REG_METHOD_WECHAT
 from registration.serializers import RegistrationSerializer
 from registration.serializers import RegistrationDetailSerializer
 
+from registration.models import REGISTRATION_STATUS_WAITING
+from registration.models import REGISTRATION_STATUS_REPAST
+from registration.models import REGISTRATION_STATUS_EXPIRED
+
+from registration.models import REGISTRATION_STATUS_WAITING
 
 @api_view(['POST'])
 @authentication_classes(())
@@ -167,7 +172,7 @@ def list_current_registration(request):
                 status.HTTP_400_BAD_REQUEST)
 
     registrationList = Registration.objects.filter(member=member,\
-            status__in=('waiting', 'turn'))
+            status=REGISTRATION_STATUS_WAITING)
     serializer = RegistrationDetailSerializer(registrationList)
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -200,7 +205,7 @@ def list_current_registration_by_restaurant(request):
     restaurant_openid = request.GET.get('restaurant_openid', None)
 
     registrationList = Registration.objects.filter(member=member,\
-            restaurant__openid=restaurant_openid, status__in=('waiting', 'turn'))
+            restaurant__openid=restaurant_openid, status=REGISTRATION_STATUS_WAITING)
     serializer = RegistrationDetailSerializer(registrationList)
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -225,7 +230,7 @@ def list_history_registration(request):
                 status.HTTP_400_BAD_REQUEST)
 
     registrationList = Registration.objects.filter(member=member,\
-            status__in=('expired', 'passed'))
+            status__in=(REGISTRATION_STATUS_REPAST, REGISTRATION_STATUS_EXPIRED))
     serializer = RegistrationDetailSerializer(registrationList)
     return Response(serializer.data, status.HTTP_200_OK)
 

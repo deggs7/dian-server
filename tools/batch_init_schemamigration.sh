@@ -8,3 +8,4 @@ python dian/manage.py schemamigration --initial wechat
 python dian/manage.py schemamigration --initial reward
 python dian/manage.py schemamigration --initial game
 python dian/manage.py schemamigration --initial photo
+python dian/manage.py schemamigration --initial message

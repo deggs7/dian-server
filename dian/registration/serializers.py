@@ -9,6 +9,10 @@ from rest_framework.serializers import DateTimeField
 
 from registration.models import Registration
 
+from registration.models import REGISTRATION_STATUS_WAITING
+from registration.models import REGISTRATION_STATUS_REPAST
+from registration.models import REGISTRATION_STATUS_EXPIRED
+
 import logging
 logger = logging.getLogger('dian')
 
@@ -82,10 +86,10 @@ class RegistrationHistorySerializer(ModelSerializer):
 
     def get_status_desc(self, obj):
         desc = {
-            "waiting": u"等待中",
-            "turn": u"下一个",
-            "expired": u"已就餐",
-            "passed": u"已过号"
+            REGISTRATION_STATUS_WAITING: u"等待中",
+            # "turn": u"下一个",
+            REGISTRATION_STATUS_REPAST: u"已就餐",
+            REGISTRATION_STATUS_EXPIRED: u"已过号"
         }
         return desc[obj.status]
 
@@ -129,16 +133,17 @@ class RegistrationDetailSerializer(ModelSerializer):
 
     def get_status_desc(self, obj):
         desc = {
-            "waiting": u"等待中",
-            "turn": u"下一个",
-            "expired": u"已就餐",
-            "passed": u"已过号"
+            REGISTRATION_STATUS_WAITING: u"等待中",
+            # "turn": u"下一个",
+            REGISTRATION_STATUS_REPAST: u"已就餐",
+            REGISTRATION_STATUS_EXPIRED: u"已过号"
         }
         return desc[obj.status]
 
     def get_current_registration(self, obj):
         try:
-            current_reg = obj.table_type.registrations.filter(status='turn').first()
+            current_reg = obj.table_type.registrations\
+                .filter(status=REGISTRATION_STATUS_WAITING).order_by('id').first()
             return current_reg.queue_number 
         except:
             return None
