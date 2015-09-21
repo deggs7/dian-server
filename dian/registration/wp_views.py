@@ -47,6 +47,11 @@ from registration.models import REGISTRATION_STATUS_EXPIRED
 
 from registration.models import REGISTRATION_STATUS_WAITING
 
+
+import logging
+logger = logging.getLogger('dian')
+
+
 @api_view(['POST'])
 @authentication_classes(())
 @permission_classes(())
@@ -264,10 +269,11 @@ def get_detail_registration(request):
     try:
         registration_id = request.GET.get('id', None)
         if not registration_id:
-            raise Exception()
+            raise Exception('registration id not in query')
         registration = Registration.objects.get(id=registration_id)
         serializer = RegistrationDetailSerializer(registration)
         return Response(serializer.data, status.HTTP_200_OK)
-    except :
+    except Exception, e:
+        logger.error(e)
         return Response('Parameter Error(registration_id)',\
                 status.HTTP_400_BAD_REQUEST)

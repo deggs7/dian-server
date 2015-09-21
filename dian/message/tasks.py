@@ -37,6 +37,7 @@ def send_sms(phone, content):
             logger.info('OK')
             return
 
+    # 发送不正常
     logger.error(options)
     logger.error(res)
     return
