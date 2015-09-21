@@ -207,6 +207,11 @@ WP_DOMAIN = "http://wp.diankuai.cn/"
 LOG_FILENAME = 'log_dian_server.log'
 
 
+# The next body ready to repast
+
+QUEUE_READY_COUNT = 2
+
+
 # Overwrite configuration
 
 try:

@@ -39,13 +39,12 @@ class Registration(models.Model):
     # 取号方式 0: 手机取号  1: 微信取号
     reg_method = models.IntegerField("register method", default=REG_METHOD_PHONE)
 
-    # 此 table_type 只是临时存储，不可以被直接引用（最好去除此属性）
-    # TODO 微信端已清理对此属性依赖，console端还未处理
+    # 此 table_type 只是记录关联，不可以被直接用来显示
     table_type = models.ForeignKey('table.TableType',
             related_name="registrations", blank=True, null=True)
     
     # TODO 需去除此属性，统一走member获取
-    phone = models.CharField(max_length=255, null=True, blank=True)
+    # phone = models.CharField(max_length=255, null=True, blank=True)
 
 
     def get_current_number(self):

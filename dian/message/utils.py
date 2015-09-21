@@ -33,12 +33,13 @@ def render_join(restaurant_name, queue_name, queue_number, to_wait):
     return content
 
 
-def render_ready(restaurant_name, queue_name, current_number):
-    tpl = u"%(restaurant)s提醒您：当前%(table_name)s已叫号至%(current_number)d号，您前面还有1桌。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快】"
+def render_ready(restaurant_name, queue_name, current_number, to_wait):
+    tpl = u"%(restaurant_name)s提醒您：当前%(queue_name)s已叫号至%(current_number)d号，您前面还有%(to_wait)d桌。请注意叫号，以免过号。本信息仅供参考，以迎宾叫号为准。【点快】"
     content = tpl % {
-        "restaurant": self.reg.restaurant.name,
-        "table_name": self.reg.table_type.name,
-        "current_number": self.reg.get_current_number()
+        "restaurant_name": restaurant_name,
+        "queue_name": queue_name,
+        "current_number": current_number,
+        "to_wait": to_wait
     }
     return content
 

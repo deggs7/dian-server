@@ -21,7 +21,7 @@ DATE_TIME_FORMAT = u'%Y-%m-%d %H:%M'
 
 class RegistrationSerializer(ModelSerializer):
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
-    phone_display = SerializerMethodField(method_name="get_phone")
+    # phone_display = SerializerMethodField(method_name="get_phone")
     member_display = SerializerMethodField(method_name="get_member")
 
     class Meta:
@@ -49,15 +49,15 @@ class RegistrationSerializer(ModelSerializer):
 
         return ret
 
-    def get_phone(self, obj):
-        return format_phone(obj.phone)
+    # def get_phone(self, obj):
+    #     return format_phone(obj.phone)
 
     def get_member(self, obj):
         try:
             rt = {
                 'nickname': obj.member.wp_nickname,
                 'headimgurl': obj.member.wp_headimgurl,
-                'phone': self.get_phone(obj.member),
+                'phone': _format_phone(obj.member.phone),
             }
             return rt
         except Exception, e:
@@ -68,7 +68,7 @@ class RegistrationSerializer(ModelSerializer):
 class RegistrationHistorySerializer(ModelSerializer):
     # create_time = DateTimeField(format=DATE_TIME_FORMAT)
     # end_time = DateTimeField(format=DATE_TIME_FORMAT)
-    phone = SerializerMethodField(method_name="get_phone")
+    # phone = SerializerMethodField(method_name="get_phone")
     status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
     member_display = SerializerMethodField(method_name="get_member")
@@ -78,8 +78,8 @@ class RegistrationHistorySerializer(ModelSerializer):
         # fields = ("id", "phone", "queue_number", "create_time", "end_time",\
         #         "status", "table_name", "reg_method", "member_display")
 
-    def get_phone(self, obj):
-        return format_phone(obj.phone)
+    # def get_phone(self, obj):
+    #     return format_phone(obj.phone)
 
     def get_table_name(self, obj):
         return obj.table_type.name
@@ -98,9 +98,11 @@ class RegistrationHistorySerializer(ModelSerializer):
             rt = {
                 'nickname': obj.member.wp_nickname,
                 'headimgurl': obj.member.wp_headimgurl,
+                'phone': _format_phone(obj.member.phone),
             }
             return rt
-        except:
+        except Exception, e:
+            logger.error(e)
             return {}
 
 
@@ -159,7 +161,7 @@ class RegistrationDetailSerializer(ModelSerializer):
             return {}
 
 
-def format_phone(phone):
+def _format_phone(phone):
     try:
         return phone[:3] + '*' * 4 + phone[-4:]
     except Exception, e:

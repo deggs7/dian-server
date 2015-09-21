@@ -11,6 +11,7 @@ from rest_framework import status
 
 from registration.models import Registration
 from registration.models import REG_METHOD_PHONE
+from registration.models import REG_METHOD_WECHAT
 from registration.serializers import RegistrationSerializer
 from registration.serializers import RegistrationHistorySerializer
 
@@ -19,12 +20,15 @@ from account.models import Member
 from table.models import TableType
 
 from message.utils import render_join
+from message.utils import render_ready
 from message.tasks import send_sms
+from wechat.utils import send_article_message
 
 from registration.models import REGISTRATION_STATUS_WAITING
 from registration.models import REGISTRATION_STATUS_REPAST
 from registration.models import REGISTRATION_STATUS_EXPIRED
 
+from dian.settings import QUEUE_READY_COUNT
 # from dian.tasks import send_registration_remind
 from restaurant.utils import restaurant_required
 
@@ -114,6 +118,10 @@ def make_repast(request, pk):
         reg = serializer.save()
         reg.end_time = datetime.datetime.now()
         reg.save()
+
+        # 通知后面第n位的顾客就餐
+        _notify_ready(reg.table_type)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -135,8 +143,45 @@ def make_expired(request, pk):
         reg = serializer.save()
         reg.end_time = datetime.datetime.now()
         reg.save()
+
+        # 通知后面第n位的顾客就餐
+        _notify_ready(reg.table_type)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def _notify_ready(table_type):
+    try:
+        queue = table_type.registrations\
+             .filter(status=REGISTRATION_STATUS_WAITING).order_by('id')
+        if len(queue) > QUEUE_READY_COUNT:
+            target = queue[QUEUE_READY_COUNT:(QUEUE_READY_COUNT+1)][0]
+            if (target.reg_method == REG_METHOD_PHONE):
+                content = render_ready(
+                        target.restaurant.name,
+                        target.queue_name,
+                        queue.first().queue_number,
+                        QUEUE_READY_COUNT
+                        )
+                send_sms.delay(target.member.phone, content)
+            elif (target.reg_method == REG_METHOD_WECHAT):
+                content = render_ready(
+                        target.restaurant.name,
+                        target.queue_name,
+                        queue.first().queue_number,
+                        QUEUE_READY_COUNT
+                        )
+                url = 'http://www.diankuai.cn'
+                send_article_message(target.member.wp_openid, [
+                    {
+                        'title': content,
+                        'description': content,
+                        'url': url,
+                    },
+                ])
+    except Exception, e:
+        logger.error(e)
 
 
 # for statistics report
