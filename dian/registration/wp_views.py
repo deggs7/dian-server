@@ -41,6 +41,9 @@ from registration.models import REG_METHOD_WECHAT
 from registration.serializers import RegistrationSerializer
 from registration.serializers import RegistrationDetailSerializer
 
+from message.utils import render_join
+from wechat.utils import send_article_message
+
 from registration.models import REGISTRATION_STATUS_WAITING
 from registration.models import REGISTRATION_STATUS_REPAST
 from registration.models import REGISTRATION_STATUS_EXPIRED
@@ -118,6 +121,11 @@ def confirm_table_type(request):
         obj = serializer.save()
         # 让餐桌的拍号+1
         obj.table_type.next_queue()
+
+        # 给顾客发送短信提醒
+        content = render_join(restaurant.name, obj.queue_name, obj.queue_number,\
+                (obj.table_type.get_registration_left() - 1))
+        send_article_message(obj.member.wp_openid, content)
 
         res = {
             "id": obj.pk
