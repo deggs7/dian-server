@@ -122,10 +122,24 @@ def confirm_table_type(request):
         # 让餐桌的拍号+1
         obj.table_type.next_queue()
 
-        # 给顾客发送短信提醒
-        content = render_join(restaurant.name, obj.queue_name, obj.queue_number,\
-                (obj.table_type.get_registration_left() - 1))
-        send_article_message(obj.member.wp_openid, content)
+        try:
+            # 给顾客发送短信提醒
+            content = render_join(
+                    restaurant.name,
+                    obj.queue_name,
+                    obj.queue_number,
+                    (obj.table_type.get_registration_left() - 1)
+                    )
+            url = 'http://www.diankuai.cn'
+            send_article_message(obj.member.wp_openid, [
+                {
+                    'title': content,
+                    'description': content,
+                    'url': url,
+                },
+            ])
+        except Exception, e:
+            logger.error(e)
 
         res = {
             "id": obj.pk
@@ -135,6 +149,7 @@ def confirm_table_type(request):
         }
         return Response(res, status.HTTP_200_OK)
     else:
+        logger.error(serializer.errors)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
@@ -184,10 +199,14 @@ def list_current_registration(request):
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
 
-    registrationList = Registration.objects.filter(member=member,\
-            status=REGISTRATION_STATUS_WAITING)
-    serializer = RegistrationDetailSerializer(registrationList)
-    return Response(serializer.data, status.HTTP_200_OK)
+    try:
+        registrationList = Registration.objects.filter(member=member,\
+                status=REGISTRATION_STATUS_WAITING)
+        serializer = RegistrationDetailSerializer(registrationList)
+        return Response(serializer.data, status.HTTP_200_OK)
+    except Exception, e:
+        logger.error(e)
+        return Response(e, status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

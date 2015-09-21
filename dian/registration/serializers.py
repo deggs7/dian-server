@@ -69,7 +69,7 @@ class RegistrationHistorySerializer(ModelSerializer):
     # create_time = DateTimeField(format=DATE_TIME_FORMAT)
     # end_time = DateTimeField(format=DATE_TIME_FORMAT)
     # phone = SerializerMethodField(method_name="get_phone")
-    status = SerializerMethodField(method_name="get_status_desc")
+    # status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
     member_display = SerializerMethodField(method_name="get_member")
 
@@ -84,14 +84,14 @@ class RegistrationHistorySerializer(ModelSerializer):
     def get_table_name(self, obj):
         return obj.table_type.name
 
-    def get_status_desc(self, obj):
-        desc = {
-            REGISTRATION_STATUS_WAITING: u"等待中",
-            # "turn": u"下一个",
-            REGISTRATION_STATUS_REPAST: u"已就餐",
-            REGISTRATION_STATUS_EXPIRED: u"已过号"
-        }
-        return desc[obj.status]
+    # def get_status_desc(self, obj):
+    #     desc = {
+    #         REGISTRATION_STATUS_WAITING: u"等待中",
+    #         # "turn": u"下一个",
+    #         REGISTRATION_STATUS_REPAST: u"已就餐",
+    #         REGISTRATION_STATUS_EXPIRED: u"已过号"
+    #     }
+    #     return desc[obj.status]
 
     def get_member(self, obj):
         try:
@@ -112,7 +112,7 @@ class RegistrationDetailSerializer(ModelSerializer):
     """
     # create_time = DateTimeField(format=DATE_TIME_FORMAT)
     # end_time = DateTimeField(format=DATE_TIME_FORMAT)
-    status = SerializerMethodField(method_name="get_status_desc")
+    # status = SerializerMethodField(method_name="get_status_desc")
     table_type = SerializerMethodField(method_name="get_table_type")
     restaurant = SerializerMethodField(method_name="get_restaurant")
     current_registration =\
@@ -133,14 +133,14 @@ class RegistrationDetailSerializer(ModelSerializer):
         except:
             return {}
 
-    def get_status_desc(self, obj):
-        desc = {
-            REGISTRATION_STATUS_WAITING: u"等待中",
-            # "turn": u"下一个",
-            REGISTRATION_STATUS_REPAST: u"已就餐",
-            REGISTRATION_STATUS_EXPIRED: u"已过号"
-        }
-        return desc[obj.status]
+    # def get_status_desc(self, obj):
+    #     desc = {
+    #         REGISTRATION_STATUS_WAITING: u"等待中",
+    #         # "turn": u"下一个",
+    #         REGISTRATION_STATUS_REPAST: u"已就餐",
+    #         REGISTRATION_STATUS_EXPIRED: u"已过号"
+    #     }
+    #     return desc[obj.status]
 
     def get_current_registration(self, obj):
         try:
