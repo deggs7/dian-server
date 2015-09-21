@@ -22,10 +22,10 @@ class MemberMiddleware(object):
             request.member = None
 
         # 用于辅助接口文档的呈现
-        if DEBUG and not request.member:
-            try:
-                request.member = Member.objects.all()[0]
-            except:
-                request.member = None
+        # if DEBUG and not request.member:
+        #     try:
+        #         request.member = Member.objects.all()[0]
+        #     except:
+        #         request.member = None
 
         return

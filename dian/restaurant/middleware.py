@@ -22,10 +22,10 @@ class RestaurantMiddleware(object):
             request.current_restaurant = None
 
         # 用于辅助接口文档的呈现
-        if DEBUG and not request.current_restaurant:
-            try:
-                request.current_restaurant = Restaurant.objects.all()[0]
-            except:
-                request.current_restaurant = None
+        # if DEBUG and not request.current_restaurant:
+        #     try:
+        #         request.current_restaurant = Restaurant.objects.all()[0]
+        #     except:
+        #         request.current_restaurant = None
 
         return
