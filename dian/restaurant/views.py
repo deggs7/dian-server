@@ -135,8 +135,8 @@ def _get_menu_qrcode(restaurant):
     rt = []
     for table in table_list:
         table_name = "%s%s" % (table.table_type.name, table.name)
-        redirect_path = "#/menu/qrcode"
-        url = get_auth_url_without_confirm(redirect_path, table.pk)
+        redirect_path = "#/menu/buy/"
+        url = get_auth_url_without_confirm(redirect_path, table.openid)
         localfile = generate_qr_code(url)
         file_key = upload_to_qiniu(localfile)
         rt.append({

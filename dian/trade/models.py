@@ -6,6 +6,18 @@ import datetime
 from django.db import models
 
 
+ORDER_STATUS_CREATED = 0
+ORDER_STATUS_CONFIRMED = 1
+ORDER_STATUS_PAID = 2
+ORDER_STATUS_REJECT = 3
+
+ORDER_STATUS = (
+    (ORDER_STATUS_CREATED, "created"),      # 已下单（或者追加菜后），待确认
+    (ORDER_STATUS_CONFIRMED, "confirmed"),   # 餐厅确认通过后，待付款
+    (ORDER_STATUS_PAID, "paid"),        # 已付款
+    (ORDER_STATUS_REJECT, "reject")
+)
+
 class Cart(models.Model):
     """
     购物车
@@ -31,13 +43,6 @@ class Order(models.Model):
     订单
     """
 
-    STATUS = (
-        (0, "placed"),      # 已下单（或者追加菜后），待确认
-        (1, "confirmed"),   # 餐厅确认通过后，待付款
-        (2, "paid"),        # 已付款
-        (3, "reject")
-    )
-
     restaurant = models.ForeignKey('restaurant.Restaurant',\
             related_name="orders", null=True)
     member = models.ForeignKey('account.Member', related_name="orders",\
@@ -47,7 +52,8 @@ class Order(models.Model):
     confirm_time = models.DateTimeField(null=True)
     pay_time = models.DateTimeField(null=True)
     price = models.DecimalField(max_digits=12, decimal_places=3, default=0)
-    status = models.IntegerField(choices=STATUS, default=STATUS[0][0])
+    status = models.IntegerField(choices=ORDER_STATUS,\
+            default=ORDER_STATUS_CREATED)
 
 
 class OrderItem(models.Model):

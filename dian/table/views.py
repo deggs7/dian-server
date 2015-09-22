@@ -235,3 +235,4 @@ def get_table_detail(request, pk):
         return Response('table not found', status=status.HTTP_404_NOT_FOUND)
     serializer = TableDetailSerializer(table)
     return Response(serializer.data, status=status.HTTP_200_OK)
+

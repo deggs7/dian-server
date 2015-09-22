@@ -8,7 +8,7 @@ from django.conf.urls import url
 urlpatterns = patterns(
     'menu.wp_views',
 
-    url(r'^list-menu-by-restaurant/$', 'list_menu_by_restaurant'),
+    url(r'^list-menu-by-table/$', 'list_menu_by_table'),
 
 )
 

@@ -11,6 +11,11 @@ from trade.models import Cart
 from trade.models import CartItem
 from trade.models import Order
 from trade.models import OrderItem
+from trade.models import ORDER_STATUS_CREATED
+from trade.models import ORDER_STATUS_CONFIRMED
+from trade.models import ORDER_STATUS_PAID
+from trade.models import ORDER_STATUS_REJECT
+
 from table.models import Table
 from menu.models import Product
 from account.models import Member
@@ -25,13 +30,126 @@ from trade.serializers import OrderDetailSerializer
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def get_cart_by_restaurant(request, table_pk):
+def list_current_order(request):
+    """
+    获取当前订单列表 （待确认和已经确认）
+    param参数：
+              wp_openid —— member的openid
+    ---
+        serializer: trade.serializers.OrderSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    serializer =\
+    OrderSerializer(member.orders.filter(status__in=[ORDER_STATUS_CREATED,\
+        ORDER_STATUS_CONFIRMED]), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def get_detail_order(request):
+    """
+    获取订单详细信息
+    ---
+        serializer: trade.serializers.OrderDetailSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+            - code: 404
+              message: Not Found
+    """
+    order_id = request.GET.get('order_id', None)
+    try:
+        order = Order.objects.get(pk=order_id)
+    except Order.DoesNotExist:
+        return Response('param error: no order found', status=status.HTTP_404_NOT_FOUND)
+
+    serializer = OrderDetailSerializer(order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def list_history_order(request):
+    """
+    获取历史订单列表
+    param参数：
+              wp_openid —— member的openid
+    ---
+        serializer: trade.serializers.OrderSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    serializer = OrderSerializer(member.orders.filter(\
+        status__in=[ORDER_STATUS_PAID, ORDER_STATUS_REJECT]), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def get_cart(request):
+    """
+    获取购物车
+    ---
+        serializer: trade.serializers.CartSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+    cart_id = request.GET.get('cart_id')
+
+    try:
+        cart = Cart.objects.get(pk=cart_id)
+    except Cart.DoesNotExist:
+        return Response('param error: no cart found',\
+                status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = CartSerializer(cart)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
+def get_cart_by_table(request):
     """
     获取购物车
     每个顾客访问每个餐厅，都会有一个对应的cart实体
     如果还没有对应的实例，则创建一个再返回
-    param参数：openid —— restaurant的openid
-              wp_openid —— member的openid
     ---
         serializer: trade.serializers.CartSerializer
         omit_serializer: false
@@ -43,154 +161,23 @@ def get_cart_by_restaurant(request, table_pk):
               message: Bad Request
     """
     openid = request.GET.get('openid')
-    wp_openid = request.GET.get('wp_openid', None)
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
     try:
-        restaurant = Restaurant.objects.get(openid=openid)
-    except Restaurant.DoesNotExist:
-        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        table = Table.objects.get(pk=table_pk)
-        if table.restaurant != restaurant:
-            return Response('param error: no table not in restaurant', status=status.HTTP_400_BAD_REQUEST)
+        table = Table.objects.get(openid=openid)
     except Table.DoesNotExist:
-        return Response('param error: no table found', status=status.HTTP_400_BAD_REQUEST)
+        return Response('param error: no table found',\
+                status=status.HTTP_400_BAD_REQUEST)
 
-    cart = Cart.objects.get_or_create(restaurant=restaurant, member=member, table=table)[0]
-    serializer = CartSerializer(cart)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    cart = Cart.objects.get_or_create(restaurant=table.restaurant,\
+            member=member)[0]
+    cart.table = table
+    cart.save()
 
-
-@api_view(['POST'])
-@authentication_classes(())
-@permission_classes(())
-def add_cart_item(request):
-    """
-    添加一个商品至购物车，如果商品已经存在，则数量加1
-    param参数：openid —— restaurant的openid
-              wp_openid —— member的openid
-    ---
-        serializer: trade.serializers.CartItemSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200
-              message: OK
-            - code: 400
-              message: Bad Request
-    """
-    openid = request.GET.get('openid')
-    wp_openid = request.GET.get('wp_openid', None)
-    try:
-        restaurant = Restaurant.objects.get(openid=openid)
-    except Restaurant.DoesNotExist:
-        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        cart = Cart.objects.get(restaurant=restaurant, member=member)
-    except Cart.DoesNotExist:
-        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
-
-    data = request.DATA.copy()
-    cart_item = cart.cart_items.filter(product=int(data.get('product', None))).first()
-    if cart_item:
-        cart_item.count += 1
-        cart_item.save()
-        serializer = CartItemSerializer(cart_item)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-    else:
-        serializer = CartItemSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@authentication_classes(())
-@permission_classes(())
-def remove_cart_item(request):
-    """
-    在购物车中删除一个商品
-    param参数：openid —— restaurant的openid
-              wp_openid —— member的openid
-    POST BODY:
-              cart_id
-              cart_item_id
-    ---
-        serializer: trade.serializers.CartSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200
-              message: OK
-            - code: 400
-              message: Bad Request
-    """
-    openid = request.GET.get('openid')
-    wp_openid = request.GET.get('wp_openid', None)
-    cart_id = request.DATA.get('cart_id', None)
-    cart_item_id = request.DATA.get('cart_item_id', None)
-    try:
-        restaurant = Restaurant.objects.get(openid=openid)
-    except Restaurant.DoesNotExist:
-        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        cart = Cart.objects.get(restaurant=restaurant, member=member)
-        if cart.id != cart_id:
-            return Response('param error: no volid cart', status=status.HTTP_400_BAD_REQUEST)
-    except Cart.DoesNotExist:
-        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        cart_item = CartItem.objects.get(pk=cart_item_id)
-        if cart_item.cart != cart:
-            return Response('param error: no valid cart item', status=status.HTTP_400_BAD_REQUEST)
-    except CartItem.DoesNotExist:
-        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
-
-    cart_item.delete()
-    serializer = CartSerializer(cart)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-@authentication_classes(())
-@permission_classes(())
-def decrease_cart_item(request, pk):
-    """
-    减少购物车中商品数量或者删除购物车中该商品
-    ---
-        serializer: trade.serializers.CartItemSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200
-              message: OK
-            - code: 400
-              message: Bad Request
-    """
-    data = request.DATA.copy()
-    try:
-        cart_item = CartItem.objects.get(pk=pk)
-    except CartItem.DoesNotExist:
-        return Response('cart item not found', status=status.HTTP_404_NOT_FOUND)
-
-    cart = cart_item.cart
-    if cart_item.count > 1:
-        cart_item.count -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
     serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -237,10 +224,10 @@ def update_cart(request, cart_pk):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
-def create_order_from_cart(request, cart_pk):
+def create_order_from_cart(request):
     """
     从购物车中创建订单
     param参数：openid —— restaurant的openid
@@ -255,23 +242,18 @@ def create_order_from_cart(request, cart_pk):
             - code: 400
               message: Bad Request
     """
-    openid = request.GET.get('openid')
-    wp_openid = request.GET.get('wp_openid', None)
+
+    cart_id = request.GET.get('cart_id')
 
     try:
-        cart = Cart.objects.get(pk=cart_pk)
+        cart = Cart.objects.get(pk=cart_id)
     except Cart.DoesNotExist:
         return Response('cart not found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        restaurant = Restaurant.objects.get(openid=openid)
-    except Restaurant.DoesNotExist:
-        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
-    try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
 
+    restaurant = cart.restaurant
+    member = cart.member
     table = cart.table
+
     order = Order(restaurant=restaurant, member=member, table_name=table.name)
     order.save()
     price_total = 0
@@ -328,16 +310,16 @@ def cancel_order(request, order_pk):
     return Response(None, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes(())
 @permission_classes(())
-def list_order(request):
+def add_cart_item(request):
     """
-    获取历史订单列表
-    param参数：
+    添加一个商品至购物车，如果商品已经存在，则数量加1
+    param参数：openid —— restaurant的openid
               wp_openid —— member的openid
     ---
-        serializer: trade.serializers.OrderSerializer
+        serializer: trade.serializers.CartItemSerializer
         omit_serializer: false
 
         responseMessages:
@@ -346,27 +328,99 @@ def list_order(request):
             - code: 400
               message: Bad Request
     """
-    wp_openid = request.GET.get('wp_openid', None)
-    try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
+    openid = request.GET.get('openid')
 
-    serializer = OrderSerializer(member.orders.exclude(status__in=[0, 1]), many=True)
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    try:
+        restaurant = Restaurant.objects.get(openid=openid)
+    except Restaurant.DoesNotExist:
+        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        cart = Cart.objects.get(restaurant=restaurant, member=member)
+    except Cart.DoesNotExist:
+        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
+
+    data = request.DATA.copy()
+    cart_item = cart.cart_items.filter(product=int(data.get('product', None))).first()
+    if cart_item:
+        cart_item.count += 1
+        cart_item.save()
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    else:
+        serializer = CartItemSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes(())
+@permission_classes(())
+def remove_cart_item(request):
+    """
+    在购物车中删除一个商品
+    param参数：openid —— restaurant的openid
+              wp_openid —— member的openid
+    POST BODY:
+              cart_id
+              cart_item_id
+    ---
+        serializer: trade.serializers.CartSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+    openid = request.GET.get('openid')
+    cart_id = request.DATA.get('cart_id', None)
+    cart_item_id = request.DATA.get('cart_item_id', None)
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    try:
+        restaurant = Restaurant.objects.get(openid=openid)
+    except Restaurant.DoesNotExist:
+        return Response('param error: no restaurant found', status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        cart = Cart.objects.get(restaurant=restaurant, member=member)
+        if cart.id != cart_id:
+            return Response('param error: no volid cart', status=status.HTTP_400_BAD_REQUEST)
+    except Cart.DoesNotExist:
+        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
+    try:
+        cart_item = CartItem.objects.get(pk=cart_item_id)
+        if cart_item.cart != cart:
+            return Response('param error: no valid cart item', status=status.HTTP_400_BAD_REQUEST)
+    except CartItem.DoesNotExist:
+        return Response('param error: no cart found', status=status.HTTP_400_BAD_REQUEST)
+
+    cart_item.delete()
+    serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes(())
 @permission_classes(())
-def list_order_now(request):
+def decrease_cart_item(request, pk):
     """
-    获取当前订单列表 （待确认和已经确认）
-    param参数：
-              wp_openid —— member的openid
+    减少购物车中商品数量或者删除购物车中该商品
     ---
-        serializer: trade.serializers.OrderSerializer
+        serializer: trade.serializers.CartItemSerializer
         omit_serializer: false
 
         responseMessages:
@@ -375,40 +429,19 @@ def list_order_now(request):
             - code: 400
               message: Bad Request
     """
-    wp_openid = request.GET.get('wp_openid', None)
+    data = request.DATA.copy()
     try:
-        member = Member.objects.get(wp_openid=wp_openid)
-    except Member.DoesNotExist:
-        return Response('param error: no member found', status=status.HTTP_400_BAD_REQUEST)
+        cart_item = CartItem.objects.get(pk=pk)
+    except CartItem.DoesNotExist:
+        return Response('cart item not found', status=status.HTTP_404_NOT_FOUND)
 
-    serializer = OrderSerializer(member.orders.filter(status__in=[0, 1]), many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@authentication_classes(())
-@permission_classes(())
-def get_detail_order(request, order_pk):
-    """
-    获取订单详细信息
-    ---
-        serializer: trade.serializers.OrderDetailSerializer
-        omit_serializer: false
-
-        responseMessages:
-            - code: 200
-              message: OK
-            - code: 400
-              message: Bad Request
-            - code: 404
-              message: Not Found
-    """
-    try:
-        order = Order.objects.get(pk=order_pk)
-    except Order.DoesNotExist:
-        return Response('param error: no order found', status=status.HTTP_404_NOT_FOUND)
-
-    serializer = OrderDetailSerializer(order)
+    cart = cart_item.cart
+    if cart_item.count > 1:
+        cart_item.count -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

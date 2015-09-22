@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import random
+
 from django.db import models
 from registration.models import REGISTRATION_STATUS_WAITING
 
+from dian.settings import MD5_SEED
+from dian.utils import get_md5
 
 class Table(models.Model):
     """
@@ -12,10 +17,17 @@ class Table(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
     restaurant = models.ForeignKey('restaurant.Restaurant', related_name="tables", null=True, blank=True)
     table_type = models.ForeignKey('table.TableType', related_name="tables", null=True)
+    openid = models.CharField(max_length=255, blank=True, null=True)
 
     # 餐桌在就餐过程中的信息和状态
     order = models.OneToOneField('trade.Order', null=True, blank=True, related_name="table")
     # status = models.IntegerField(choices=STATUS, default=STATUS[0][0])
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.openid = get_md5("%s-%s-%s" % (MD5_SEED,\
+                datetime.datetime.now(), random.random()))
+        super(Table, self).save(*args, **kwargs)
 
 
 class TableType(models.Model):

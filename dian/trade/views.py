@@ -7,6 +7,10 @@ from rest_framework.response import Response
 import datetime
 
 from trade.models import Order
+from trade.models import ORDER_STATUS_CREATED
+from trade.models import ORDER_STATUS_CONFIRMED
+from trade.models import ORDER_STATUS_PAID
+from trade.models import ORDER_STATUS_REJECT
 
 from trade.serializers import OrderSerializer
 

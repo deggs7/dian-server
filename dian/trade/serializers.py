@@ -21,7 +21,7 @@ class CartSerializer(ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ('id', 'restaurant', 'member', 'cart_items', "table")
+        # fields = ('id', 'restaurant', 'member', 'cart_items', "table")
 
 
 class OrderSerializer(ModelSerializer):
@@ -29,8 +29,8 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('id', 'restaurant', 'restaurant_name', 'create_time',
-                  'price', 'status', 'confirm_time', 'pay_time', 'table_name')
+        # fields = ('id', 'restaurant', 'restaurant_name', 'create_time',
+        #           'price', 'status', 'confirm_time', 'pay_time', 'table_name')
 
     def get_restaurant_name(self, obj):
         return obj.restaurant.name
@@ -48,9 +48,9 @@ class OrderDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('id', 'restaurant', 'restaurant_name', 'member',
-                  'create_time', 'confirm_time',  'pay_time', 'table_name',
-                  'status', 'price', 'order_items')
+        # fields = ('id', 'restaurant', 'restaurant_name', 'member',
+        #           'create_time', 'confirm_time',  'pay_time', 'table_name',
+        #           'status', 'price', 'order_items')
 
     def get_restaurant_name(self, obj):
         return obj.restaurant.name
