@@ -23,6 +23,7 @@ class RegistrationSerializer(ModelSerializer):
     waiting_time = SerializerMethodField(method_name="get_waiting_time")
     # phone_display = SerializerMethodField(method_name="get_phone")
     member_display = SerializerMethodField(method_name="get_member")
+    status_display = SerializerMethodField(method_name="get_status_display")
 
     class Meta:
         model = Registration
@@ -52,6 +53,9 @@ class RegistrationSerializer(ModelSerializer):
     # def get_phone(self, obj):
     #     return format_phone(obj.phone)
 
+    def get_status_display(self, obj):
+        return _get_status_desc(obj.status)
+
     def get_member(self, obj):
         try:
             rt = {
@@ -72,6 +76,7 @@ class RegistrationHistorySerializer(ModelSerializer):
     # status = SerializerMethodField(method_name="get_status_desc")
     table_name = SerializerMethodField(method_name="get_table_name")
     member_display = SerializerMethodField(method_name="get_member")
+    status_display = SerializerMethodField(method_name="get_status_display")
 
     class Meta:
         model = Registration
@@ -84,14 +89,8 @@ class RegistrationHistorySerializer(ModelSerializer):
     def get_table_name(self, obj):
         return obj.table_type.name
 
-    # def get_status_desc(self, obj):
-    #     desc = {
-    #         REGISTRATION_STATUS_WAITING: u"等待中",
-    #         # "turn": u"下一个",
-    #         REGISTRATION_STATUS_REPAST: u"已就餐",
-    #         REGISTRATION_STATUS_EXPIRED: u"已过号"
-    #     }
-    #     return desc[obj.status]
+    def get_status_display(self, obj):
+        return _get_status_desc(obj.status)
 
     def get_member(self, obj):
         try:
@@ -112,11 +111,11 @@ class RegistrationDetailSerializer(ModelSerializer):
     """
     # create_time = DateTimeField(format=DATE_TIME_FORMAT)
     # end_time = DateTimeField(format=DATE_TIME_FORMAT)
-    # status = SerializerMethodField(method_name="get_status_desc")
     table_type = SerializerMethodField(method_name="get_table_type")
     restaurant = SerializerMethodField(method_name="get_restaurant")
     current_registration =\
-    SerializerMethodField(method_name="get_current_registration")
+        SerializerMethodField(method_name="get_current_registration")
+    status_display = SerializerMethodField(method_name="get_status_display")
 
     class Meta:
         model = Registration
@@ -133,14 +132,8 @@ class RegistrationDetailSerializer(ModelSerializer):
         except:
             return {}
 
-    # def get_status_desc(self, obj):
-    #     desc = {
-    #         REGISTRATION_STATUS_WAITING: u"等待中",
-    #         # "turn": u"下一个",
-    #         REGISTRATION_STATUS_REPAST: u"已就餐",
-    #         REGISTRATION_STATUS_EXPIRED: u"已过号"
-    #     }
-    #     return desc[obj.status]
+    def get_status_display(self, obj):
+        return _get_status_desc(obj.status)
 
     def get_current_registration(self, obj):
         try:
@@ -166,4 +159,12 @@ def _format_phone(phone):
         return phone[:3] + '*' * 4 + phone[-4:]
     except Exception, e:
         return phone
+
+def _get_status_desc(status):
+    desc = {
+        str(REGISTRATION_STATUS_WAITING): u"等待中",
+        str(REGISTRATION_STATUS_REPAST): u"已就餐",
+        str(REGISTRATION_STATUS_EXPIRED): u"已过号"
+    }
+    return desc[str(status)]
 
