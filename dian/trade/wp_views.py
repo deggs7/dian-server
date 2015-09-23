@@ -269,15 +269,15 @@ def create_order_from_cart(request):
                                )
         order_item.save()
         price_total += cart_item.product.price * cart_item.count
-        cart_item.delete()
+        # cart_item.delete()
     order.price = price_total
     order.save()
 
     table.order = order
     table.save()
 
-    cart.table = None
-    cart.save()
+    # cart.table = None
+    # cart.save()
 
     serializer = OrderDetailSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)

@@ -71,10 +71,10 @@ def confirm_order(request, order_pk):
     if not order.restaurant or order.restaurant != request.current_restaurant:
         return Response('order forbidden', status.HTTP_403_FORBIDDEN)
 
-    if order.status != Order.STATUS[0][0]:
-        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+    if order.status != ORDER_STATUS_CREATED:
+        return Response('order error status:' + str(order.status), status.HTTP_400_BAD_REQUEST)
 
-    order.status = Order.STATUS[1][0]
+    order.status = ORDER_STATUS_CONFIRMED
     order.confirm_time = datetime.datetime.now()
     order.save()
     serializer = OrderSerializer(order)
@@ -110,18 +110,19 @@ def reject_order(request, order_pk):
     if not order.restaurant or order.restaurant != request.current_restaurant:
         return Response('order forbidden', status.HTTP_403_FORBIDDEN)
 
-    if order.status != Order.STATUS[0][0]:
-        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+    if order.status != ORDER_STATUS_CREATED:
+        return Response('order error status:' + str(order.status), status.HTTP_400_BAD_REQUEST)
 
-    order.status = Order.STATUS[3][0]
+    order.status = ORDER_STATUS_REJECT
+    order.confirm_time = datetime.datetime.now()
     order.save()
 
-    try:
-        table = order.table
-        table.order = None
-        table.save()
-    except AttributeError:
-        pass
+    # try:
+    #     table = order.table
+    #     table.order = None
+    #     table.save()
+    # except AttributeError:
+    #     pass
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -155,19 +156,19 @@ def finish_order(request, order_pk):
     if not order.restaurant or order.restaurant != request.current_restaurant:
         return Response('order forbidden', status.HTTP_403_FORBIDDEN)
 
-    if order.status != Order.STATUS[1][0]:
-        return Response('order error status', status.HTTP_400_BAD_REQUEST)
+    if order.status != ORDER_STATUS_CONFIRMED:
+        return Response('order error status:' + str(order.status), status.HTTP_400_BAD_REQUEST)
 
-    order.status = Order.STATUS[2][0]
+    order.status = ORDER_STATUS_PAID
     order.pay_time = datetime.datetime.now()
     order.save()
 
-    try:
-        table = order.table
-        table.order = None
-        table.save()
-    except AttributeError:
-        pass
+    # try:
+    #     table = order.table
+    #     table.order = None
+    #     table.save()
+    # except AttributeError:
+    #     pass
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
