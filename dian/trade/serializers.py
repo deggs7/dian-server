@@ -21,7 +21,21 @@ class CartSerializer(ModelSerializer):
 
     class Meta:
         model = Cart
-        # fields = ('id', 'restaurant', 'member', 'cart_items', "table")
+
+
+class CartDetailSerializer(ModelSerializer):
+    cart_items = CartItemSerializer(many=True, read_only=True)
+    restaurant_name = SerializerMethodField('get_restaurant_name')
+    table_name = SerializerMethodField('get_table_name')
+
+    class Meta:
+        model = Cart
+
+    def get_restaurant_name(self, obj):
+        return obj.restaurant.name
+
+    def get_table_name(self, obj):
+        return obj.table.name
 
 
 class OrderSerializer(ModelSerializer):

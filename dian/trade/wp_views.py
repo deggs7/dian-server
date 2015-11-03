@@ -22,6 +22,7 @@ from account.models import Member
 from restaurant.models import Restaurant
 
 from trade.serializers import CartSerializer
+from trade.serializers import CartDetailSerializer
 from trade.serializers import CartItemSerializer
 from trade.serializers import OrderSerializer
 from trade.serializers import OrderDetailSerializer
@@ -176,7 +177,7 @@ def get_cart(request):
         return Response('param error: no cart found',\
                 status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = CartSerializer(cart)
+    serializer = CartDetailSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -216,7 +217,7 @@ def get_cart_by_table(request):
     cart.table = table
     cart.save()
 
-    serializer = CartSerializer(cart)
+    serializer = CartDetailSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
