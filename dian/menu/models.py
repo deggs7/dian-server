@@ -35,7 +35,7 @@ class Product(models.Model):
                                  null=True)
     name = models.CharField(max_length=255, blank=False, null=False)
     img_key = models.CharField(max_length=255, blank=True, null=True)
-    price = models.DecimalField(max_digits=12, decimal_places=3, default=0)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     unit = models.CharField(max_length=255, blank=True, null=True,
                             default=u"份")
     description = models.CharField(max_length=2000, blank=True, null=True)

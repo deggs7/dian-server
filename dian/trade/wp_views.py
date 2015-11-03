@@ -60,6 +60,44 @@ def list_current_order(request):
 @api_view(['GET'])
 @authentication_classes(())
 @permission_classes(())
+def list_current_order_by_table(request):
+    """
+    根据餐桌id，获取当前餐厅的订单列表 （待确认和已经确认）
+    param参数：
+              wp_openid —— member的openid
+    ---
+        serializer: trade.serializers.OrderSerializer
+        omit_serializer: false
+
+        responseMessages:
+            - code: 200
+              message: OK
+            - code: 400
+              message: Bad Request
+    """
+    openid = request.GET.get('openid')
+
+    member = request.member
+    if not member:
+        return Response('Parameter Error(can not get member)',\
+                status.HTTP_400_BAD_REQUEST)
+
+    try:
+        table = Table.objects.get(openid=openid)
+    except Table.DoesNotExist:
+        return Response('param error: no table found',\
+                status=status.HTTP_400_BAD_REQUEST)
+
+    serializer =\
+    OrderSerializer(member.orders.filter(status__in=[ORDER_STATUS_CREATED,\
+        ORDER_STATUS_CONFIRMED]).filter(restaurant=table.restaurant),\
+        many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes(())
+@permission_classes(())
 def get_detail_order(request):
     """
     获取订单详细信息

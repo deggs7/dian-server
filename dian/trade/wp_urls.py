@@ -12,6 +12,9 @@ urlpatterns = patterns(
     # 获取当前订单列表
     url(r'^list-current-order/$', 'list_current_order'),
 
+    # 根据餐桌id，获取当前餐厅的订单列表 （待确认和已经确认）
+    url(r'^list-current-order-by-table/$', 'list_current_order_by_table'),
+
     # 获取订单详细信息
     url(r'^get-detail-order/$', 'get_detail_order'),
 
