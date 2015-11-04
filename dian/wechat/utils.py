@@ -161,17 +161,17 @@ def update_menu():
         {
             'type': 'view',
             'name': u'排队',
-            'url': get_auth_url_with_confirm('#/queue'),
+            'url': get_auth_url_without_confirm('#/queue'),
         },
         {
             'type': 'view',
             'name': u'点菜',
-            'url': get_auth_url_with_confirm('#/menu'),
+            'url': get_auth_url_without_confirm('#/menu'),
         },
         {
             'type': 'view',
             'name': u'图片',
-            'url': get_auth_url_with_confirm('#/photo/index'),
+            'url': get_auth_url_without_confirm('#/photo/index'),
         },
         # {
         #     'name': '菜单',
