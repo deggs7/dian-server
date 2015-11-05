@@ -152,9 +152,9 @@ def update_menu():
     目前仅用作在pyhton shell中调用
     """
     wechat = WechatBasic(appid=APP_ID, appsecret=APP_SECRET)
-    logger.info(wechat.get_menu())
+    # logger.info(wechat.get_menu())
     # 删除当前菜单
-    wechat.delete_menu()
+    # wechat.delete_menu()
     # 创建菜单
     wechat.create_menu({
     'button':[
@@ -168,11 +168,11 @@ def update_menu():
             'name': u'点菜',
             'url': get_auth_url_without_confirm('#/menu'),
         },
-        {
-            'type': 'view',
-            'name': u'图片',
-            'url': get_auth_url_without_confirm('#/photo/index'),
-        },
+        # {
+        #     'type': 'view',
+        #     'name': u'图片',
+        #     'url': get_auth_url_without_confirm('#/photo/index'),
+        # },
         # {
         #     'name': '菜单',
         #     'sub_button': [
