@@ -56,13 +56,13 @@ def get_member(request):
 
             # basic_access_res = _get_access_res_for_basic()
             # access_token = basic_access_res.json().get('access_token', None)
-            access_token = get_access_token()
 
             # 获取或者创建会员对象
             member = Member.objects.get_or_create(wp_openid=openid)[0]
 
             # 授权类型为snsapi_userinfo
             # 通过access_token从微信中获取详细会员信息
+            access_token = get_access_token()
             userinfo = _get_userinfo_for_basic(openid, access_token)
             if userinfo:
                 # member.wp_nickname = userinfo.get('nickname', '').encode('iso-8859-1').decode('utf-8')
@@ -105,6 +105,33 @@ def get_member_by_openid(request):
     openid = request.GET.get('openid', None)
     try:
         member = Member.objects.filter(wp_openid=openid)[0]
+
+        # 用来更新至member最新的状态
+        access_token = get_access_token()
+        userinfo = _get_userinfo_for_basic(openid, access_token)
+        if userinfo:
+            # member.wp_nickname = userinfo.get('nickname', '').encode('iso-8859-1').decode('utf-8')
+            # member.wp_sex = userinfo.get('sex', None)
+            # member.wp_province = userinfo.get('province', '').encode('iso-8859-1').decode('utf-8')
+            # member.wp_city = userinfo.get('city', '').encode('iso-8859-1').decode('utf-8')
+            # member.wp_country = userinfo.get('country', '').encode('iso-8859-1').decode('utf-8')
+            # member.wp_headimgurl = userinfo.get('headimgurl', None)
+            # member.wp_privilege = userinfo.get('privilege', None)
+            member.wp_subscribe = userinfo.get('subscribe', '')
+            member.wp_openid = userinfo.get('openid', '')
+            member.wp_nickname = userinfo.get('nickname', '')
+            member.wp_sex = userinfo.get('sex', None)
+            member.wp_city = userinfo.get('city', '')
+            member.wp_country = userinfo.get('country', '')
+            member.wp_province = userinfo.get('province', '')
+            member.wp_language = userinfo.get('language', '')
+            member.wp_headimgurl = userinfo.get('headimgurl', None)
+            member.wp_subscribe_time = userinfo.get('subscribe_time', None)
+            member.wp_unionid = userinfo.get('unionid', None)
+            member.wp_remark = userinfo.get('remark', None)
+            member.wp_groupid = userinfo.get('groupid', None)
+            member.save()
+
         serializer = MemberSerializer(member)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception, e:
