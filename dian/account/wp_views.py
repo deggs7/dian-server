@@ -42,7 +42,7 @@ def get_member(request):
             member = members[0]
         # 返回会员信息
         serializer = MemberSerializer(member)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         # 通过code换取网页授权access_token
         try:
