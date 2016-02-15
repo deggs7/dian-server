@@ -1,0 +1,34 @@
+server:
+  build: .
+  # command: python dian/manage.py syncdb
+  # command: python dian/manage.py createsuperuser --username=13810322245
+  # command: python dian/manage.py migrate
+  # command: ./run/run_celery_worker.sh
+  command: python dian/manage.py runserver 0.0.0.0:8000
+  volumes:
+    - .:/dian
+  ports:
+    - "8000:8000"
+  links:
+    - mysql
+    - rabbitmq
+    - redis
+
+mysql:
+  image: mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=123456
+    - MYSQL_DATABASE=dian
+    - MYSQL_USER=dian
+    - MYSQL_PASSWORD=123456
+
+rabbitmq:
+  image: rabbitmq
+  environment:
+    - RABBITMQ_DEFAULT_USER=dian
+    - RABBITMQ_DEFAULT_PASS=123456
+    - RABBITMQ_DEFAULT_VHOST=/dianvhost
+
+redis:
+  image: redis
+
