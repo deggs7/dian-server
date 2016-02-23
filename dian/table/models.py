@@ -15,8 +15,10 @@ class Table(models.Model):
     餐桌
     """
     name = models.CharField(max_length=255, blank=False, null=False)
-    restaurant = models.ForeignKey('restaurant.Restaurant', related_name="tables", null=True, blank=True)
-    table_type = models.ForeignKey('table.TableType', related_name="tables", null=True)
+    restaurant = models.ForeignKey('restaurant.Restaurant',\
+            related_name="tables", null=True, blank=True)
+    table_type = models.ForeignKey('table.TableType', related_name="tables",\
+            null=True, blank=True)
     openid = models.CharField(max_length=255, blank=True, null=True)
 
     # 餐桌在就餐过程中的信息和状态
@@ -38,7 +40,8 @@ class TableType(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
     min_seats = models.IntegerField("min seats", default=1)
     max_seats = models.IntegerField("max seats", default=1)
-    restaurant = models.ForeignKey('restaurant.Restaurant', related_name="table_types", null=True)
+    restaurant = models.ForeignKey('restaurant.Restaurant',\
+            related_name="table_types", null=True, blank=True)
     next_queue_number = models.IntegerField(default=1, blank=False, null=False)
 
     def get_registration_left(self):

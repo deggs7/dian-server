@@ -5,32 +5,29 @@ DEBUG = False
 
 # ref: https://docs.djangoproject.com/en/1.7/ref/settings/
 ALLOWED_HOSTS = (
-    'diankuai.cn',
-    '127.0.0.1:9000',
-    'localhost:9000',
-    '127.0.0.1:3000',
-    'localhost:3000',
+    'dev.c.diankuai.cn:9000',
+    'dev.wp.diankuai.cn:3000',
 )
 
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#         'NAME': 'dian',                      # Or path to database file if using sqlite3.
-#         'USER': 'dian',                      # Not used with sqlite3.
-#         'PASSWORD': '123456',                  # Not used with sqlite3.
-#         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-#         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'dian',                      # Or path to database file if using sqlite3.
+        'USER': 'dian',                      # Not used with sqlite3.
+        'PASSWORD': '123456',                  # Not used with sqlite3.
+        'HOST': 'mysql',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 
 # Celery
 
-BROKER_URL = 'amqp://dian:123456@localhost:5672//dianvhost'
+BROKER_URL = 'amqp://dian:123456@rabbitmq:5672//dianvhost'
 
 
 # Cache
@@ -38,7 +35,7 @@ BROKER_URL = 'amqp://dian:123456@localhost:5672//dianvhost'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS":
             "django_redis.client.DefaultClient",
@@ -68,15 +65,8 @@ MD5_SEED = 'diankuai.cn'
 # django-cors-headers settings, 
 
 CORS_ORIGIN_WHITELIST = (
-    'diankuai.cn',
-    'www.diankuai.cn',
-    'api.diankuai.cn',
-    'c.diankuai.cn',
-    'wp.diankuai.cn',
-    '127.0.0.1:9000',
-    'localhost:9000',
-    '127.0.0.1:3000',
-    'localhost:3000',
+    'dev.c.diankuai.cn:9000',
+    'dev.wp.diankuai.cn:3000',
 )
 
 
@@ -103,6 +93,11 @@ API_DOMAIN = "http://api.diankuai.cn/"
 # Weixin platform
 
 WP_DOMAIN = "http://wp.diankuai.cn/"
+
+
+# Diankuai Global
+
+WP_LIST_LENGTH = 10
 
 
 # LOG_FILENAME

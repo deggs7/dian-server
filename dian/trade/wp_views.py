@@ -27,6 +27,7 @@ from trade.serializers import CartItemSerializer
 from trade.serializers import OrderSerializer
 from trade.serializers import OrderDetailSerializer
 
+from dian.settings import WP_LIST_LENGTH
 
 @api_view(['GET'])
 @authentication_classes(())
@@ -52,9 +53,10 @@ def list_current_order(request):
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
 
-    serializer =\
-    OrderSerializer(member.orders.filter(status__in=[ORDER_STATUS_CREATED,\
-        ORDER_STATUS_CONFIRMED]), many=True)
+    order_list = member.orders.filter(\
+        status__in=[ORDER_STATUS_CREATED, ORDER_STATUS_CONFIRMED])\
+        .order_by('-create_time')[:WP_LIST_LENGTH]
+    serializer = OrderSerializer(order_list, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -89,10 +91,11 @@ def list_current_order_by_table(request):
         return Response('param error: no table found',\
                 status=status.HTTP_400_BAD_REQUEST)
 
-    serializer =\
-    OrderSerializer(member.orders.filter(status__in=[ORDER_STATUS_CREATED,\
-        ORDER_STATUS_CONFIRMED]).filter(restaurant=table.restaurant),\
-        many=True)
+    order_list = member.orders\
+        .filter(status__in=[ORDER_STATUS_CREATED, ORDER_STATUS_CONFIRMED])\
+        .filter(restaurant=table.restaurant)\
+        .order_by('-create_time')[:WP_LIST_LENGTH]
+    serializer = OrderSerializer(order_list, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -148,8 +151,10 @@ def list_history_order(request):
         return Response('Parameter Error(can not get member)',\
                 status.HTTP_400_BAD_REQUEST)
 
-    serializer = OrderSerializer(member.orders.filter(\
-        status__in=[ORDER_STATUS_PAID, ORDER_STATUS_REJECT]), many=True)
+    order_list = member.orders\
+        .filter(status__in=[ORDER_STATUS_PAID, ORDER_STATUS_REJECT])\
+        .order_by('-create_time')[:WP_LIST_LENGTH]
+    serializer = OrderSerializer(order_list, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

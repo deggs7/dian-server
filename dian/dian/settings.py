@@ -212,6 +212,11 @@ LOG_FILENAME = 'log_dian_server.log'
 QUEUE_READY_COUNT = 2
 
 
+# Diankuai Global
+
+WP_LIST_LENGTH = 10
+
+
 # Overwrite configuration
 
 try:

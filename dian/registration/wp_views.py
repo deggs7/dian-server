@@ -26,6 +26,7 @@ from dian.settings import QINIU_DOMAIN
 from dian.settings import TEMP_DIR
 from dian.settings import DEBUG
 from dian.settings import API_DOMAIN
+from dian.settings import WP_LIST_LENGTH
 
 from dian.utils import get_md5
 from restaurant.utils import restaurant_required
@@ -96,11 +97,6 @@ def confirm_table_type(request):
         return Response('restaurant not found', status=status.HTTP_404_NOT_FOUND)
 
     try:
-        restaurant = Restaurant.objects.get(openid=restaurant_openid)
-    except Restaurant.DoesNotExist:
-        return Response('restaurant not found', status=status.HTTP_404_NOT_FOUND)
-
-    try:
         table_type = TableType.objects.get(pk=table_type_id)
     except TableType.DoesNotExist:
         return Response('table type not found', status=status.HTTP_404_NOT_FOUND)
@@ -122,8 +118,14 @@ def confirm_table_type(request):
         # 让餐桌的拍号+1
         obj.table_type.next_queue()
 
+        # 加入计时队列
         try:
-            # 给顾客发送短信提醒
+            pass
+        except Exception, e:
+            logger.error(e)
+
+        # 给顾客发送短信提醒
+        try:
             content = render_join(
                     restaurant.name,
                     obj.queue_name,
@@ -201,7 +203,8 @@ def list_current_registration(request):
 
     try:
         registrationList = Registration.objects.filter(member=member,\
-                status=REGISTRATION_STATUS_WAITING)
+                status=REGISTRATION_STATUS_WAITING)\
+                .order_by('-create_time')[:WP_LIST_LENGTH]
         serializer = RegistrationDetailSerializer(registrationList)
         return Response(serializer.data, status.HTTP_200_OK)
     except Exception, e:
@@ -237,7 +240,9 @@ def list_current_registration_by_restaurant(request):
     restaurant_openid = request.GET.get('restaurant_openid', None)
 
     registrationList = Registration.objects.filter(member=member,\
-            restaurant__openid=restaurant_openid, status=REGISTRATION_STATUS_WAITING)
+            restaurant__openid=restaurant_openid,\
+            status=REGISTRATION_STATUS_WAITING)\
+            .order_by('-create_time')[:WP_LIST_LENGTH]
     serializer = RegistrationDetailSerializer(registrationList)
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -262,7 +267,9 @@ def list_history_registration(request):
                 status.HTTP_400_BAD_REQUEST)
 
     registrationList = Registration.objects.filter(member=member,\
-            status__in=(REGISTRATION_STATUS_REPAST, REGISTRATION_STATUS_EXPIRED))
+            status__in=(REGISTRATION_STATUS_REPAST,
+                REGISTRATION_STATUS_EXPIRED))\
+            .order_by('-create_time')[:WP_LIST_LENGTH]
     serializer = RegistrationDetailSerializer(registrationList)
     return Response(serializer.data, status.HTTP_200_OK)
 

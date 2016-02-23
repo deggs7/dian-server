@@ -7,12 +7,14 @@ from django.contrib import admin
 admin.autodiscover()
 
 import views
+from dian.wp_views import settings as settings_views
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'dian.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url(r'^settings/$', settings_views),
 
     # 业务模块
     url(r'^account/', include('account.wp_urls')),
